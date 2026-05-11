@@ -1,39 +1,99 @@
-﻿@{
-    ViewData["Title"] = "Giriş Yap";
+@model art_galeri.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Giris Yap";
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <h2 class="text-center mb-4">Giriş Yap</h2>
-                <hr />
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2><i class="bi bi-box-arrow-in-right"></i> Giris Yap</h2>
+            <p>Hesabiniza giris yapin ve sanat dunyasini kesfedin</p>
+        </div>
 
-                @if (ViewBag.Error != null)
-                {
-                    <div class="alert alert-danger">@ViewBag.Error</div>
-                }
-
-                <form action="/Users/Login" method="post">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">E-Posta</label>
-                        <input name="email" type="email" class="form-control" placeholder="E-postanızı giriniz" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Şifre</label>
-                        <input name="password" type="password" class="form-control" placeholder="******" required />
-                    </div>
-
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">Giriş Yap</button>
-                    </div>
-                </form>
-                
-                <div class="text-center mt-3">
-                    <small>Hesabınız yok mu? <a href="/Users/Create">Hemen Kayıt Olun</a></small>
+        <div class="auth-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-custom alert-success mb-3">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>@TempData["SuccessMessage"]</span>
                 </div>
+            }
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                var errorMessages = ViewData.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .Where(m => !string.IsNullOrEmpty(m))
+                    .ToList();
+
+                if (errorMessages.Any())
+                {
+                    <div class="alert alert-custom alert-danger mb-3">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div>
+                            @foreach (var error in errorMessages)
+                            {
+                                <div>@error</div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+            <form asp-action="Login" method="post" id="loginForm" novalidate>
+                @Html.AntiForgeryToken()
+
+                <!-- E-Posta -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" id="inputEmail" placeholder="E-Posta" type="email" autofocus />
+                    <label for="inputEmail"><i class="bi bi-envelope"></i> E-Posta</label>
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <!-- Sifre -->
+                <div class="form-floating mb-3 position-relative">
+                    <input asp-for="Sifre" class="form-control" id="inputSifre" placeholder="Sifre" type="password" />
+                    <label for="inputSifre"><i class="bi bi-lock"></i> Sifre</label>
+                    <span asp-validation-for="Sifre" class="field-validation-error"></span>
+                </div>
+
+                <!-- Giris Yap Butonu -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary-custom btn-lg" id="btnLogin">
+                        <i class="bi bi-box-arrow-in-right"></i> Giris Yap
+                    </button>
+                </div>
+            </form>
+
+            <div class="divider">veya</div>
+
+            <div class="text-center">
+                <span class="text-muted">Hesabiniz yok mu?</span>
+                <a href="/Users/Register" class="auth-link ms-1">Hemen Kayit Olun</a>
+            </div>
+
+            <!-- Guvenlk Notu -->
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    <i class="bi bi-shield-lock"></i>
+                    Bilgileriniz guvenli bir sekilde saklanmaktadir.
+                </small>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Form submit loading
+            document.getElementById('loginForm').addEventListener('submit', function () {
+                const btn = document.getElementById('btnLogin');
+                btn.classList.add('btn-loading');
+                btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Giris yapiliyor...';
+            });
+        });
+    </script>
+}

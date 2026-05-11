@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Egitmen Paneli";
+}
+
+<div class="dashboard-container">
+    <!-- Hosgeldin Banneri -->
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-mortarboard-fill"></i> Egitmen Paneli</h2>
+        <p>Hos geldiniz @ViewBag.UserName! Atolye ve rezervasyonlarinizi yonetin.</p>
+    </div>
+
+    <!-- Atolye Yonetimi -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="stat-card accent">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Aktif Atolye</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="stat-card gold">
+                <div class="stat-icon">👨‍🎓</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Toplam Katilimci</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="stat-card success">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Kontenjan Durumu</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Atolye Listesi -->
+    <div class="card border-0 shadow-sm" style="border-radius: var(--border-radius);">
+        <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event"></i> Atolye ve Rezervasyonlar</h5>
+            <button class="btn btn-gold btn-sm">
+                <i class="bi bi-plus-lg"></i> Yeni Atolye
+            </button>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <div class="empty-state py-3">
+                <div class="empty-icon">🎓</div>
+                <h4>Henuz atolyeniz bulunmamaktadir</h4>
+                <p>"Yeni Atolye" butonuna tiklayarak ilk atolyenizi olusturun.</p>
+            </div>
+        </div>
+    </div>
+</div>

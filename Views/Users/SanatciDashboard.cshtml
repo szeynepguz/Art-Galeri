@@ -1,0 +1,93 @@
+@model IEnumerable<art_galeri.Models.Artwork>
+
+@{
+    ViewData["Title"] = "Sanatci Paneli";
+}
+
+<div class="dashboard-container">
+    <!-- Hosgeldin Banneri -->
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-palette-fill"></i> Sanatci Paneli</h2>
+        <p>Hos geldiniz @ViewBag.UserName! Eserlerinizin istatistiklerini ve goruntulenmelerini takip edin.</p>
+    </div>
+
+    <!-- Istatistik Kartlari -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="stat-card accent">
+                <div class="stat-icon">🖼️</div>
+                <div class="stat-number">@ViewBag.ToplamEser</div>
+                <div class="stat-label">Toplam Eser</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="stat-card gold">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Toplam Goruntuleme</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="stat-card success">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Toplam Begeni</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Eserler -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold"><i class="bi bi-easel"></i> Eserlerim</h4>
+        <a href="/Artist/Upload" class="btn btn-gold">
+            <i class="bi bi-plus-lg"></i> Yeni Eser Yukle
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="artwork-card">
+                        <div class="card-img-wrapper">
+                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title">
+                        </div>
+                        <div class="card-body p-3">
+                            <h5 class="card-title fw-bold">@item.Title</h5>
+                            <p class="card-text text-muted small">@item.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold fs-5">@item.Price.ToString("C2")</span>
+                                <div>
+                                    <button class="btn btn-outline-dark btn-sm me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span><i class="bi bi-eye"></i> 0 goruntuleme</span>
+                                <span><i class="bi bi-heart"></i> 0 begeni</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🎨</div>
+            <h4>Henuz eseriniz bulunmamaktadir</h4>
+            <p>Ilk eserinizi yukleyerek sanat yolculugunuza baslayin!</p>
+            <a href="/Artist/Upload" class="btn btn-primary-custom mt-2">
+                <i class="bi bi-cloud-upload"></i> Eser Yukle
+            </a>
+        </div>
+    }
+</div>

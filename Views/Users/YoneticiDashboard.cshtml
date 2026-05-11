@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Yonetici Paneli";
+}
+
+<div class="dashboard-container">
+    <!-- Hosgeldin Banneri -->
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-speedometer2"></i> Yonetici Paneli</h2>
+        <p>Hos geldiniz @ViewBag.UserName! Sistem ozet raporunuzu asagida gorebilirsiniz.</p>
+    </div>
+
+    <!-- Istatistik Kartlari -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card accent">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number">@ViewBag.ToplamKullanici</div>
+                <div class="stat-label">Toplam Kullanici</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card gold">
+                <div class="stat-icon">🎨</div>
+                <div class="stat-number">@ViewBag.ToplamEser</div>
+                <div class="stat-label">Toplam Eser</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card success">
+                <div class="stat-icon">🖌️</div>
+                <div class="stat-number">@ViewBag.ToplamSanatci</div>
+                <div class="stat-label">Sanatci Sayisi</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card info">
+                <div class="stat-icon">📚</div>
+                <div class="stat-number">@ViewBag.ToplamEgitmen</div>
+                <div class="stat-label">Egitmen Sayisi</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Musteri Sayisi -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="stat-card accent">
+                <div class="stat-icon">🛒</div>
+                <div class="stat-number">@ViewBag.ToplamMusteri</div>
+                <div class="stat-label">Musteri Sayisi</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yorum Yonetimi Paneli -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: var(--border-radius);">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <h5 class="fw-bold"><i class="bi bi-chat-dots"></i> Yorum Yonetimi</h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="empty-state py-3">
+                        <div class="empty-icon">💬</div>
+                        <h4>Yorum sistemi yaklnda aktif olacak</h4>
+                        <p>Kullanici yorumlarini burada gorebilecek ve yanitlayabileceksiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

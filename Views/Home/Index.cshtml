@@ -1,12 +1,66 @@
-﻿@{
-    ViewData["Title"] = "Hoş Geldiniz";
+@{
+    ViewData["Title"] = "Hos Geldiniz";
 }
 
-<div class="text-center mt-5 p-5 bg-light rounded shadow-sm">
-    <h1 class="display-4 fw-bold">🎨 Sanat Galerimize Hoş Geldiniz</h1>
-    <p class="lead text-muted">Eserlerinizi sergilemek ve sanat dünyasına adım atmak için doğru yerdesiniz.</p>
-    
-    <div class="mt-4">
-        <a href="/Users/Create" class="btn btn-dark btn-lg px-5 shadow-sm">Hemen Kayıt Ol</a>
+<div class="text-center mt-4 p-5 rounded position-relative overflow-hidden" style="background: var(--bg-gradient); color: white; border-radius: var(--border-radius) !important;">
+    <div style="position: relative; z-index: 1;">
+        <h1 class="display-4 fw-bold" style="font-family: 'Playfair Display', serif;">
+            <i class="bi bi-palette2 pulse"></i> Sanat Galerimize Hos Geldiniz
+        </h1>
+        <p class="lead mt-3" style="color: rgba(255,255,255,0.8);">
+            Eserlerinizi sergilemek ve sanat dunyasina adim atmak icin dogru yerdesiniz.
+        </p>
+
+        <div class="mt-4">
+            @if (Context.Session.GetInt32("UserID") != null)
+            {
+                <span class="text-light me-2">
+                    Hos geldiniz, <strong>@Context.Session.GetString("UserAd")</strong>!
+                </span>
+            }
+            else
+            {
+                <a href="/Users/Register" class="btn btn-gold btn-lg px-5 shadow-sm me-2">
+                    <i class="bi bi-person-plus"></i> Hemen Kayit Ol
+                </a>
+                <a href="/Users/Login" class="btn btn-outline-gold btn-lg px-4">
+                    <i class="bi bi-box-arrow-in-right"></i> Giris Yap
+                </a>
+            }
+        </div>
+    </div>
+    <div style="position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(240,192,64,0.15) 0%, transparent 70%); border-radius: 50%;"></div>
+</div>
+
+<!-- Bilgi Kartlari -->
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="stat-card accent text-center" style="padding: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+            <h5 class="fw-bold">Eserler</h5>
+            <p class="text-muted small">Binlerce sanat eserini inceleyin ve favorilerinize ekleyin.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="stat-card gold text-center" style="padding: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+            <h5 class="fw-bold">Atolyeler</h5>
+            <p class="text-muted small">Uzman egitmenlerden sanat teknikleri ogrenin.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="stat-card success text-center" style="padding: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🌟</div>
+            <h5 class="fw-bold">Topluluk</h5>
+            <p class="text-muted small">Sanat severlerle bulusun, yorum yapin, ilham alin.</p>
+        </div>
     </div>
 </div>
+
+@if (Context.Session.GetInt32("UserID") == null)
+{
+    <div class="alert alert-custom alert-info mt-3">
+        <i class="bi bi-info-circle-fill"></i>
+        <span>Yorum yapmak, favori eklemek ve atolyelere katilmak icin <a href="/Users/Login" class="auth-link">giris yapin</a> veya <a href="/Users/Register" class="auth-link">kayit olun</a>.</span>
+    </div>
+}

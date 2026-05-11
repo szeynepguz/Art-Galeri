@@ -1,0 +1,236 @@
+@model art_galeri.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Kayit Ol";
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2><i class="bi bi-person-plus"></i> Kayit Ol</h2>
+            <p>Sanat dunyasina katilmak icin bilgilerinizi giriniz</p>
+        </div>
+
+        <div class="auth-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-custom alert-danger mb-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        <strong>Hata!</strong> Lutfen asagidaki alanlari kontrol ediniz.
+                        <div asp-validation-summary="ModelOnly" class="validation-summary-errors small mt-1"></div>
+                    </div>
+                </div>
+            }
+
+            <form asp-action="Register" method="post" id="registerForm" novalidate>
+                @Html.AntiForgeryToken()
+
+                <!-- Ad ve Soyad -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input asp-for="Ad" class="form-control" id="inputAd" placeholder="Ad" />
+                            <label for="inputAd"><i class="bi bi-person"></i> Ad</label>
+                            <span asp-validation-for="Ad" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input asp-for="Soyad" class="form-control" id="inputSoyad" placeholder="Soyad" />
+                            <label for="inputSoyad"><i class="bi bi-person"></i> Soyad</label>
+                            <span asp-validation-for="Soyad" class="field-validation-error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-Posta -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" id="inputEmail" placeholder="E-Posta" type="email" />
+                    <label for="inputEmail"><i class="bi bi-envelope"></i> E-Posta</label>
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <!-- Sifre -->
+                <div class="form-floating mb-2">
+                    <input asp-for="Sifre" class="form-control" id="inputSifre" placeholder="Sifre" type="password" />
+                    <label for="inputSifre"><i class="bi bi-lock"></i> Sifre</label>
+                    <span asp-validation-for="Sifre" class="field-validation-error"></span>
+                </div>
+
+                <!-- Sifre Guc Gostergesi -->
+                <div class="password-strength mb-3">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+                <p class="password-hint" id="passwordHint">En az 6 karakter giriniz</p>
+
+                <!-- Sifre Tekrar -->
+                <div class="form-floating mb-3">
+                    <input asp-for="SifreTekrar" class="form-control" id="inputSifreTekrar" placeholder="Sifre Tekrar" type="password" />
+                    <label for="inputSifreTekrar"><i class="bi bi-lock-fill"></i> Sifre Tekrar</label>
+                    <span asp-validation-for="SifreTekrar" class="field-validation-error"></span>
+                </div>
+
+                <!-- Kullanici Tipi Secimi -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="bi bi-people-fill"></i> Kullanici Tipi
+                    </label>
+                    <div class="role-selector" id="roleSelector">
+                        <div class="role-option">
+                            <input type="radio" name="KullaniciTipi" id="roleMusteri" value="Musteri"
+                                   @(Model.KullaniciTipi == "Musteri" ? "checked" : "") />
+                            <label for="roleMusteri">
+                                <span class="role-icon">🛒</span>
+                                Musteri
+                            </label>
+                        </div>
+                        <div class="role-option">
+                            <input type="radio" name="KullaniciTipi" id="roleSanatci" value="Sanatci"
+                                   @(Model.KullaniciTipi == "Sanatci" ? "checked" : "") />
+                            <label for="roleSanatci">
+                                <span class="role-icon">🎨</span>
+                                Sanatci
+                            </label>
+                        </div>
+                        <div class="role-option">
+                            <input type="radio" name="KullaniciTipi" id="roleEgitmen" value="Egitmen"
+                                   @(Model.KullaniciTipi == "Egitmen" ? "checked" : "") />
+                            <label for="roleEgitmen">
+                                <span class="role-icon">📚</span>
+                                Egitmen
+                            </label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="KullaniciTipi" class="field-validation-error"></span>
+                </div>
+
+                <!-- Sanatci Ek Alanlari -->
+                <div class="dynamic-fields" id="sanatciFields">
+                    <div class="dynamic-field-group">
+                        <div class="divider">Sanatci Bilgileri</div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="PortfolyoLinki" class="form-control" id="inputPortfolyo" placeholder="Portfolyo Linki" />
+                            <label for="inputPortfolyo"><i class="bi bi-link-45deg"></i> Portfolyo Linki</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="SanatDali" class="form-control" id="inputSanatDali" placeholder="Sanat Dali" />
+                            <label for="inputSanatDali"><i class="bi bi-brush"></i> Sanat Dali (Orn: Resim, Heykel, Fotograf)</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Ozgecmis" class="form-control" id="inputOzgecmis" placeholder="Kisa Ozgecmis" style="height: 80px"></textarea>
+                            <label for="inputOzgecmis"><i class="bi bi-file-text"></i> Kisa Ozgecmis</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Egitmen Ek Alanlari -->
+                <div class="dynamic-fields" id="egitmenFields">
+                    <div class="dynamic-field-group">
+                        <div class="divider">Egitmen Bilgileri</div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="UzmanlikAlani" class="form-control" id="inputUzmanlik" placeholder="Uzmanlik Alani" />
+                            <label for="inputUzmanlik"><i class="bi bi-star"></i> Uzmanlik Alani</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="DeneyimYili" type="number" class="form-control" id="inputDeneyim" placeholder="Deneyim Yili" min="0" max="50" />
+                            <label for="inputDeneyim"><i class="bi bi-clock-history"></i> Deneyim Yili</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Biyografi" class="form-control" id="inputBiyografi" placeholder="Biyografi" style="height: 80px"></textarea>
+                            <label for="inputBiyografi"><i class="bi bi-journal-text"></i> Biyografi</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kayit Ol Butonu -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary-custom btn-lg" id="btnRegister">
+                        <i class="bi bi-person-plus-fill"></i> Kayit Ol
+                    </button>
+                </div>
+            </form>
+
+            <div class="divider">veya</div>
+
+            <div class="text-center">
+                <span class="text-muted">Zaten hesabiniz var mi?</span>
+                <a href="/Users/Login" class="auth-link ms-1">Giris Yapin</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleRadios = document.querySelectorAll('input[name="KullaniciTipi"]');
+            const sanatciFields = document.getElementById('sanatciFields');
+            const egitmenFields = document.getElementById('egitmenFields');
+
+            function toggleFields() {
+                const selected = document.querySelector('input[name="KullaniciTipi"]:checked');
+                sanatciFields.classList.remove('show');
+                egitmenFields.classList.remove('show');
+
+                if (selected) {
+                    if (selected.value === 'Sanatci') {
+                        sanatciFields.classList.add('show');
+                    } else if (selected.value === 'Egitmen') {
+                        egitmenFields.classList.add('show');
+                    }
+                }
+            }
+
+            roleRadios.forEach(radio => {
+                radio.addEventListener('change', toggleFields);
+            });
+
+            // Sayfa yuklendiginde mevcut secimi kontrol et
+            toggleFields();
+
+            // Sifre guc gostergesi
+            const sifreInput = document.getElementById('inputSifre');
+            const strengthBar = document.getElementById('strengthBar');
+            const passwordHint = document.getElementById('passwordHint');
+
+            sifreInput.addEventListener('input', function () {
+                const val = this.value;
+                let strength = 0;
+                let hint = '';
+
+                if (val.length >= 6) strength++;
+                if (val.length >= 8) strength++;
+                if (/[A-Z]/.test(val)) strength++;
+                if (/[0-9]/.test(val)) strength++;
+                if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+                strengthBar.className = 'strength-bar';
+                if (val.length === 0) {
+                    hint = 'En az 6 karakter giriniz';
+                } else if (strength <= 1) {
+                    strengthBar.classList.add('weak');
+                    hint = 'Zayif sifre';
+                } else if (strength <= 2) {
+                    strengthBar.classList.add('fair');
+                    hint = 'Orta gucte sifre';
+                } else if (strength <= 3) {
+                    strengthBar.classList.add('good');
+                    hint = 'Iyi sifre';
+                } else {
+                    strengthBar.classList.add('strong');
+                    hint = 'Guclu sifre!';
+                }
+
+                passwordHint.textContent = hint;
+            });
+
+            // Form submit loading
+            document.getElementById('registerForm').addEventListener('submit', function () {
+                const btn = document.getElementById('btnRegister');
+                btn.classList.add('btn-loading');
+                btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Kaydediliyor...';
+            });
+        });
+    </script>
+}
