@@ -1,0 +1,45 @@
+﻿@model art_galeri.Models.Artwork
+
+@{
+    ViewData["Title"] = "Yeni Eser Yükle";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4">🎨 Yeni Sanat Eseri Paylaş</h3>
+                <hr />
+
+                @* Resim yüklemek için enctype="multipart/form-data" KESİNLİKLE OLMALI *@
+                <form action="/Artist/Upload" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Eser Adı</label>
+                        <input name="Title" class="form-control" placeholder="Eserin ismini giriniz..." required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Açıklama</label>
+                        <textarea name="Description" class="form-control" rows="3" placeholder="Eserin hikayesinden bahset..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Fiyat (₺)</label>
+                        <input name="Price" type="number" step="0.01" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Eser Görseli</label>
+                        <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+                        <small class="text-muted">Sadece resim dosyaları kabul edilir.</small>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">Galeriye Ekle</button>
+                        <a href="/Artist/ArtistPanel" class="btn btn-link text-dark">İptal Et</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

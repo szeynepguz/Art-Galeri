@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Giriş Yap</h2>
+                <hr />
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+
+                <form action="/Users/Login" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">E-Posta</label>
+                        <input name="email" type="email" class="form-control" placeholder="E-postanızı giriniz" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Şifre</label>
+                        <input name="password" type="password" class="form-control" placeholder="******" required />
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Giriş Yap</button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <small>Hesabınız yok mu? <a href="/Users/Create">Hemen Kayıt Olun</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

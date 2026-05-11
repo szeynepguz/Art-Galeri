@@ -1,0 +1,40 @@
+﻿@model IEnumerable<art_galeri.Models.User>
+
+@{
+    ViewData["Title"] = "Sanatçı Listesi";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🎨 Kayıtlı Sanatçılar</h2>
+        <a href="/Users/Create" class="btn btn-success shadow-sm">+ Yeni Sanatçı Ekle</a>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ad Soyad</th>
+                        <th>E-Posta</th>
+                        <th>Rol</th>
+                        <th>Kayıt Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.UserID</td>
+                            <td class="fw-bold">@item.Name</td>
+                            <td>@item.Email</td>
+                            <td><span class="badge bg-info text-dark">@item.Role</span></td>
+                            <td>@item.CreatedAt.ToShortDateString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

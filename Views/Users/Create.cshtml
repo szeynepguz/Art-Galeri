@@ -1,0 +1,38 @@
+﻿@model art_galeri.Models.User
+
+@{
+    ViewData["Title"] = "Sanatçı Kaydı";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">Sanatçı Kaydı</h2>
+                <p class="text-muted text-center small">Galerimize katılmak için bilgilerinizi giriniz.</p>
+                <hr />
+                
+                <form action="/Users/Create" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ad Soyad</label>
+                        <input name="Name" class="form-control form-control-lg" placeholder="Örn: Lara Cihan" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">E-Posta</label>
+                        <input name="Email" type="email" class="form-control form-control-lg" placeholder="isim@mail.com" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Şifre</label>
+                        <input name="Password" type="password" class="form-control form-control-lg" placeholder="******" required />
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark btn-lg shadow-sm">Kayıt Ol</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "art galeri", "art galeri.csproj", "{EC89753E-6660-4890-AD00-06FE3C73A98D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC89753E-6660-4890-AD00-06FE3C73A98D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC89753E-6660-4890-AD00-06FE3C73A98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC89753E-6660-4890-AD00-06FE3C73A98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC89753E-6660-4890-AD00-06FE3C73A98D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2EDC5C83-D697-4D8C-874D-834E08B304AA}
+	EndGlobalSection
+EndGlobal

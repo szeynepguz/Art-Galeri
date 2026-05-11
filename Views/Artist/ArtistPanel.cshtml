@@ -1,0 +1,27 @@
+﻿@model IEnumerable<art_galeri.Models.Artwork>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="display-6 fw-bold">🎨 Sanatçı Atölyem</h2>
+        <a href="/Artist/Upload" class="btn btn-warning shadow-sm fw-bold">+ Yeni Eser Yükle</a>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                    <img src="@item.ImageUrl" class="card-img-top" style="height: 250px; object-fit: cover;" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">@item.Title</h5>
+                        <p class="card-text text-muted">@item.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-success fw-bold fs-5">@item.Price.ToString("C2")</span>
+                            <button class="btn btn-outline-dark btn-sm">Düzenle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

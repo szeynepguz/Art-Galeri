@@ -1,0 +1,358 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\art galeri.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:art galeri.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\artist\\upload.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\artist\\upload.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\models\\artwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:models\\artwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\artist\\artistpanel.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\artist\\artistpanel.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\controllers\\artistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:controllers\\artistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\users\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\users\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\views\\users\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:views\\users\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\migrations\\20260511181406_addartworktable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:migrations\\20260511181406_addartworktable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\migrations\\20260511163727_ilkdeneme.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:migrations\\20260511163727_ilkdeneme.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\migrations\\20260511163534_remove-migration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:migrations\\20260511163534_remove-migration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|c:\\users\\asus\\desktop\\art galeri\\art galeri\\migrations\\20260511161805_add-migration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC89753E-6660-4890-AD00-06FE3C73A98D}|art galeri.csproj|solutionrelative:migrations\\20260511161805_add-migration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Upload.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Artist\\Upload.cshtml",
+              "RelativeDocumentMoniker": "Views\\Artist\\Upload.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Artist\\Upload.cshtml",
+              "RelativeToolTip": "Views\\Artist\\Upload.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T18:20:37.336Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "art galeri.csproj",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\art galeri.csproj",
+              "RelativeDocumentMoniker": "art galeri.csproj",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\art galeri.csproj*",
+              "RelativeToolTip": "art galeri.csproj*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-11T16:09:20.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "20260511181406_AddArtworkTable.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511181406_AddArtworkTable.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260511181406_AddArtworkTable.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511181406_AddArtworkTable.cs",
+              "RelativeToolTip": "Migrations\\20260511181406_AddArtworkTable.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAHMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T18:14:06.216Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:12:09.697Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAACwAAAAAAAAAAAAiwD4AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T17:25:06.153Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ArtistPanel.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Artist\\ArtistPanel.cshtml",
+              "RelativeDocumentMoniker": "Views\\Artist\\ArtistPanel.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Artist\\ArtistPanel.cshtml",
+              "RelativeToolTip": "Views\\Artist\\ArtistPanel.cshtml",
+              "ViewState": "AgIAABoAAAAAAAAAAAAAABoAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T18:09:37.545Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Artwork.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Models\\Artwork.cs",
+              "RelativeDocumentMoniker": "Models\\Artwork.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Models\\Artwork.cs",
+              "RelativeToolTip": "Models\\Artwork.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T18:06:00.121Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Models\\User.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Models\\User.cs",
+              "RelativeToolTip": "Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:09:52.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ArtistController.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Controllers\\ArtistController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ArtistController.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Controllers\\ArtistController.cs",
+              "RelativeToolTip": "Controllers\\ArtistController.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAowDYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T18:08:19.23Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "Views\\_ViewStart.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "Views\\_ViewStart.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T17:44:59.115Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:09:10.388Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "Controllers\\UsersController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAowEoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:44:19.961Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Users\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Users\\Index.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Users\\Index.cshtml",
+              "RelativeToolTip": "Views\\Users\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T17:35:17.831Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Users\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\Users\\Login.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Users\\Login.cshtml",
+              "RelativeToolTip": "Views\\Users\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T17:40:11.739Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T17:31:15.82Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T17:32:44.051Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Users\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Users\\Create.cshtml",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Views\\Users\\Create.cshtml",
+              "RelativeToolTip": "Views\\Users\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-11T16:48:35.369Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "20260511163727_ILKDENEME.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511163727_ILKDENEME.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260511163727_ILKDENEME.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511163727_ILKDENEME.cs",
+              "RelativeToolTip": "Migrations\\20260511163727_ILKDENEME.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:37:27.732Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "20260511163534_Remove-Migration.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511163534_Remove-Migration.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260511163534_Remove-Migration.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511163534_Remove-Migration.cs",
+              "RelativeToolTip": "Migrations\\20260511163534_Remove-Migration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:35:34.935Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "20260511161805_Add-Migration.cs",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511161805_Add-Migration.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260511161805_Add-Migration.cs",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\Migrations\\20260511161805_Add-Migration.cs",
+              "RelativeToolTip": "Migrations\\20260511161805_Add-Migration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T16:18:06.091Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-11T16:15:40.123Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

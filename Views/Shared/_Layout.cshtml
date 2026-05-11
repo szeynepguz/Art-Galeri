@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Art Galeri</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4; 
+        }
+        .navbar-brand { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+        }
+        .navbar { 
+            background-color: #1a1a1a !important; 
+            padding: 0.8rem 0;
+        }
+        .nav-link {
+            font-weight: 500;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+        .footer {
+            background-color: #1a1a1a;
+            color: rgba(255,255,255,0.7);
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 3px solid #ffc107;
+        }
+        .btn-outline-warning:hover {
+            color: #000 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-lg mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="/">🎨 ART GALERİ</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Users">Sanatçılar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning" href="/Artist/ArtistPanel">👨‍🎨 Sanatçı Paneli</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="navbar-nav ms-auto align-items-center">
+                        <a class="nav-link px-3" href="/Users/Login">Giriş Yap</a>
+                        <a class="btn btn-outline-warning rounded-pill px-4 ms-2" href="/Users/Create">Kayıt Ol</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 - Art Galeri | Sanatın Dijital Dünyası</p>
+            <small class="text-muted">Trabzon'dan Sevgilerle</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
