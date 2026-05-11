@@ -1,0 +1,44 @@
+@model art_galeri.Models.Artwork
+@{ViewData["Title"] = "Eser Yükle";}
+
+<div class="auth-container" style="min-height:auto;padding:2rem 0;">
+    <div class="auth-card" style="max-width:600px;">
+        <div class="auth-header">
+            <h2><i class="bi bi-cloud-upload"></i> Yeni Eser Yükle</h2>
+            <p>Eserinizin bilgilerini doldurun</p>
+        </div>
+        <div class="auth-body">
+            <form asp-controller="Artwork" asp-action="Yukle" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Eser Adı *</label>
+                    <input asp-for="Title" class="form-control" placeholder="Eserin adını girin" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Açıklama</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Eserinizi tanıtın..."></textarea>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Kategori</label>
+                        <select asp-for="Kategori" class="form-select">
+                            <option value="">Seçiniz</option>
+                            <option>Suluboya</option><option>Yağlıboya</option><option>Soyut</option>
+                            <option>Natürmort</option><option>Heykel</option><option>Fotoğraf</option><option>Dijital</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Fiyat (₺) *</label>
+                        <input asp-for="Price" type="number" class="form-control" min="0" step="50" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Eser Görseli</label>
+                    <input type="file" name="imageFile" class="form-control" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100"><i class="bi bi-check-circle me-1"></i>Eseri Yükle</button>
+                <a href="/Users/SanatciDashboard" class="btn btn-outline-secondary w-100 mt-2">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+@model IEnumerable<art_galeri.Models.Rezervasyon>
+@{ViewData["Title"] = "Rezervasyonlarım";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-calendar-check"></i> Rezervasyonlarım</h2>
+        <p>Tüm etkinlik rezervasyonlarınız aşağıda listelenmektedir.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="panel-card">
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr><th>Etkinlik</th><th>Tarih</th><th>Katılımcı</th><th>Tutar</th><th>Durum</th><th>İşlem</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td><strong>@r.Etkinlik?.Ad</strong><br><small class="text-muted">@r.Etkinlik?.Konum</small></td>
+                                <td>@r.Etkinlik?.Tarih.ToString("dd.MM.yyyy")</td>
+                                <td>@r.KatilimciSayisi kişi</td>
+                                <td class="fw-bold text-success">@r.ToplamTutar.ToString("N0") ₺</td>
+                                <td><span class="badge-status @r.Durum.ToLower()">@r.Durum</span></td>
+                                <td>
+                                    @if (r.Durum != "Iptal" && r.Etkinlik?.Tarih > DateTime.UtcNow)
+                                    {
+                                        <form action="/Users/RezervasyonIptal" method="post" style="display:inline;" onsubmit="return confirm('İptal etmek istediğinizden emin misiniz?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@r.RezervasyonID">
+                                            <button class="btn btn-sm btn-outline-danger">İptal</button>
+                                        </form>
+                                    }
+                                    <a href="/Etkinlik/Detay/@r.EtkinlikID" class="btn btn-sm btn-outline-secondary">Detay</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h4>Henüz rezervasyonunuz yok</h4>
+            <a href="/Etkinlik" class="btn btn-primary-custom mt-2">Etkinliklere Göz At</a>
+        </div>
+    }
+</div>

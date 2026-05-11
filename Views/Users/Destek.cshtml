@@ -1,0 +1,35 @@
+@model art_galeri.Models.DestekTalebi
+@{ViewData["Title"] = "Destek";}
+
+<div class="auth-container" style="min-height:auto;padding:2rem 0;">
+    <div class="auth-card" style="max-width:600px;">
+        <div class="auth-header">
+            <h2><i class="bi bi-headset"></i> Müşteri Desteği</h2>
+            <p>Sorularınızı bize iletebilirsiniz, en kısa sürede yanıt vereceğiz.</p>
+        </div>
+        <div class="auth-body">
+            <form asp-action="Destek" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">E-posta</label>
+                    <input type="email" name="Email" class="form-control" value="@Model.Email" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Konu</label>
+                    <input type="text" name="Konu" class="form-control" placeholder="Destek konusunu yazın..." required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Mesajınız</label>
+                    <textarea name="Mesaj" class="form-control" rows="5" placeholder="Sorunuzu veya talebinizi detaylı açıklayın..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100"><i class="bi bi-send me-1"></i>Gönder</button>
+            </form>
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>Ortalama yanıt süresi: 24 saat &nbsp;|&nbsp;
+                    <i class="bi bi-envelope me-1"></i>destek@artgaleri.com
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

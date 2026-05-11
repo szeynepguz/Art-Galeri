@@ -1,93 +1,47 @@
 @model IEnumerable<art_galeri.Models.Artwork>
-
-@{
-    ViewData["Title"] = "Sanatci Paneli";
-}
+@{ViewData["Title"] = "Sanatçı Paneli";}
 
 <div class="dashboard-container">
-    <!-- Hosgeldin Banneri -->
     <div class="dashboard-welcome">
-        <h2><i class="bi bi-palette-fill"></i> Sanatci Paneli</h2>
-        <p>Hos geldiniz @ViewBag.UserName! Eserlerinizin istatistiklerini ve goruntulenmelerini takip edin.</p>
+        <h2><i class="bi bi-easel"></i> Sanatçı Paneli</h2>
+        <p>Hoş geldiniz @ViewBag.UserName! Eserlerinizin performansını takip edin.</p>
+        <a href="/Artwork/Yukle" class="btn btn-gold mt-2"><i class="bi bi-cloud-upload me-1"></i>Yeni Eser Yükle</a>
     </div>
 
-    <!-- Istatistik Kartlari -->
-    <div class="row mb-4">
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card accent">
-                <div class="stat-icon">🖼️</div>
-                <div class="stat-number">@ViewBag.ToplamEser</div>
-                <div class="stat-label">Toplam Eser</div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card gold">
-                <div class="stat-icon">👁️</div>
-                <div class="stat-number">0</div>
-                <div class="stat-label">Toplam Goruntuleme</div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card success">
-                <div class="stat-icon">❤️</div>
-                <div class="stat-number">0</div>
-                <div class="stat-label">Toplam Begeni</div>
-            </div>
-        </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="stat-card gold"><div class="stat-icon">🎨</div><div class="stat-number">@ViewBag.ToplamEser</div><div class="stat-label">Toplam Eser</div></div></div>
+        <div class="col-md-3"><div class="stat-card info"><div class="stat-icon">👁️</div><div class="stat-number">@ViewBag.ToplamGoruntulenme</div><div class="stat-label">Görüntülenme</div></div></div>
+        <div class="col-md-3"><div class="stat-card accent"><div class="stat-icon">❤️</div><div class="stat-number">@ViewBag.ToplamBegeni</div><div class="stat-label">Beğeni</div></div></div>
+        <div class="col-md-3"><div class="stat-card success"><div class="stat-icon">💬</div><div class="stat-number">@ViewBag.ToplamYorum</div><div class="stat-label">Yorum</div></div></div>
     </div>
 
-    <!-- Eserler -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold"><i class="bi bi-easel"></i> Eserlerim</h4>
-        <a href="/Artist/Upload" class="btn btn-gold">
-            <i class="bi bi-plus-lg"></i> Yeni Eser Yukle
-        </a>
+    <div class="panel-card">
+        <div class="panel-title"><i class="bi bi-images"></i> Eserlerim</div>
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead><tr><th>Eser</th><th>Kategori</th><th>Görüntülenme</th><th>Beğeni</th><th>Yorum</th><th>Fiyat</th><th></th></tr></thead>
+                    <tbody>
+                        @foreach (var a in Model)
+                        {
+                            <tr>
+                                <td><strong>@a.Title</strong></td>
+                                <td>@a.Kategori</td>
+                                <td><i class="bi bi-eye text-info"></i> @a.GoruntulenmeSayisi</td>
+                                <td><i class="bi bi-heart text-danger"></i> @a.BegeniSayisi</td>
+                                <td><i class="bi bi-chat text-success"></i> @a.YorumSayisi</td>
+                                <td class="fw-bold text-success">@a.Price.ToString("N0") ₺</td>
+                                <td><a href="/Artwork/Detay/@a.ArtworkID" class="btn btn-sm btn-outline-secondary">Detay</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state"><div class="empty-icon">🎨</div><h4>Henüz eser yüklemediniz</h4><a href="/Artwork/Yukle" class="btn btn-primary-custom mt-2">İlk Eserini Yükle</a></div>
+        }
     </div>
-
-    @if (Model != null && Model.Any())
-    {
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="artwork-card">
-                        <div class="card-img-wrapper">
-                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title">
-                        </div>
-                        <div class="card-body p-3">
-                            <h5 class="card-title fw-bold">@item.Title</h5>
-                            <p class="card-text text-muted small">@item.Description</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-success fw-bold fs-5">@item.Price.ToString("C2")</span>
-                                <div>
-                                    <button class="btn btn-outline-dark btn-sm me-1">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <hr />
-                            <div class="d-flex justify-content-between small text-muted">
-                                <span><i class="bi bi-eye"></i> 0 goruntuleme</span>
-                                <span><i class="bi bi-heart"></i> 0 begeni</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            <div class="empty-icon">🎨</div>
-            <h4>Henuz eseriniz bulunmamaktadir</h4>
-            <p>Ilk eserinizi yukleyerek sanat yolculugunuza baslayin!</p>
-            <a href="/Artist/Upload" class="btn btn-primary-custom mt-2">
-                <i class="bi bi-cloud-upload"></i> Eser Yukle
-            </a>
-        </div>
-    }
 </div>

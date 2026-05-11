@@ -1,66 +1,497 @@
 @{
-    ViewData["Title"] = "Hos Geldiniz";
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center mt-4 p-5 rounded position-relative overflow-hidden" style="background: var(--bg-gradient); color: white; border-radius: var(--border-radius) !important;">
-    <div style="position: relative; z-index: 1;">
-        <h1 class="display-4 fw-bold" style="font-family: 'Playfair Display', serif;">
-            <i class="bi bi-palette2 pulse"></i> Sanat Galerimize Hos Geldiniz
-        </h1>
-        <p class="lead mt-3" style="color: rgba(255,255,255,0.8);">
-            Eserlerinizi sergilemek ve sanat dunyasina adim atmak icin dogru yerdesiniz.
-        </p>
+<!-- Arka plan canvas - dekoratif sanat eserleri -->
+<canvas id="artCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.18;pointer-events:none;"></canvas>
 
-        <div class="mt-4">
-            @if (Context.Session.GetInt32("UserID") != null)
-            {
-                <span class="text-light me-2">
-                    Hos geldiniz, <strong>@Context.Session.GetString("UserAd")</strong>!
-                </span>
-            }
-            else
-            {
-                <a href="/Users/Register" class="btn btn-gold btn-lg px-5 shadow-sm me-2">
-                    <i class="bi bi-person-plus"></i> Hemen Kayit Ol
-                </a>
-                <a href="/Users/Login" class="btn btn-outline-gold btn-lg px-4">
-                    <i class="bi bi-box-arrow-in-right"></i> Giris Yap
-                </a>
-            }
+<!-- Ana içerik -->
+<div class="home-hero">
+    <div class="hero-inner">
+        <div class="hero-badge">🎨 Sanatın Dijital Galerisi</div>
+        <h1 class="hero-title">
+            Sanatı<br>
+            <span class="hero-title-accent">Keşfedin</span>
+        </h1>
+        <p class="hero-subtitle">
+            Dünyaca ünlü sanatçıların özgün eserlerini inceleyin,<br>
+            atölye ve etkinliklere katılarak ilham alın.
+        </p>
+        <div class="hero-cta">
+            <a href="/Artwork" class="btn-hero-primary">
+                <span>Eserleri Gör</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="/Etkinlik" class="btn-hero-outline">
+                <i class="bi bi-calendar-event me-2"></i>Etkinlikler
+            </a>
         </div>
     </div>
-    <div style="position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(240,192,64,0.15) 0%, transparent 70%); border-radius: 50%;"></div>
 </div>
 
-<!-- Bilgi Kartlari -->
-<div class="row mt-5">
-    <div class="col-md-4 mb-4">
-        <div class="stat-card accent text-center" style="padding: 2rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
-            <h5 class="fw-bold">Eserler</h5>
-            <p class="text-muted small">Binlerce sanat eserini inceleyin ve favorilerinize ekleyin.</p>
-        </div>
+<!-- Özellik kartları -->
+<div class="features-section">
+    <div class="feature-card" style="--clr:#e94560;">
+        <div class="feature-icon">🖼️</div>
+        <h3>Özgün Eserler</h3>
+        <p>Yetenekli sanatçıların benzersiz eserlerini inceleyin ve koleksiyonunuza katın.</p>
+        <a href="/Artwork" class="feature-link">Keşfet <i class="bi bi-arrow-right"></i></a>
     </div>
-    <div class="col-md-4 mb-4">
-        <div class="stat-card gold text-center" style="padding: 2rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
-            <h5 class="fw-bold">Atolyeler</h5>
-            <p class="text-muted small">Uzman egitmenlerden sanat teknikleri ogrenin.</p>
-        </div>
+    <div class="feature-card" style="--clr:#f0c040;">
+        <div class="feature-icon">🏛️</div>
+        <h3>Canlı Atölyeler</h3>
+        <p>Uzman eğitmenler eşliğinde sanatı öğrenin, becerilerinizi geliştirin.</p>
+        <a href="/Etkinlik" class="feature-link">Katıl <i class="bi bi-arrow-right"></i></a>
     </div>
-    <div class="col-md-4 mb-4">
-        <div class="stat-card success text-center" style="padding: 2rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">🌟</div>
-            <h5 class="fw-bold">Topluluk</h5>
-            <p class="text-muted small">Sanat severlerle bulusun, yorum yapin, ilham alin.</p>
-        </div>
+    <div class="feature-card" style="--clr:#7c3aed;">
+        <div class="feature-icon">⭐</div>
+        <h3>Topluluk</h3>
+        <p>Sanat severlerle buluşun, yorum yapın ve deneyimlerinizi paylaşın.</p>
+        <a href="/Users/Register" class="feature-link">Katıl <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="feature-card" style="--clr:#0d9488;">
+        <div class="feature-icon">🎫</div>
+        <h3>Kampanyalar</h3>
+        <p>Özel indirim kuponları ile eserler ve etkinliklerde avantajlı fırsatlar yakalayın.</p>
+        <a href="/Users/Login" class="feature-link">Giriş Yap <i class="bi bi-arrow-right"></i></a>
     </div>
 </div>
 
 @if (Context.Session.GetInt32("UserID") == null)
 {
-    <div class="alert alert-custom alert-info mt-3">
-        <i class="bi bi-info-circle-fill"></i>
-        <span>Yorum yapmak, favori eklemek ve atolyelere katilmak icin <a href="/Users/Login" class="auth-link">giris yapin</a> veya <a href="/Users/Register" class="auth-link">kayit olun</a>.</span>
+    <div class="cta-section">
+        <div class="cta-card">
+            <h2>Sanat Dünyasına Adım Atın</h2>
+            <p>Ücretsiz hesap oluşturun, eserleri favorileyin, etkinliklere rezervasyon yapın.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/Users/Register" class="btn-hero-primary">
+                    <span>Ücretsiz Kayıt Ol</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <a href="/Users/Login" class="btn-hero-outline">Giriş Yap</a>
+            </div>
+        </div>
     </div>
+}
+
+<style>
+/* ---- HOME HERO ---- */
+.home-hero {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.hero-inner {
+    max-width: 700px;
+    animation: heroFadeIn 1.2s ease-out;
+}
+
+@@keyframes heroFadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge {
+    display: inline-block;
+    background: rgba(240, 192, 64, 0.12);
+    border: 1px solid rgba(240, 192, 64, 0.35);
+    color: #b8860b;
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(8px);
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 5.5rem;
+    font-weight: 700;
+    line-height: 1.05;
+    color: #1e1e2e;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+}
+
+.hero-title-accent {
+    background: linear-gradient(135deg, #e94560, #7c3aed, #f0c040);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientFlow 6s ease infinite;
+    background-size: 300% 300%;
+}
+
+@@keyframes gradientFlow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: #6b7280;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: linear-gradient(135deg, #1e1e2e, #0f2460);
+    color: white;
+    padding: 0.9rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 4px 20px rgba(14,14,46,0.25);
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 35px rgba(14,14,46,0.35);
+    color: white;
+}
+
+.btn-hero-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid #1e1e2e;
+    color: #1e1e2e;
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-hero-outline:hover {
+    background: #1e1e2e;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ---- FEATURES ---- */
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    padding: 0 0 4rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--clr);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.feature-card h3 {
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    color: #1e1e2e;
+}
+
+.feature-card p {
+    font-size: 0.88rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+}
+
+.feature-link {
+    color: var(--clr);
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: gap 0.2s ease;
+}
+
+.feature-link:hover {
+    gap: 0.7rem;
+    color: var(--clr);
+}
+
+/* ---- CTA SECTION ---- */
+.cta-section {
+    padding-bottom: 4rem;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, #1e1e2e 0%, #0f2460 50%, #1a1a35 100%);
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-card::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(240,192,64,0.15) 0%, transparent 70%);
+}
+
+.cta-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.cta-card p {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+    position: relative;
+}
+
+@@media (max-width: 768px) {
+    .hero-title { font-size: 3.2rem; letter-spacing: -1px; }
+    .hero-subtitle { font-size: 1rem; }
+    .features-section { grid-template-columns: 1fr 1fr; }
+}
+
+@@media (max-width: 480px) {
+    .hero-title { font-size: 2.4rem; }
+    .features-section { grid-template-columns: 1fr; }
+}
+</style>
+
+@section Scripts {
+<script>
+// Dekoratif arka plan canvas sanat eserleri
+(function() {
+    const canvas = document.getElementById('artCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, shapes = [], time = 0;
+
+    // Renk paleti
+    const palettes = [
+        ['#e94560','#f0c040','#7c3aed','#0d9488','#3b82f6'],
+        ['#f59e0b','#10b981','#8b5cf6','#ef4444','#06b6d4'],
+        ['#ec4899','#14b8a6','#f97316','#6366f1','#84cc16'],
+    ];
+    let currentPalette = 0;
+    let colors = palettes[0];
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    // Şekil oluşturucu
+    function createShape() {
+        const types = ['circle','ellipse','wave','blob','ring','spiral'];
+        return {
+            type: types[Math.floor(Math.random() * types.length)],
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: 60 + Math.random() * 180,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 0.08 + Math.random() * 0.25,
+            speed: 0.0002 + Math.random() * 0.0006,
+            phase: Math.random() * Math.PI * 2,
+            rot: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.001,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: (Math.random() - 0.5) * 0.15,
+            scale: 0.5 + Math.random() * 1,
+        };
+    }
+
+    function initShapes() {
+        shapes = [];
+        const count = Math.floor((W * H) / 90000);
+        for (let i = 0; i < Math.max(8, count); i++) {
+            shapes.push(createShape());
+        }
+    }
+
+    // Blob çizici
+    function drawBlob(ctx, x, y, r, n, phase) {
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+            const angle = (i / n) * Math.PI * 2;
+            const noise = r + Math.sin(angle * 3 + phase) * r * 0.3 + Math.cos(angle * 5 + phase * 0.7) * r * 0.15;
+            const px = x + Math.cos(angle) * noise;
+            const py = y + Math.sin(angle) * noise;
+            i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+    }
+
+    // Dalga çizici
+    function drawWave(ctx, x, y, w, h, phase, freq) {
+        ctx.beginPath();
+        ctx.moveTo(x - w/2, y);
+        for (let i = 0; i <= w; i += 3) {
+            const py = y + Math.sin((i / w) * Math.PI * freq + phase) * h;
+            ctx.lineTo(x - w/2 + i, py);
+        }
+        ctx.lineTo(x + w/2, y + h);
+        ctx.lineTo(x - w/2, y + h);
+        ctx.closePath();
+    }
+
+    function drawShape(s, t) {
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate(s.rot);
+        ctx.globalAlpha = s.alpha * (0.7 + 0.3 * Math.sin(t * s.speed * 500 + s.phase));
+
+        const col = s.color;
+        ctx.fillStyle = col;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2;
+
+        switch(s.type) {
+            case 'circle':
+                ctx.beginPath();
+                ctx.arc(0, 0, s.r * s.scale, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            case 'ellipse':
+                ctx.beginPath();
+                ctx.ellipse(0, 0, s.r * s.scale, s.r * 0.55 * s.scale, 0, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            case 'ring':
+                ctx.beginPath();
+                ctx.arc(0, 0, s.r * s.scale, 0, Math.PI * 2);
+                ctx.globalAlpha *= 0.6;
+                ctx.lineWidth = 8 + s.r * 0.15;
+                ctx.stroke();
+                break;
+            case 'blob':
+                drawBlob(ctx, 0, 0, s.r * 0.7 * s.scale, 80, t * s.speed * 3 + s.phase);
+                ctx.fill();
+                break;
+            case 'wave':
+                drawWave(ctx, 0, 0, s.r * 2 * s.scale, s.r * 0.4 * s.scale, t * s.speed * 4 + s.phase, 2 + Math.floor(s.scale * 2));
+                ctx.fill();
+                break;
+            case 'spiral':
+                ctx.beginPath();
+                for (let i = 0; i < 400; i++) {
+                    const a = 0.15 * i;
+                    const radius = a * (s.r * 0.025 * s.scale);
+                    const px = radius * Math.cos(a + t * s.speed * 2 + s.phase);
+                    const py = radius * Math.sin(a + t * s.speed * 2 + s.phase);
+                    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                }
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                break;
+        }
+        ctx.restore();
+    }
+
+    // Renk geçişi zamanlayıcısı
+    let lastPaletteSwitch = 0;
+    function switchPalette(t) {
+        if (t - lastPaletteSwitch > 12000) {
+            currentPalette = (currentPalette + 1) % palettes.length;
+            colors = palettes[currentPalette];
+            // Renkleri yavaşça güncelle
+            shapes.forEach((s, i) => {
+                setTimeout(() => {
+                    s.color = colors[Math.floor(Math.random() * colors.length)];
+                }, i * 100);
+            });
+            lastPaletteSwitch = t;
+        }
+    }
+
+    function animate(t) {
+        ctx.clearRect(0, 0, W, H);
+
+        // Hafif arka plan gradyanı
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, 'rgba(248,249,250,0)');
+        grad.addColorStop(1, 'rgba(240,244,255,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+
+        // Şekilleri güncelle ve çiz
+        shapes.forEach(s => {
+            s.x += s.vx;
+            s.y += s.vy;
+            s.rot += s.rotSpeed;
+            // Sınırları geç
+            if (s.x < -s.r * 2) s.x = W + s.r;
+            if (s.x > W + s.r * 2) s.x = -s.r;
+            if (s.y < -s.r * 2) s.y = H + s.r;
+            if (s.y > H + s.r * 2) s.y = -s.r;
+            drawShape(s, t);
+        });
+
+        switchPalette(t);
+        requestAnimationFrame(animate);
+    }
+
+    resize();
+    initShapes();
+    window.addEventListener('resize', () => { resize(); initShapes(); });
+    requestAnimationFrame(animate);
+})();
+</script>
 }

@@ -2154,11 +2154,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\art galeri.csproj",
+      "projectUniqueName": "C:\\Users\\asus\\Desktop\\ART\\Art-Galeri\\art galeri.csproj",
       "projectName": "art galeri",
-      "projectPath": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\art galeri.csproj",
+      "projectPath": "C:\\Users\\asus\\Desktop\\ART\\Art-Galeri\\art galeri.csproj",
       "packagesPath": "C:\\Users\\asus\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\asus\\Desktop\\art galeri\\art galeri\\obj\\",
+      "outputPath": "C:\\Users\\asus\\Desktop\\ART\\Art-Galeri\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

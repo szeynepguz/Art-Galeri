@@ -1,0 +1,111 @@
+@model IEnumerable<art_galeri.Models.Artwork>
+@{ViewData["Title"] = "Eserler";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-images"></i> Sanat Eserleri</h2>
+        <p>Özgün eserleri keşfedin, favorilerinize ekleyin veya satın alın.</p>
+    </div>
+
+    <!-- Filtre -->
+    <form method="get" class="panel-card mb-4">
+        <div class="row g-2">
+            <div class="col-md-5">
+                <input type="text" name="arama" value="@ViewBag.Arama" class="form-control" placeholder="Eser veya sanatçı ara...">
+            </div>
+            <div class="col-md-3">
+                <select name="kategori" class="form-select">
+                    <option value="">Tüm Kategoriler</option>
+                    @foreach (var k in ViewBag.Kategoriler as List<string?> ?? new List<string?>())
+                    {
+                        <option value="@k" selected="@(ViewBag.SecilenKategori == k)">@k</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="sirala" class="form-select">
+                    <option value="">Sırala</option>
+                    <option value="yeni">En Yeni</option>
+                    <option value="populer">En Popüler</option>
+                    <option value="fiyat_asc">Fiyat: Düşükten Yükseğe</option>
+                    <option value="fiyat_desc">Fiyat: Yüksekten Düşüğe</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-accent w-100"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="section-header">
+            <h4 class="section-title">@Model.Count() Eser Bulundu</h4>
+            <div class="d-flex gap-2">
+                <a href="/Artwork/Karsilastir" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left-right"></i> Karşılaştır</a>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="artwork-card">
+                        <div class="card-img-wrapper">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title">
+                            }
+                            else
+                            {
+                                <div style="height:220px;background:linear-gradient(135deg,#1a1a35,#0f2460);display:flex;align-items:center;justify-content:center;font-size:4rem;">🎨</div>
+                            }
+                            <div class="card-img-overlay-custom">
+                                <a href="/Artwork/Detay/@item.ArtworkID" class="btn btn-sm btn-gold"><i class="bi bi-eye"></i> Detay</a>
+                                @if (Context.Session.GetInt32("UserID") != null)
+                                {
+                                    <button class="btn btn-sm btn-outline-light btn-favori" data-id="@item.ArtworkID"><i class="bi bi-heart"></i></button>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">@item.Title</h6>
+                            @if (item.Kategori != null)
+                            {
+                                <span class="badge bg-light text-muted mb-1" style="font-size:.72rem;">@item.Kategori</span>
+                            }
+                            <div class="artwork-stats">
+                                <span><i class="bi bi-eye"></i> @item.GoruntulenmeSayisi</span>
+                                <span><i class="bi bi-heart"></i> @item.BegeniSayisi</span>
+                                <span><i class="bi bi-chat"></i> @item.YorumSayisi</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span class="fw-bold text-success">@item.Price.ToString("N0") ₺</span>
+                                <a href="/Artwork/Detay/@item.ArtworkID" class="btn btn-sm btn-outline-dark">İncele</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🎨</div>
+            <h4>Eser bulunamadı</h4>
+            <p>Arama kriterlerinizi değiştirerek tekrar deneyin.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+document.querySelectorAll('.btn-favori').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        fetch('/Favori/Ekle', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded','RequestVerificationToken': document.querySelector('input[name=__RequestVerificationToken]')?.value || ''}, body: 'artworkId='+id })
+            .then(r => r.json()).then(d => { if(d.success){ this.innerHTML='<i class="bi bi-heart-fill text-danger"></i>'; } else alert(d.message); });
+    });
+});
+</script>
+}

@@ -1,0 +1,106 @@
+@model art_galeri.Models.Etkinlik
+@{ViewData["Title"] = Model.Ad;}
+@{var doluluk = (int)Model.DolulukOrani;}
+
+<div class="dashboard-container">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="panel-card p-0 overflow-hidden">
+                @if (!string.IsNullOrEmpty(Model.GorselUrl))
+                { <img src="@Model.GorselUrl" class="w-100" style="max-height:380px;object-fit:cover;" alt="@Model.Ad"> }
+                else
+                { <div style="height:280px;background:var(--bg-gradient);display:flex;align-items:center;justify-content:center;font-size:5rem;">🎭</div> }
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="panel-card h-100">
+                @if (Model.Kategori != null) { <span class="badge bg-light text-muted mb-2">@Model.Kategori</span> }
+                <h2 style="font-family:'Playfair Display',serif;" class="fw-bold">@Model.Ad</h2>
+                <p class="text-secondary">@Model.Aciklama</p>
+                <ul class="list-unstyled mb-3">
+                    <li class="mb-2"><i class="bi bi-calendar3 me-2 text-accent"></i><strong>Tarih:</strong> @Model.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</li>
+                    <li class="mb-2"><i class="bi bi-clock me-2 text-accent"></i><strong>Saat:</strong> @Model.Saat.ToString(@"hh\:mm")</li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2 text-accent"></i><strong>Konum:</strong> @Model.Konum</li>
+                    <li class="mb-2"><i class="bi bi-person me-2 text-accent"></i><strong>Eğitmen:</strong> @(Model.Egitmen?.Ad) @(Model.Egitmen?.Soyad)</li>
+                </ul>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>Doluluk: @Model.RezervasyonSayisi/@Model.Kapasite kişi</span>
+                        <span>%@doluluk</span>
+                    </div>
+                    <div class="progress-bar-custom"><div class="progress-fill @(doluluk>=90?"dolu":"")" style="width:@doluluk%"></div></div>
+                    @if (Model.KalanKapasite > 0) { <small class="text-success">@Model.KalanKapasite kişilik yer kaldı</small> }
+                    else { <small class="text-danger fw-bold">Kapasite doldu</small> }
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="fw-bold text-success" style="font-size:1.7rem;">@Model.Ucret.ToString("N0") ₺</span>
+                    <span class="stars">@for(int i=1;i<=5;i++){@(i<=Math.Round(Model.OrtalamaPuan)?"⭐":"☆")}</span>
+                    <small class="text-muted">(@Model.OrtalamaPuan.ToString("F1"))</small>
+                </div>
+                @if (Model.KalanKapasite > 0)
+                {
+                    @if (ViewBag.RezerveEttiMi == true)
+                    {
+                        <div class="alert-custom alert-success"><i class="bi bi-check-circle"></i> Bu etkinlik için rezervasyonunuz mevcut.</div>
+                    }
+                    else
+                    {
+                        <a href="/Etkinlik/Rezervasyon/@Model.EtkinlikID" class="btn btn-primary-custom w-100"><i class="bi bi-calendar-check me-1"></i>Rezervasyon Yap</a>
+                    }
+                }
+                else
+                {
+                    <button class="btn btn-danger w-100 disabled">Kapasite Doldu</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Yorumlar -->
+    <div class="panel-card mt-4">
+        <div class="panel-title"><i class="bi bi-chat-dots text-accent"></i> Değerlendirmeler</div>
+        @if (ViewBag.RezerveEttiMi == true)
+        {
+            <form asp-controller="Yorum" asp-action="EkleEtkinlik" method="post" class="mb-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="etkinlikId" value="@Model.EtkinlikID">
+                <div class="mb-2">
+                    <select name="puan" class="form-select" style="width:180px;">
+                        <option value="5">⭐⭐⭐⭐⭐ Mükemmel</option>
+                        <option value="4">⭐⭐⭐⭐ Çok İyi</option>
+                        <option value="3">⭐⭐⭐ İyi</option>
+                        <option value="2">⭐⭐ Orta</option>
+                        <option value="1">⭐ Kötü</option>
+                    </select>
+                </div>
+                <textarea name="icerik" class="form-control mb-2" rows="3" placeholder="Etkinlik değerlendirmenizi yazın..." required></textarea>
+                <button type="submit" class="btn btn-accent">Değerlendir</button>
+            </form>
+        }
+        else if (Context.Session.GetInt32("UserID") == null)
+        {
+            <div class="alert-custom alert-warning mb-3"><i class="bi bi-info-circle"></i> <a href="/Users/Login" class="auth-link">Giriş yapın</a> ve değerlendirin.</div>
+        }
+        else
+        {
+            <div class="alert-custom alert-info mb-3"><i class="bi bi-info-circle"></i> Yalnızca katılımcılar değerlendirme yapabilir.</div>
+        }
+        @if (Model.Yorumlar != null && Model.Yorumlar.Any())
+        {
+            @foreach (var y in Model.Yorumlar.Where(y => y.Onaylandi).OrderByDescending(y => y.OlusturulmaTarihi))
+            {
+                <div class="yorum-card dogrulanmis">
+                    <div class="d-flex justify-content-between">
+                        <strong>@y.User?.Ad @y.User?.Soyad <span class="badge bg-success ms-1" style="font-size:.62rem;">✓ Katılımcı</span></strong>
+                        <span class="stars">@string.Concat(Enumerable.Repeat("⭐", y.Puan))</span>
+                    </div>
+                    <p class="mb-1 mt-1">@y.Icerik</p>
+                    <div class="yorum-meta">@y.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy")</div>
+                    @if (!string.IsNullOrEmpty(y.YoneticiYaniti))
+                    { <div class="yorum-yanit"><strong>🏛️ Yanıt:</strong> @y.YoneticiYaniti</div> }
+                </div>
+            }
+        }
+        else { <div class="empty-state py-3"><div class="empty-icon">💬</div><p>Henüz değerlendirme yok.</p></div> }
+    </div>
+</div>

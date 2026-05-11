@@ -1,0 +1,166 @@
+@model art_galeri.Models.Artwork
+@{ViewData["Title"] = Model.Title;}
+
+<div class="dashboard-container">
+    <div class="row g-4">
+        <!-- Sol: Görsel -->
+        <div class="col-lg-6">
+            <div class="panel-card p-0 overflow-hidden">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="w-100" style="max-height:480px;object-fit:cover;" alt="@Model.Title">
+                }
+                else
+                {
+                    <div style="height:380px;background:var(--bg-gradient);display:flex;align-items:center;justify-content:center;font-size:6rem;">🎨</div>
+                }
+            </div>
+        </div>
+        <!-- Sağ: Bilgiler -->
+        <div class="col-lg-6">
+            <div class="panel-card h-100">
+                @if (Model.Kategori != null)
+                {
+                    <span class="badge bg-light text-muted mb-2">@Model.Kategori</span>
+                }
+                <h2 class="fw-bold mb-1" style="font-family:'Playfair Display',serif;">@Model.Title</h2>
+                <p class="text-muted mb-3">Sanatçı: <strong>@(Model.Artist?.Ad) @(Model.Artist?.Soyad)</strong></p>
+                <p class="text-secondary">@Model.Description</p>
+
+                <div class="artwork-stats mb-3" style="font-size:.9rem;">
+                    <span><i class="bi bi-eye text-info"></i> @Model.GoruntulenmeSayisi görüntülenme</span>
+                    <span><i class="bi bi-heart text-danger"></i> @Model.BegeniSayisi beğeni</span>
+                    <span><i class="bi bi-chat text-success"></i> @Model.YorumSayisi yorum</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-4">
+                    <span class="fw-bold text-success" style="font-size:1.8rem;">@Model.Price.ToString("N0") ₺</span>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    @if (Context.Session.GetInt32("UserID") != null)
+                    {
+                        @if (ViewBag.SatinAlindiMi == true)
+                        {
+                            <span class="btn btn-success disabled"><i class="bi bi-check-circle"></i> Satın Alındı</span>
+                        }
+                        else
+                        {
+                            <a href="/Siparis/Satin/@Model.ArtworkID" class="btn btn-primary-custom"><i class="bi bi-bag-check me-1"></i>Satın Al</a>
+                        }
+                        @if (ViewBag.FavoriMi == true)
+                        {
+                            <form action="/Favori/Cikar" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="artworkId" value="@Model.ArtworkID">
+                                <button class="btn btn-outline-danger"><i class="bi bi-heart-fill"></i> Favoriden Çıkar</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-secondary btn-favori" data-id="@Model.ArtworkID"><i class="bi bi-heart"></i> Favoriye Ekle</button>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/Users/Login" class="btn btn-primary-custom"><i class="bi bi-bag-check me-1"></i>Satın Al</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yorumlar -->
+    <div class="panel-card mt-4">
+        <div class="panel-title"><i class="bi bi-chat-dots text-accent"></i> Yorumlar (@(Model.Yorumlar?.Count() ?? 0))</div>
+
+        @if (Context.Session.GetInt32("UserID") != null)
+        {
+            <form asp-controller="Yorum" asp-action="EkleEser" method="post" class="mb-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="artworkId" value="@Model.ArtworkID">
+                <div class="mb-2">
+                    <label class="form-label fw-semibold">Puanınız</label>
+                    <select name="puan" class="form-select" style="width:180px;">
+                        <option value="5">⭐⭐⭐⭐⭐ Mükemmel</option>
+                        <option value="4">⭐⭐⭐⭐ Çok İyi</option>
+                        <option value="3">⭐⭐⭐ İyi</option>
+                        <option value="2">⭐⭐ Orta</option>
+                        <option value="1">⭐ Kötü</option>
+                    </select>
+                </div>
+                <textarea name="icerik" class="form-control mb-2" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
+                <button type="submit" class="btn btn-accent">Yorum Ekle</button>
+            </form>
+        }
+        else
+        {
+            <div class="alert-custom alert-warning mb-3"><i class="bi bi-info-circle"></i> <a href="/Users/Login" class="auth-link">Giriş yapın</a> ve yorum yapın.</div>
+        }
+
+        @if (Model.Yorumlar != null && Model.Yorumlar.Any())
+        {
+            @foreach (var y in Model.Yorumlar.Where(y => y.Onaylandi).OrderByDescending(y => y.OlusturulmaTarihi))
+            {
+                <div class="yorum-card @(y.Dogrulanmis ? "dogrulanmis" : "")">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>@y.User?.Ad @y.User?.Soyad</strong>
+                            @if (y.Dogrulanmis) { <span class="badge bg-success ms-1" style="font-size:.65rem;">✓ Doğrulanmış</span> }
+                        </div>
+                        <span class="stars">@string.Concat(Enumerable.Repeat("⭐", y.Puan))</span>
+                    </div>
+                    <p class="mb-1 mt-1">@y.Icerik</p>
+                    <div class="yorum-meta">@y.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy") · 👍 @y.FaydaliBulma</div>
+                    @if (!string.IsNullOrEmpty(y.YoneticiYaniti))
+                    {
+                        <div class="yorum-yanit"><strong>🏛️ Galeri Yanıtı:</strong> @y.YoneticiYaniti</div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state py-3"><div class="empty-icon">💬</div><p>Henüz yorum yapılmamış.</p></div>
+        }
+    </div>
+
+    <!-- Benzer Eserler -->
+    @if (ViewBag.BenzerEserler != null)
+    {
+        var benzer = ViewBag.BenzerEserler as List<art_galeri.Models.Artwork>;
+        if (benzer != null && benzer.Any())
+        {
+            <div class="section-header mt-4"><h4 class="section-title">Benzer Eserler</h4></div>
+            <div class="row g-3">
+                @foreach (var b in benzer)
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="artwork-card">
+                            <div class="card-img-wrapper">
+                                <div style="height:160px;background:var(--bg-gradient);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎨</div>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title">@b.Title</h6>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold text-success">@b.Price.ToString("N0") ₺</span>
+                                    <a href="/Artwork/Detay/@b.ArtworkID" class="btn btn-sm btn-outline-dark">Gör</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+<script>
+document.querySelector('.btn-favori')?.addEventListener('click', function() {
+    const id = this.dataset.id;
+    fetch('/Favori/Ekle', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'artworkId='+id })
+        .then(r=>r.json()).then(d=>{ if(d.success){ this.innerHTML='<i class="bi bi-heart-fill text-danger"></i> Favoriye Eklendi'; this.disabled=true; } else alert(d.message); });
+});
+</script>
+}

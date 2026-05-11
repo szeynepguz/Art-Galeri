@@ -1,53 +1,55 @@
-@{
-    ViewData["Title"] = "Egitmen Paneli";
-}
+@model IEnumerable<art_galeri.Models.Etkinlik>
+@{ViewData["Title"] = "Eğitmen Paneli";}
 
 <div class="dashboard-container">
-    <!-- Hosgeldin Banneri -->
     <div class="dashboard-welcome">
-        <h2><i class="bi bi-mortarboard-fill"></i> Egitmen Paneli</h2>
-        <p>Hos geldiniz @ViewBag.UserName! Atolye ve rezervasyonlarinizi yonetin.</p>
+        <h2><i class="bi bi-mortarboard"></i> Eğitmen Paneli</h2>
+        <p>Hoş geldiniz @ViewBag.UserName! Etkinliklerinizin özeti aşağıda.</p>
     </div>
 
-    <!-- Atolye Yonetimi -->
-    <div class="row mb-4">
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card accent">
-                <div class="stat-icon">📅</div>
-                <div class="stat-number">0</div>
-                <div class="stat-label">Aktif Atolye</div>
-            </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card gold"><div class="stat-icon">📅</div><div class="stat-number">@ViewBag.ToplamEtkinlik</div><div class="stat-label">Toplam Etkinlik</div></div>
         </div>
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card gold">
-                <div class="stat-icon">👨‍🎓</div>
-                <div class="stat-number">0</div>
-                <div class="stat-label">Toplam Katilimci</div>
-            </div>
+        <div class="col-md-4">
+            <div class="stat-card success"><div class="stat-icon">👥</div><div class="stat-number">@ViewBag.ToplamRezervasyonlar</div><div class="stat-label">Toplam Katılımcı</div></div>
         </div>
-        <div class="col-lg-4 col-md-6 mb-3">
-            <div class="stat-card success">
-                <div class="stat-icon">📊</div>
-                <div class="stat-number">0</div>
-                <div class="stat-label">Kontenjan Durumu</div>
-            </div>
+        <div class="col-md-4">
+            <div class="stat-card accent"><div class="stat-icon">⭐</div><div class="stat-number">@(((double)ViewBag.OrtalamaPuan).ToString("F1"))</div><div class="stat-label">Ortalama Puan</div></div>
         </div>
     </div>
 
-    <!-- Atolye Listesi -->
-    <div class="card border-0 shadow-sm" style="border-radius: var(--border-radius);">
-        <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0"><i class="bi bi-calendar-event"></i> Atolye ve Rezervasyonlar</h5>
-            <button class="btn btn-gold btn-sm">
-                <i class="bi bi-plus-lg"></i> Yeni Atolye
-            </button>
-        </div>
-        <div class="card-body px-4 pb-4">
-            <div class="empty-state py-3">
-                <div class="empty-icon">🎓</div>
-                <h4>Henuz atolyeniz bulunmamaktadir</h4>
-                <p>"Yeni Atolye" butonuna tiklayarak ilk atolyenizi olusturun.</p>
+    <div class="panel-card">
+        <div class="panel-title"><i class="bi bi-calendar-event"></i> Etkinliklerim</div>
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead><tr><th>Etkinlik</th><th>Tarih</th><th>Doluluk</th><th>Ort. Puan</th><th>Ücret</th></tr></thead>
+                    <tbody>
+                        @foreach (var e in Model)
+                        {
+                            var d = (int)e.DolulukOrani;
+                            <tr>
+                                <td><strong>@e.Ad</strong></td>
+                                <td>@e.Tarih.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress-bar-custom" style="width:80px;"><div class="progress-fill @(d>=90?"dolu":"")" style="width:@d%"></div></div>
+                                        <span>@e.RezervasyonSayisi/@e.Kapasite</span>
+                                    </div>
+                                </td>
+                                <td><span class="stars">@for(int i=1;i<=5;i++){@(i<=Math.Round(e.OrtalamaPuan)?"⭐":"☆")}</span> @e.OrtalamaPuan.ToString("F1")</td>
+                                <td class="fw-bold text-success">@e.Ucret.ToString("N0") ₺</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="empty-state"><div class="empty-icon">📅</div><h4>Henüz etkinliğiniz yok</h4></div>
+        }
     </div>
 </div>

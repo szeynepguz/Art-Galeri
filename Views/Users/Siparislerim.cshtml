@@ -1,0 +1,43 @@
+@model IEnumerable<art_galeri.Models.Siparis>
+@{ViewData["Title"] = "Siparişlerim";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-bag-check"></i> Siparişlerim</h2>
+        <p>Tüm eser satın almalarınız aşağıda listelenmektedir.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="panel-card">
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr><th>Eser</th><th>Sanatçı</th><th>Tutar</th><th>Ödeme</th><th>Durum</th><th>Tarih</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model)
+                        {
+                            <tr>
+                                <td><strong>@s.Artwork?.Title</strong></td>
+                                <td>@(s.Artwork?.Artist?.Ad) @(s.Artwork?.Artist?.Soyad)</td>
+                                <td class="fw-bold text-success">@s.Tutar.ToString("N0") ₺</td>
+                                <td>@s.OdemeYontemi</td>
+                                <td><span class="badge-status tamamlandi">@s.Durum</span></td>
+                                <td>@s.SiparisTarihi.ToLocalTime().ToString("dd.MM.yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h4>Henüz siparişiniz yok</h4>
+            <a href="/Artwork" class="btn btn-primary-custom mt-2">Eserlere Göz At</a>
+        </div>
+    }
+</div>

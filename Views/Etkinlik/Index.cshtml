@@ -1,0 +1,86 @@
+@model IEnumerable<art_galeri.Models.Etkinlik>
+@{ViewData["Title"] = "Etkinlikler";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome">
+        <h2><i class="bi bi-calendar-event"></i> Etkinlikler & Atölyeler</h2>
+        <p>Uzman eğitmenlerle sanata adım atın. Rezervasyonunuzu hemen oluşturun.</p>
+    </div>
+
+    <form method="get" class="panel-card mb-4">
+        <div class="row g-2">
+            <div class="col-md-7"><input type="text" name="arama" class="form-control" placeholder="Etkinlik ara..."></div>
+            <div class="col-md-4">
+                <select name="kategori" class="form-select">
+                    <option value="">Tüm Kategoriler</option>
+                    @foreach (var k in ViewBag.Kategoriler as List<string?> ?? new List<string?>())
+                    { <option value="@k" selected="@(ViewBag.SecilenKategori == k)">@k</option> }
+                </select>
+            </div>
+            <div class="col-md-1"><button type="submit" class="btn btn-accent w-100"><i class="bi bi-search"></i></button></div>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var e in Model)
+            {
+                var doluluk = (int)e.DolulukOrani;
+                <div class="col-lg-4 col-md-6">
+                    <div class="event-card">
+                        <div style="position:relative;">
+                            @if (!string.IsNullOrEmpty(e.GorselUrl))
+                            {
+                                <img src="@e.GorselUrl" class="event-img" alt="@e.Ad">
+                            }
+                            else
+                            {
+                                <div class="event-img d-flex align-items-center justify-content-center" style="background:var(--bg-gradient);font-size:4rem;">🎭</div>
+                            }
+                            <span class="event-badge">@e.Kategori</span>
+                        </div>
+                        <div class="p-3">
+                            <h6 class="fw-bold mb-1">@e.Ad</h6>
+                            <p class="text-muted small mb-2">@e.Aciklama</p>
+                            <div class="d-flex flex-column gap-1 mb-3 small text-muted">
+                                <span><i class="bi bi-calendar3 me-1"></i>@e.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
+                                <span><i class="bi bi-geo-alt me-1"></i>@e.Konum</span>
+                                <span><i class="bi bi-person me-1"></i>@(e.Egitmen?.Ad) @(e.Egitmen?.Soyad)</span>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Doluluk: @e.RezervasyonSayisi/@e.Kapasite</span>
+                                    <span class="@(doluluk >= 90 ? "text-danger" : "text-success")">%@doluluk</span>
+                                </div>
+                                <div class="progress-bar-custom">
+                                    <div class="progress-fill @(doluluk >= 90 ? "dolu" : "")" style="width:@doluluk%"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-success">@e.Ucret.ToString("N0") ₺</span>
+                                    <span class="stars ms-2" title="Ortalama puan">
+                                        @for (int i = 1; i <= 5; i++) { @(i <= Math.Round(e.OrtalamaPuan) ? "⭐" : "☆") }
+                                    </span>
+                                </div>
+                                @if (e.KalanKapasite > 0)
+                                {
+                                    <a href="/Etkinlik/Detay/@e.EtkinlikID" class="btn btn-sm btn-accent">Detay</a>
+                                }
+                                else
+                                {
+                                    <span class="btn btn-sm btn-danger disabled">Dolu</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state"><div class="empty-icon">📅</div><h4>Etkinlik bulunamadı</h4><p>Yakında yeni etkinlikler eklenecek.</p></div>
+    }
+</div>

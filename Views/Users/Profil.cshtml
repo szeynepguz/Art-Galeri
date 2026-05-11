@@ -1,0 +1,69 @@
+@model art_galeri.Models.User
+@{ViewData["Title"] = "Profilim";}
+
+<div class="dashboard-container">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="panel-card text-center">
+                <div class="profile-avatar">@(Model?.Ad?[0])</div>
+                <h4 class="fw-bold">@Model?.Ad @Model?.Soyad</h4>
+                <p class="text-muted">@Model?.Email</p>
+                <span class="badge bg-warning text-dark px-3 py-2">@Model?.Rol?.RolAdi</span>
+                <hr>
+                <div class="d-flex flex-column gap-2 mt-2">
+                    <a href="/Users/Rezervasyonlarim" class="btn btn-outline-secondary btn-sm"><i class="bi bi-calendar-check me-1"></i>Rezervasyonlarım</a>
+                    <a href="/Users/Siparislerim" class="btn btn-outline-secondary btn-sm"><i class="bi bi-bag-check me-1"></i>Siparişlerim</a>
+                    <a href="/Favori" class="btn btn-outline-secondary btn-sm"><i class="bi bi-heart me-1"></i>Favorilerim</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <!-- Profil Güncelle -->
+            <div class="panel-card mb-3">
+                <div class="panel-title"><i class="bi bi-person-gear"></i> Profil Bilgileri</div>
+                <form asp-action="ProfilGuncelle" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ad</label>
+                            <input type="text" name="ad" class="form-control" value="@Model?.Ad" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Soyad</label>
+                            <input type="text" name="soyad" class="form-control" value="@Model?.Soyad" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Telefon</label>
+                            <input type="text" name="telefon" class="form-control" value="@Model?.MusteriProfil?.Telefon">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Adres</label>
+                            <input type="text" name="adres" class="form-control" value="@Model?.MusteriProfil?.Adres">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom mt-3">Güncelle</button>
+                </form>
+            </div>
+            <!-- Şifre Değiştir -->
+            <div class="panel-card">
+                <div class="panel-title"><i class="bi bi-shield-lock"></i> Şifre Değiştir</div>
+                <form asp-action="SifreDegistir" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Mevcut Şifre</label>
+                            <input type="password" name="eskiSifre" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Yeni Şifre</label>
+                            <input type="password" name="yeniSifre" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-accent w-100">Değiştir</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

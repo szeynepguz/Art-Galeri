@@ -1,0 +1,63 @@
+@model art_galeri.Models.Rezervasyon
+@{ViewData["Title"] = "Rezervasyon";}
+@{var etkinlik = ViewBag.Etkinlik as art_galeri.Models.Etkinlik;}
+
+<div class="auth-container">
+    <div class="auth-card" style="max-width:580px;">
+        <div class="auth-header">
+            <h2><i class="bi bi-calendar-check"></i> Rezervasyon</h2>
+            <p>@etkinlik?.Ad</p>
+        </div>
+        <div class="auth-body">
+            <div class="panel-card mb-3" style="background:#f8f9fa;">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="small text-muted">Tarih</div>
+                        <strong>@etkinlik?.Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                    </div>
+                    <div class="col-4">
+                        <div class="small text-muted">Ücret/Kişi</div>
+                        <strong class="text-success">@etkinlik?.Ucret.ToString("N0") ₺</strong>
+                    </div>
+                    <div class="col-4">
+                        <div class="small text-muted">Kalan Kapasite</div>
+                        <strong>@etkinlik?.KalanKapasite kişi</strong>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-controller="Etkinlik" asp-action="Rezervasyon" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="EtkinlikID" value="@Model.EtkinlikID">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Katılımcı Sayısı</label>
+                    <input type="number" name="KatilimciSayisi" class="form-control" min="1" max="@etkinlik?.KalanKapasite" value="1" id="kisi">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">İndirim Kuponu (Opsiyonel)</label>
+                    <input type="text" name="kuponKodu" class="form-control" placeholder="Kupon kodunuzu girin...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Notlar</label>
+                    <textarea name="Notlar" class="form-control" rows="2" placeholder="Özel taleplerinizi belirtin..."></textarea>
+                </div>
+                <div class="panel-card mb-3" style="background:#fff3cd;">
+                    <strong>Tahmini Toplam: </strong>
+                    <span id="toplam" class="text-success fw-bold">@etkinlik?.Ucret.ToString("N0") ₺</span>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100"><i class="bi bi-check-circle me-1"></i>Rezervasyonu Onayla</button>
+                <a href="/Etkinlik/Detay/@Model.EtkinlikID" class="btn btn-outline-secondary w-100 mt-2">Geri Dön</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const ucret = @etkinlik?.Ucret;
+document.getElementById('kisi').addEventListener('input', function() {
+    document.getElementById('toplam').textContent = (this.value * ucret).toLocaleString('tr-TR') + ' ₺';
+});
+</script>
+}

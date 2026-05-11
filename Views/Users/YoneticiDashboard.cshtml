@@ -1,72 +1,271 @@
-@{
-    ViewData["Title"] = "Yonetici Paneli";
-}
+@{ViewData["Title"] = "Yönetici Paneli";}
 
 <div class="dashboard-container">
-    <!-- Hosgeldin Banneri -->
     <div class="dashboard-welcome">
-        <h2><i class="bi bi-speedometer2"></i> Yonetici Paneli</h2>
-        <p>Hos geldiniz @ViewBag.UserName! Sistem ozet raporunuzu asagida gorebilirsiniz.</p>
+        <h2><i class="bi bi-speedometer2"></i> Yönetici Paneli</h2>
+        <p>Hoş geldiniz @ViewBag.UserName! Sistem özet raporunuz aşağıda.</p>
     </div>
 
-    <!-- Istatistik Kartlari -->
-    <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
+    <!-- Ana İstatistikler -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card accent">
                 <div class="stat-icon">👥</div>
                 <div class="stat-number">@ViewBag.ToplamKullanici</div>
-                <div class="stat-label">Toplam Kullanici</div>
+                <div class="stat-label">Kullanıcı</div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card gold">
                 <div class="stat-icon">🎨</div>
                 <div class="stat-number">@ViewBag.ToplamEser</div>
-                <div class="stat-label">Toplam Eser</div>
+                <div class="stat-label">Eser</div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card success">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number">@ViewBag.ToplamRezervasyonlar</div>
+                <div class="stat-label">Rezervasyon</div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="stat-card info">
+                <div class="stat-icon">💰</div>
+                <div class="stat-number" style="font-size:1.3rem;">@((ViewBag.ToplamGelir as decimal? ?? 0).ToString("N0"))₺</div>
+                <div class="stat-label">Toplam Gelir</div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="stat-card purple">
                 <div class="stat-icon">🖌️</div>
                 <div class="stat-number">@ViewBag.ToplamSanatci</div>
-                <div class="stat-label">Sanatci Sayisi</div>
+                <div class="stat-label">Sanatçı</div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="stat-card info">
+        <div class="col-xl-2 col-lg-4 col-md-4 col-6">
+            <div class="stat-card teal">
                 <div class="stat-icon">📚</div>
-                <div class="stat-number">@ViewBag.ToplamEgitmen</div>
-                <div class="stat-label">Egitmen Sayisi</div>
+                <div class="stat-number">@ViewBag.AcikDestekler</div>
+                <div class="stat-label">Açık Destek</div>
             </div>
         </div>
     </div>
 
-    <!-- Musteri Sayisi -->
-    <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-            <div class="stat-card accent">
-                <div class="stat-icon">🛒</div>
-                <div class="stat-number">@ViewBag.ToplamMusteri</div>
-                <div class="stat-label">Musteri Sayisi</div>
+    <!-- Eser İstatistikleri Raporu -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-bar-chart text-accent"></i> Eser Bazında İstatistikler</div>
+        @if (ViewBag.Eserler != null)
+        {
+            var eserler = ViewBag.Eserler as List<art_galeri.Models.Artwork>;
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>Eser</th>
+                            <th>Kategori</th>
+                            <th>Sanatçı</th>
+                            <th><i class="bi bi-eye"></i> Görüntülenme</th>
+                            <th><i class="bi bi-heart"></i> Beğeni</th>
+                            <th><i class="bi bi-chat"></i> Yorum</th>
+                            <th>Fiyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in eserler ?? new List<art_galeri.Models.Artwork>())
+                        {
+                            <tr>
+                                <td><strong>@e.Title</strong></td>
+                                <td><span class="badge bg-light text-dark">@e.Kategori</span></td>
+                                <td>@(e.Artist?.Ad) @(e.Artist?.Soyad)</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold">@e.GoruntulenmeSayisi</span>
+                                        <div class="progress-bar-custom" style="width:80px;">
+                                            <div class="progress-fill" style="width:@(Math.Min(e.GoruntulenmeSayisi,300)*100/300)%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge-status onaylandi">❤️ @e.BegeniSayisi</span></td>
+                                <td><span class="badge-status beklemede">💬 @e.YorumSayisi</span></td>
+                                <td class="fw-bold text-success">@e.Price.ToString("N0") ₺</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
+        }
     </div>
 
-    <!-- Yorum Yonetimi Paneli -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm" style="border-radius: var(--border-radius);">
-                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
-                    <h5 class="fw-bold"><i class="bi bi-chat-dots"></i> Yorum Yonetimi</h5>
-                </div>
-                <div class="card-body px-4 pb-4">
-                    <div class="empty-state py-3">
-                        <div class="empty-icon">💬</div>
-                        <h4>Yorum sistemi yaklnda aktif olacak</h4>
-                        <p>Kullanici yorumlarini burada gorebilecek ve yanitlayabileceksiniz.</p>
+    <!-- Etkinlik İstatistikleri Raporu -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-calendar-check text-info"></i> Etkinlik Bazında İstatistikler</div>
+        @if (ViewBag.Etkinlikler != null)
+        {
+            var etkinlikler = ViewBag.Etkinlikler as List<art_galeri.Models.Etkinlik>;
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>Etkinlik</th>
+                            <th>Tarih</th>
+                            <th>Kapasite</th>
+                            <th>Doluluk Oranı</th>
+                            <th>Ort. Puan</th>
+                            <th>Rezervasyon</th>
+                            <th>Ücret</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in etkinlikler ?? new List<art_galeri.Models.Etkinlik>())
+                        {
+                            var doluluk = (int)e.DolulukOrani;
+                            <tr>
+                                <td><strong>@e.Ad</strong><br><small class="text-muted">@(e.Egitmen?.Ad)</small></td>
+                                <td>@e.Tarih.ToString("dd.MM.yyyy")</td>
+                                <td>@e.Kapasite kişi</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress-bar-custom" style="width:100px;">
+                                            <div class="progress-fill @(doluluk>=90?"dolu":"")" style="width:@doluluk%"></div>
+                                        </div>
+                                        <span class="@(doluluk>=90?"text-danger fw-bold":"text-success")">%@doluluk</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="stars">@for(int i=1;i<=5;i++){@(i<=Math.Round(e.OrtalamaPuan)?"⭐":"☆")}</span>
+                                    <span class="ms-1">@e.OrtalamaPuan.ToString("F1")</span>
+                                </td>
+                                <td><span class="badge-status onaylandi">@e.RezervasyonSayisi rezervasyon</span></td>
+                                <td class="fw-bold text-success">@e.Ucret.ToString("N0") ₺</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- Son Yorumlar -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-chat-dots text-success"></i> Son Yorumlar & Yönetim</div>
+        @if (ViewBag.SonYorumlar != null)
+        {
+            var yorumlar = ViewBag.SonYorumlar as List<art_galeri.Models.Yorum>;
+            @foreach (var y in yorumlar ?? new List<art_galeri.Models.Yorum>())
+            {
+                <div class="yorum-card mb-2">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>@y.User?.Ad @y.User?.Soyad</strong>
+                            @if (y.ArtworkID.HasValue) { <span class="badge bg-info text-white ms-1">Eser: @y.Artwork?.Title</span> }
+                            @if (y.EtkinlikID.HasValue) { <span class="badge bg-purple text-white ms-1" style="background:var(--purple)!important;">Etkinlik: @y.Etkinlik?.Ad</span> }
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="stars">@string.Concat(Enumerable.Repeat("⭐", y.Puan))</span>
+                            <form action="/Yorum/Sil/@y.YorumID" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="donusUrl" value="/Users/YoneticiDashboard">
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
                     </div>
+                    <p class="mb-1 mt-1">@y.Icerik</p>
+                    @if (string.IsNullOrEmpty(y.YoneticiYaniti))
+                    {
+                        <form action="/Yorum/YoneticiYanit" method="post" class="d-flex gap-2 mt-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="yorumId" value="@y.YorumID">
+                            <input type="hidden" name="donusUrl" value="/Users/YoneticiDashboard">
+                            <input type="text" name="yanit" class="form-control form-control-sm" placeholder="Yanıt yazın...">
+                            <button class="btn btn-sm btn-accent">Yanıtla</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="yorum-yanit"><strong>Yanıtlandı:</strong> @y.YoneticiYaniti</div>
+                    }
                 </div>
+            }
+        }
+    </div>
+
+    <!-- Destek Talepleri -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-headset text-warning"></i> Destek Talepleri</div>
+        @if (ViewBag.DestekTalepleri != null)
+        {
+            var talepler = ViewBag.DestekTalepleri as List<art_galeri.Models.DestekTalebi>;
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead><tr><th>Kullanıcı</th><th>Konu</th><th>Durum</th><th>Tarih</th></tr></thead>
+                    <tbody>
+                        @foreach (var t in talepler ?? new List<art_galeri.Models.DestekTalebi>())
+                        {
+                            <tr>
+                                <td>@(t.User?.Ad ?? t.Email)</td>
+                                <td><strong>@t.Konu</strong><br><small class="text-muted">@t.Mesaj.Substring(0, Math.Min(80, t.Mesaj.Length))...</small></td>
+                                <td><span class="badge-status @t.Durum.ToLower()">@t.Durum</span></td>
+                                <td>@t.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
+        }
+    </div>
+
+    <!-- Kampanyalar -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-tag text-gold" style="color:var(--gold);"></i> Aktif Kampanyalar</div>
+        @if (ViewBag.Kampanyalar != null)
+        {
+            var kampanyalar = ViewBag.Kampanyalar as List<art_galeri.Models.Kampanya>;
+            <div class="row g-3">
+                @foreach (var k in kampanyalar ?? new List<art_galeri.Models.Kampanya>())
+                {
+                    <div class="col-md-4">
+                        <div class="stat-card @(k.Aktif ? "success" : "")">
+                            <div class="d-flex justify-content-between">
+                                <strong>@k.Ad</strong>
+                                @if (k.Aktif) { <span class="badge bg-success">Aktif</span> } else { <span class="badge bg-secondary">Pasif</span> }
+                            </div>
+                            <div class="mt-2"><code>@k.KuponKodu</code> — %@k.IndirimOrani indirim</div>
+                            <small class="text-muted">@k.BaslangicTarihi.ToString("dd.MM") — @k.BitisTarihi.ToString("dd.MM.yyyy")</small>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Kullanıcı Listesi -->
+    <div class="panel-card">
+        <div class="panel-title"><i class="bi bi-people text-info"></i> Kullanıcılar</div>
+        @if (ViewBag.TumKullanicilar != null)
+        {
+            var kullanicilar = ViewBag.TumKullanicilar as List<art_galeri.Models.User>;
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Rol</th><th>Kayıt Tarihi</th></tr></thead>
+                    <tbody>
+                        @foreach (var u in kullanicilar ?? new List<art_galeri.Models.User>())
+                        {
+                            <tr>
+                                <td><strong>@u.Ad @u.Soyad</strong></td>
+                                <td>@u.Email</td>
+                                <td>
+                                    @{
+                                        var rolRenk = u.Rol?.RolAdi switch { "Yonetici" => "danger", "Sanatci" => "info", "Egitmen" => "success", _ => "secondary" };
+                                    }
+                                    <span class="badge bg-@rolRenk">@u.Rol?.RolAdi</span>
+                                </td>
+                                <td>@u.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>

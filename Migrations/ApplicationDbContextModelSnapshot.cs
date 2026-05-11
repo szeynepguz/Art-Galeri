@@ -30,27 +30,96 @@ namespace art_galeri.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ArtworkID"));
 
+                    b.Property<bool>("Aktif")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ArtistID")
                         .HasColumnType("integer");
 
+                    b.Property<int>("BegeniSayisi")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("GoruntulenmeSayisi")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("Kategori")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("YorumSayisi")
+                        .HasColumnType("integer");
+
                     b.HasKey("ArtworkID");
 
+                    b.HasIndex("ArtistID");
+
                     b.ToTable("Artworks");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.DestekTalebi", b =>
+                {
+                    b.Property<int>("TalepID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TalepID"));
+
+                    b.Property<string>("Durum")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Konu")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Mesaj")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .HasColumnType("character varying(5000)");
+
+                    b.Property<DateTime>("OlusturulmaTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UserID")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("YanitTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("YoneticiYaniti")
+                        .HasMaxLength(5000)
+                        .HasColumnType("character varying(5000)");
+
+                    b.HasKey("TalepID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("DestekTalepleri");
                 });
 
             modelBuilder.Entity("art_galeri.Models.EgitmenProfil", b =>
@@ -90,6 +159,142 @@ namespace art_galeri.Migrations
                     b.ToTable("EgitmenProfiller");
                 });
 
+            modelBuilder.Entity("art_galeri.Models.Etkinlik", b =>
+                {
+                    b.Property<int>("EtkinlikID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EtkinlikID"));
+
+                    b.Property<string>("Aciklama")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("Aktif")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("EgitmenID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("GorselUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Kapasite")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Kategori")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Konum")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("OlusturulmaTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("OrtalamaPuan")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("RezervasyonSayisi")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeSpan>("Saat")
+                        .HasColumnType("interval");
+
+                    b.Property<DateTime>("Tarih")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Ucret")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("EtkinlikID");
+
+                    b.HasIndex("EgitmenID");
+
+                    b.ToTable("Etkinlikler");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Favori", b =>
+                {
+                    b.Property<int>("FavoriID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FavoriID"));
+
+                    b.Property<int?>("ArtworkID")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("EklenmeTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FavoriID");
+
+                    b.HasIndex("ArtworkID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Favoriler");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Kampanya", b =>
+                {
+                    b.Property<int>("KampanyaID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("KampanyaID"));
+
+                    b.Property<string>("Aciklama")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("Aktif")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("BaslangicTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("BitisTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("HedefRolID")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("IndirimOrani")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("KuponKodu")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("KampanyaID");
+
+                    b.HasIndex("HedefRolID");
+
+                    b.HasIndex("KuponKodu")
+                        .IsUnique();
+
+                    b.ToTable("Kampanyalar");
+                });
+
             modelBuilder.Entity("art_galeri.Models.MusteriProfil", b =>
                 {
                     b.Property<int>("ProfilID")
@@ -122,6 +327,47 @@ namespace art_galeri.Migrations
                         .IsUnique();
 
                     b.ToTable("MusteriProfiller");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Rezervasyon", b =>
+                {
+                    b.Property<int>("RezervasyonID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RezervasyonID"));
+
+                    b.Property<string>("Durum")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("EtkinlikID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("KatilimciSayisi")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Notlar")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("RezervasyonTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ToplamTutar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RezervasyonID");
+
+                    b.HasIndex("EtkinlikID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Rezervasyonlar");
                 });
 
             modelBuilder.Entity("art_galeri.Models.Rol", b =>
@@ -210,6 +456,54 @@ namespace art_galeri.Migrations
                     b.ToTable("SanatciProfiller");
                 });
 
+            modelBuilder.Entity("art_galeri.Models.Siparis", b =>
+                {
+                    b.Property<int>("SiparisID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SiparisID"));
+
+                    b.Property<string>("Adres")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int?>("ArtworkID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Durum")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int?>("KampanyaID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("OdemeYontemi")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("SiparisTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Tutar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SiparisID");
+
+                    b.HasIndex("ArtworkID");
+
+                    b.HasIndex("KampanyaID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Siparisler");
+                });
+
             modelBuilder.Entity("art_galeri.Models.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -254,6 +548,82 @@ namespace art_galeri.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("art_galeri.Models.Yorum", b =>
+                {
+                    b.Property<int>("YorumID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("YorumID"));
+
+                    b.Property<int?>("ArtworkID")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Dogrulanmis")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("EtkinlikID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FaydaliBulma")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Icerik")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTime>("OlusturulmaTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Onaylandi")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Puan")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("YanitTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("YoneticiYaniti")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.HasKey("YorumID");
+
+                    b.HasIndex("ArtworkID");
+
+                    b.HasIndex("EtkinlikID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Yorumlar");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Artwork", b =>
+                {
+                    b.HasOne("art_galeri.Models.User", "Artist")
+                        .WithMany()
+                        .HasForeignKey("ArtistID")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("Artist");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.DestekTalebi", b =>
+                {
+                    b.HasOne("art_galeri.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("art_galeri.Models.EgitmenProfil", b =>
                 {
                     b.HasOne("art_galeri.Models.User", "User")
@@ -265,6 +635,44 @@ namespace art_galeri.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("art_galeri.Models.Etkinlik", b =>
+                {
+                    b.HasOne("art_galeri.Models.User", "Egitmen")
+                        .WithMany()
+                        .HasForeignKey("EgitmenID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Egitmen");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Favori", b =>
+                {
+                    b.HasOne("art_galeri.Models.Artwork", "Artwork")
+                        .WithMany("Favoriler")
+                        .HasForeignKey("ArtworkID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("art_galeri.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Kampanya", b =>
+                {
+                    b.HasOne("art_galeri.Models.Rol", "HedefRol")
+                        .WithMany()
+                        .HasForeignKey("HedefRolID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("HedefRol");
+                });
+
             modelBuilder.Entity("art_galeri.Models.MusteriProfil", b =>
                 {
                     b.HasOne("art_galeri.Models.User", "User")
@@ -272,6 +680,25 @@ namespace art_galeri.Migrations
                         .HasForeignKey("art_galeri.Models.MusteriProfil", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Rezervasyon", b =>
+                {
+                    b.HasOne("art_galeri.Models.Etkinlik", "Etkinlik")
+                        .WithMany("Rezervasyonlar")
+                        .HasForeignKey("EtkinlikID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("art_galeri.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Etkinlik");
 
                     b.Navigation("User");
                 });
@@ -287,6 +714,31 @@ namespace art_galeri.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("art_galeri.Models.Siparis", b =>
+                {
+                    b.HasOne("art_galeri.Models.Artwork", "Artwork")
+                        .WithMany("Siparisler")
+                        .HasForeignKey("ArtworkID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("art_galeri.Models.Kampanya", "Kampanya")
+                        .WithMany()
+                        .HasForeignKey("KampanyaID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("art_galeri.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("Kampanya");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("art_galeri.Models.User", b =>
                 {
                     b.HasOne("art_galeri.Models.Rol", "Rol")
@@ -296,6 +748,47 @@ namespace art_galeri.Migrations
                         .IsRequired();
 
                     b.Navigation("Rol");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Yorum", b =>
+                {
+                    b.HasOne("art_galeri.Models.Artwork", "Artwork")
+                        .WithMany("Yorumlar")
+                        .HasForeignKey("ArtworkID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("art_galeri.Models.Etkinlik", "Etkinlik")
+                        .WithMany("Yorumlar")
+                        .HasForeignKey("EtkinlikID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("art_galeri.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("Etkinlik");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Artwork", b =>
+                {
+                    b.Navigation("Favoriler");
+
+                    b.Navigation("Siparisler");
+
+                    b.Navigation("Yorumlar");
+                });
+
+            modelBuilder.Entity("art_galeri.Models.Etkinlik", b =>
+                {
+                    b.Navigation("Rezervasyonlar");
+
+                    b.Navigation("Yorumlar");
                 });
 
             modelBuilder.Entity("art_galeri.Models.Rol", b =>

@@ -1,0 +1,58 @@
+@model art_galeri.Models.Artwork
+@{ViewData["Title"] = "Satın Al - " + Model.Title;}
+
+<div class="auth-container">
+    <div class="auth-card" style="max-width:560px;">
+        <div class="auth-header">
+            <h2><i class="bi bi-bag-check"></i> Satın Al</h2>
+            <p>Ödeme bilgilerinizi girerek siparişinizi tamamlayın</p>
+        </div>
+        <div class="auth-body">
+            <div class="panel-card mb-4" style="background:#f8f9fa;">
+                <div class="d-flex gap-3 align-items-center">
+                    <div style="font-size:2.5rem;">🎨</div>
+                    <div>
+                        <strong>@Model.Title</strong>
+                        <div class="text-muted small">Sanatçı: @(Model.Artist?.Ad) @(Model.Artist?.Soyad)</div>
+                        <div class="text-success fw-bold mt-1" id="fiyatGoster">@Model.Price.ToString("N0") ₺</div>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-controller="Siparis" asp-action="Onayla" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="artworkId" value="@Model.ArtworkID">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Ödeme Yöntemi</label>
+                    <select name="odemeYontemi" class="form-select">
+                        <option value="KrediKarti">💳 Kredi/Banka Kartı</option>
+                        <option value="HavaleEFT">🏦 Havale / EFT</option>
+                        <option value="KapidaOdeme">📦 Kapıda Ödeme</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Teslimat Adresi</label>
+                    <textarea name="adres" class="form-control" rows="2" placeholder="Adresinizi girin..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">İndirim Kuponu (Opsiyonel)</label>
+                    <div class="input-group">
+                        <input type="text" name="kuponKodu" class="form-control" placeholder="YAZ2026">
+                        <span class="input-group-text">
+                            @if (ViewBag.Kampanyalar != null)
+                            {
+                                var kamp = ViewBag.Kampanyalar as List<art_galeri.Models.Kampanya>;
+                                if (kamp != null && kamp.Any())
+                                { <small class="text-success">@kamp.First().KuponKodu (%@kamp.First().IndirimOrani)</small> }
+                            }
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary-custom w-100 btn-lg"><i class="bi bi-shield-check me-1"></i>Siparişi Onayla</button>
+                <a href="/Artwork/Detay/@Model.ArtworkID" class="btn btn-outline-secondary w-100 mt-2">Geri Dön</a>
+            </form>
+        </div>
+    </div>
+</div>
