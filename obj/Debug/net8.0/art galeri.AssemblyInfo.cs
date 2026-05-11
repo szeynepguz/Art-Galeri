@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("art galeri")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91ffbb9c47525e362d8833a48e58b30753514bd7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a586dd6e740740dc3eb1c13de83d2734a75451a")]
 [assembly: System.Reflection.AssemblyProductAttribute("art galeri")]
 [assembly: System.Reflection.AssemblyTitleAttribute("art galeri")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
