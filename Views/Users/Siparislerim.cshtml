@@ -9,27 +9,106 @@
 
     @if (Model != null && Model.Any())
     {
-        <div class="panel-card">
-            <div class="table-responsive">
-                <table class="table table-custom">
-                    <thead>
-                        <tr><th>Eser</th><th>Sanatçı</th><th>Tutar</th><th>Ödeme</th><th>Durum</th><th>Tarih</th></tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var s in Model)
-                        {
-                            <tr>
-                                <td><strong>@s.Artwork?.Title</strong></td>
-                                <td>@(s.Artwork?.Artist?.Ad) @(s.Artwork?.Artist?.Soyad)</td>
-                                <td class="fw-bold text-success">@s.Tutar.ToString("N0") ₺</td>
-                                <td>@s.OdemeYontemi</td>
-                                <td><span class="badge-status tamamlandi">@s.Durum</span></td>
-                                <td>@s.SiparisTarihi.ToLocalTime().ToString("dd.MM.yyyy")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+        <!-- Özet Kartları -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1);">🛒</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Count()</div>
+                        <div class="stat-label">Toplam Sipariş</div>
+                    </div>
+                </div>
             </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#10b981,#0d9488);">✅</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Count(s => s.Durum == "Tamamlandi")</div>
+                        <div class="stat-label">Tamamlanan</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#f59e0b,#f0c040);">💰</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Sum(s => s.Tutar).ToString("N0") ₺</div>
+                        <div class="stat-label">Toplam Harcama</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Siparişler -->
+        <div class="row g-3">
+            @foreach (var s in Model)
+            {
+                var durum = s.Durum ?? "Beklemede";
+                var durumRenk = durum switch {
+                    "Tamamlandi" => "#10b981",
+                    "Kargolandi" => "#3b82f6",
+                    "Onaylandi" => "#f59e0b",
+                    "Iptal" => "#ef4444",
+                    _ => "#6b7280"
+                };
+                var durumIcon = durum switch {
+                    "Tamamlandi" => "bi-check-circle-fill",
+                    "Kargolandi" => "bi-truck",
+                    "Onaylandi" => "bi-clock-fill",
+                    "Iptal" => "bi-x-circle-fill",
+                    _ => "bi-hourglass"
+                };
+                <div class="col-lg-6">
+                    <div class="panel-card" style="border-left:4px solid @durumRenk;">
+                        <div class="d-flex gap-3 align-items-start">
+                            <div style="width:80px;height:80px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+                                @if (!string.IsNullOrEmpty(s.Artwork?.ImageUrl))
+                                {
+                                    <img src="@s.Artwork.ImageUrl" style="width:100%;height:100%;object-fit:cover;" alt="@s.Artwork?.Title">
+                                }
+                                else
+                                {
+                                    <div style="width:100%;height:100%;background:var(--bg-gradient);display:flex;align-items:center;justify-content:center;font-size:2rem;">🎨</div>
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="fw-bold mb-0">@s.Artwork?.Title</h6>
+                                    <span class="badge-status @durum.ToLower()">
+                                        <i class="bi @durumIcon me-1"></i>@durum
+                                    </span>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="bi bi-palette me-1"></i>@(s.Artwork?.Artist?.Ad) @(s.Artwork?.Artist?.Soyad)
+                                </small>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span class="fw-bold text-success" style="font-size:1.1rem;">@s.Tutar.ToString("N0") ₺</span>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <span class="badge bg-light text-dark" style="font-size:.72rem;">
+                                            @(s.OdemeYontemi == "KrediKarti" ? "💳 Kart" : s.OdemeYontemi == "HavaleEFT" ? "🏦 Havale" : "📦 Kapıda")
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span><i class="bi bi-clock"></i> @s.SiparisTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                            @if (!string.IsNullOrEmpty(s.Adres))
+                            {
+                                <span><i class="bi bi-geo-alt"></i> @s.Adres</span>
+                            }
+                            @if (s.Artwork != null)
+                            {
+                                <a href="/Artwork/Detay/@s.Artwork.ArtworkID" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-eye me-1"></i>Eseri Gör
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
     else
@@ -37,6 +116,7 @@
         <div class="empty-state">
             <div class="empty-icon">🛒</div>
             <h4>Henüz siparişiniz yok</h4>
+            <p>Eserlerimize göz atarak ilk satın alımınızı yapın.</p>
             <a href="/Artwork" class="btn btn-primary-custom mt-2">Eserlere Göz At</a>
         </div>
     }

@@ -167,6 +167,45 @@ namespace art_galeri.Controllers
             return RedirectToAction("Rezervasyonlarim");
         }
 
+        // ---- REZERVASYON GÜNCELLE ----
+        public async Task<IActionResult> RezervasyonGuncelle(int id)
+        {
+            if (!IsLoggedIn()) return RedirectToAction("Login");
+            var userId = HttpContext.Session.GetInt32("UserID") ?? 0;
+            var rez = await _context.Rezervasyonlar.Include(r => r.Etkinlik).FirstOrDefaultAsync(r => r.RezervasyonID == id && r.UserID == userId);
+            if (rez == null || rez.Durum == "Iptal") return NotFound();
+            return View(rez);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> RezervasyonGuncelle(int id, int katilimciSayisi, string? notlar)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null) return RedirectToAction("Login");
+            var rez = await _context.Rezervasyonlar.Include(r => r.Etkinlik).FirstOrDefaultAsync(r => r.RezervasyonID == id && r.UserID == userId);
+            if (rez == null || rez.Durum == "Iptal") return NotFound();
+
+            var etkinlik = rez.Etkinlik;
+            if (etkinlik == null) return NotFound();
+
+            // Eski katılımcı sayısını çıkar, yeni ekle
+            var fark = katilimciSayisi - rez.KatilimciSayisi;
+            if (fark > 0 && etkinlik.KalanKapasite < fark)
+            {
+                TempData["ErrorMessage"] = "Yeterli kapasite yok. Mevcut boş yer: " + etkinlik.KalanKapasite;
+                return RedirectToAction("RezervasyonGuncelle", new { id });
+            }
+
+            etkinlik.RezervasyonSayisi += fark;
+            rez.KatilimciSayisi = katilimciSayisi;
+            rez.ToplamTutar = etkinlik.Ucret * katilimciSayisi;
+            if (notlar != null) rez.Notlar = notlar;
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Rezervasyon güncellendi!";
+            return RedirectToAction("Rezervasyonlarim");
+        }
+
         // ---- SİPARİŞLERİM ----
         public async Task<IActionResult> Siparislerim()
         {

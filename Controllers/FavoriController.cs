@@ -56,7 +56,12 @@ namespace art_galeri.Controllers
         public async Task<IActionResult> Cikar(int artworkId)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
-            if (userId == null) return Json(new { success = false });
+            if (userId == null)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false });
+                return RedirectToAction("Login", "Users");
+            }
 
             var favori = await _context.Favoriler
                 .FirstOrDefaultAsync(f => f.UserID == userId && f.ArtworkID == artworkId);
@@ -70,7 +75,14 @@ namespace art_galeri.Controllers
             }
 
             TempData["SuccessMessage"] = "Favorilerden çıkarıldı.";
-            return Json(new { success = true });
+
+            // AJAX çağrısı ise JSON, değilse redirect
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return Json(new { success = true });
+
+            var referer = Request.Headers["Referer"].ToString();
+            if (!string.IsNullOrEmpty(referer)) return Redirect(referer);
+            return RedirectToAction("Index");
         }
     }
 }

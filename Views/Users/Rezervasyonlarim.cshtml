@@ -9,44 +9,151 @@
 
     @if (Model != null && Model.Any())
     {
-        <div class="panel-card">
-            <div class="table-responsive">
-                <table class="table table-custom">
-                    <thead>
-                        <tr><th>Etkinlik</th><th>Tarih</th><th>Katılımcı</th><th>Tutar</th><th>Durum</th><th>İşlem</th></tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var r in Model)
-                        {
-                            <tr>
-                                <td><strong>@r.Etkinlik?.Ad</strong><br><small class="text-muted">@r.Etkinlik?.Konum</small></td>
-                                <td>@r.Etkinlik?.Tarih.ToString("dd.MM.yyyy")</td>
-                                <td>@r.KatilimciSayisi kişi</td>
-                                <td class="fw-bold text-success">@r.ToplamTutar.ToString("N0") ₺</td>
-                                <td><span class="badge-status @r.Durum.ToLower()">@r.Durum</span></td>
-                                <td>
-                                    @if (r.Durum != "Iptal" && r.Etkinlik?.Tarih > DateTime.UtcNow)
-                                    {
-                                        <form action="/Users/RezervasyonIptal" method="post" style="display:inline;" onsubmit="return confirm('İptal etmek istediğinizden emin misiniz?')">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="id" value="@r.RezervasyonID">
-                                            <button class="btn btn-sm btn-outline-danger">İptal</button>
-                                        </form>
-                                    }
-                                    <a href="/Etkinlik/Detay/@r.EtkinlikID" class="btn btn-sm btn-outline-secondary">Detay</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+        var aktifRezervasyonlar = Model.Where(r => r.Durum != "Iptal").ToList();
+        var iptalRezervasyonlar = Model.Where(r => r.Durum == "Iptal").ToList();
+
+        <!-- Özet Kartları -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1);">📅</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Count()</div>
+                        <div class="stat-label">Toplam Rezervasyon</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#10b981,#0d9488);">✅</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Count(r => r.Durum == "Onaylandi")</div>
+                        <div class="stat-label">Aktif</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#f59e0b,#f0c040);">👥</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Where(r => r.Durum != "Iptal").Sum(r => r.KatilimciSayisi)</div>
+                        <div class="stat-label">Toplam Katılımcı</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#e94560,#7c3aed);">💰</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Where(r => r.Durum != "Iptal").Sum(r => r.ToplamTutar).ToString("N0") ₺</div>
+                        <div class="stat-label">Toplam Tutar</div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Aktif Rezervasyonlar -->
+        @if (aktifRezervasyonlar.Any())
+        {
+            <div class="section-header">
+                <h4 class="section-title">Aktif Rezervasyonlar</h4>
+            </div>
+            <div class="row g-3 mb-4">
+                @foreach (var r in aktifRezervasyonlar)
+                {
+                    var gecmis = r.Etkinlik?.Tarih < DateTime.UtcNow;
+                    <div class="col-lg-6">
+                        <div class="panel-card" style="border-left:4px solid @(gecmis ? "#6b7280" : "#10b981");">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="fw-bold mb-0">@r.Etkinlik?.Ad</h5>
+                                    <small class="text-muted"><i class="bi bi-geo-alt"></i> @r.Etkinlik?.Konum</small>
+                                </div>
+                                <span class="badge-status @r.Durum.ToLower()">
+                                    @(gecmis ? "Tamamlandı" : r.Durum)
+                                </span>
+                            </div>
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="small text-muted">📅 Tarih</div>
+                                    <strong>@r.Etkinlik?.Tarih.ToString("dd.MM.yyyy")</strong>
+                                </div>
+                                <div class="col-4">
+                                    <div class="small text-muted">👥 Katılımcı</div>
+                                    <strong>@r.KatilimciSayisi kişi</strong>
+                                </div>
+                                <div class="col-4">
+                                    <div class="small text-muted">💰 Tutar</div>
+                                    <strong class="text-success">@r.ToplamTutar.ToString("N0") ₺</strong>
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(r.Notlar))
+                            {
+                                <div class="alert-custom alert-info mb-3" style="font-size:.85rem;">
+                                    <i class="bi bi-sticky"></i> @r.Notlar
+                                </div>
+                            }
+                            <div class="d-flex gap-2">
+                                <a href="/Etkinlik/Detay/@r.EtkinlikID" class="btn btn-sm btn-outline-secondary flex-fill">
+                                    <i class="bi bi-eye me-1"></i>Etkinlik Detay
+                                </a>
+                                @if (!gecmis)
+                                {
+                                    <a href="/Users/RezervasyonGuncelle/@r.RezervasyonID" class="btn btn-sm btn-outline-primary flex-fill">
+                                        <i class="bi bi-pencil me-1"></i>Güncelle
+                                    </a>
+                                    <form action="/Users/RezervasyonIptal" method="post" style="display:inline;" class="flex-fill"
+                                          onsubmit="return confirm('İptal etmek istediğinizden emin misiniz?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@r.RezervasyonID">
+                                        <button class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-x-circle me-1"></i>İptal</button>
+                                    </form>
+                                }
+                            </div>
+                            <div class="text-muted small mt-2">
+                                <i class="bi bi-clock"></i> Rezervasyon: @r.RezervasyonTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- İptal Edilen Rezervasyonlar -->
+        @if (iptalRezervasyonlar.Any())
+        {
+            <div class="section-header">
+                <h4 class="section-title" style="color:#6b7280;">İptal Edilen Rezervasyonlar</h4>
+            </div>
+            <div class="panel-card" style="opacity:.7;">
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Etkinlik</th><th>Tarih</th><th>Katılımcı</th><th>Tutar</th><th>Durum</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in iptalRezervasyonlar)
+                            {
+                                <tr>
+                                    <td><strong>@r.Etkinlik?.Ad</strong></td>
+                                    <td>@r.Etkinlik?.Tarih.ToString("dd.MM.yyyy")</td>
+                                    <td>@r.KatilimciSayisi kişi</td>
+                                    <td class="text-muted"><s>@r.ToplamTutar.ToString("N0") ₺</s></td>
+                                    <td><span class="badge-status iptal">İptal</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
     }
     else
     {
         <div class="empty-state">
             <div class="empty-icon">📅</div>
             <h4>Henüz rezervasyonunuz yok</h4>
+            <p>Etkinliklere göz atarak ilk rezervasyonunuzu yapın.</p>
             <a href="/Etkinlik" class="btn btn-primary-custom mt-2">Etkinliklere Göz At</a>
         </div>
     }

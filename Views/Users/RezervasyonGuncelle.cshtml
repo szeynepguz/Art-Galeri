@@ -1,0 +1,90 @@
+@model art_galeri.Models.Rezervasyon
+@{ViewData["Title"] = "Rezervasyon Güncelle";}
+
+<div class="auth-container">
+    <div class="auth-card" style="max-width:600px;">
+        <div class="auth-header">
+            <h2><i class="bi bi-pencil-square"></i> Rezervasyon Güncelle</h2>
+            <p>@Model.Etkinlik?.Ad</p>
+        </div>
+        <div class="auth-body">
+            <!-- Mevcut Bilgiler -->
+            <div class="panel-card mb-3" style="background:#f0fdf4;">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="small text-muted">Etkinlik Tarihi</div>
+                        <strong>@Model.Etkinlik?.Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                    </div>
+                    <div class="col-4">
+                        <div class="small text-muted">Ücret/Kişi</div>
+                        <strong class="text-success">@Model.Etkinlik?.Ucret.ToString("N0") ₺</strong>
+                    </div>
+                    <div class="col-4">
+                        <div class="small text-muted">Konum</div>
+                        <strong>@Model.Etkinlik?.Konum</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card mb-3" style="background:#f8f9fa;">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="small text-muted">Mevcut Katılımcı</div>
+                        <strong class="text-primary">@Model.KatilimciSayisi kişi</strong>
+                    </div>
+                    <div class="col-6">
+                        <div class="small text-muted">Mevcut Tutar</div>
+                        <strong class="text-success">@Model.ToplamTutar.ToString("N0") ₺</strong>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-controller="Users" asp-action="RezervasyonGuncelle" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.RezervasyonID">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Yeni Katılımcı Sayısı</label>
+                    <input type="number" name="katilimciSayisi" class="form-control" min="1" 
+                           max="@(Model.KatilimciSayisi + (Model.Etkinlik?.KalanKapasite ?? 0))" 
+                           value="@Model.KatilimciSayisi" id="kisiSayisi">
+                    <small class="text-muted">Mevcut boş yer: @Model.Etkinlik?.KalanKapasite kişi</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Notlar</label>
+                    <textarea name="notlar" class="form-control" rows="2" placeholder="Özel talepleriniz...">@Model.Notlar</textarea>
+                </div>
+
+                <div class="panel-card mb-3" style="background:#fff3cd;">
+                    <strong>Yeni Toplam: </strong>
+                    <span id="yeniToplam" class="text-success fw-bold">@Model.ToplamTutar.ToString("N0") ₺</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary-custom w-100">
+                    <i class="bi bi-check-circle me-1"></i>Güncelle
+                </button>
+                <a href="/Users/Rezervasyonlarim" class="btn btn-outline-secondary w-100 mt-2">Geri Dön</a>
+            </form>
+
+            <hr>
+            <form asp-action="RezervasyonIptal" method="post" onsubmit="return confirm('Rezervasyonu iptal etmek istediğinizden emin misiniz?')">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.RezervasyonID">
+                <button type="submit" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-x-circle me-1"></i>Rezervasyonu İptal Et
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const ucretPerKisi = @(Model.Etkinlik?.Ucret ?? 0);
+document.getElementById('kisiSayisi').addEventListener('input', function() {
+    const toplam = this.value * ucretPerKisi;
+    document.getElementById('yeniToplam').textContent = toplam.toLocaleString('tr-TR') + ' ₺';
+});
+</script>
+}

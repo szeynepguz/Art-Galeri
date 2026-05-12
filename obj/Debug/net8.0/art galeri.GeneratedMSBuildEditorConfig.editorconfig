@@ -9,145 +9,149 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = art_galeri
 build_property.RootNamespace = art_galeri
-build_property.ProjectDir = C:\Users\asus\Desktop\ART\Art-Galeri\
+build_property.ProjectDir = C:\Users\szeyn\Desktop\ArtGalery\Art-Galeri\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\asus\Desktop\ART\Art-Galeri
+build_property.MSBuildProjectDirectory = C:\Users\szeyn\Desktop\ArtGalery\Art-Galeri
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/Error.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/Index.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/Privacy.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/_ViewImports.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/_ViewStart.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Artist/ArtistPanel.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Artist/ArtistPanel.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aXN0XEFydGlzdFBhbmVsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Artist/Upload.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Artist/Upload.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aXN0XFVwbG9hZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Artwork/Detay.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Artwork/Detay.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0d29ya1xEZXRheS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Artwork/Index.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Artwork/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0d29ya1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Artwork/Yukle.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Artwork/Yukle.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0d29ya1xZdWtsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Etkinlik/Detay.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Etkinlik/Detay.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXRraW5saWtcRGV0YXkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Etkinlik/Index.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Etkinlik/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXRraW5saWtcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Etkinlik/Rezervasyon.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Etkinlik/Rezervasyon.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXRraW5saWtcUmV6ZXJ2YXN5b24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Favori/Index.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Favori/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF2b3JpXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Home/Index.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Shared/_Layout.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Siparis/Satin.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Siparis/Satin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2lwYXJpc1xTYXRpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Create.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Destek.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Destek.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGVzdGVrLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/EgitmenDashboard.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/EgitmenDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRWdpdG1lbkRhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Index.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Login.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/MusteriDashboard.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/MusteriDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcTXVzdGVyaURhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Profil.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Profil.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcUHJvZmlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Register.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Rezervasyonlarim.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/RezervasyonGuncelle.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcUmV6ZXJ2YXN5b25HdW5jZWxsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Rezervasyonlarim.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcUmV6ZXJ2YXN5b25sYXJpbS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/SanatciDashboard.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/SanatciDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcU2FuYXRjaURhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/Siparislerim.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/Siparislerim.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcU2lwYXJpc2xlcmltLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/Users/YoneticiDashboard.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/Users/YoneticiDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcWW9uZXRpY2lEYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/_ViewImports.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Views/_ViewStart.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/asus/Desktop/ART/Art-Galeri/Pages/Shared/_Layout.cshtml]
+[C:/Users/szeyn/Desktop/ArtGalery/Art-Galeri/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-0tm9ok9gqu

@@ -2,57 +2,173 @@
 @{ViewData["Title"] = "Satın Al - " + Model.Title;}
 
 <div class="auth-container">
-    <div class="auth-card" style="max-width:560px;">
+    <div class="auth-card" style="max-width:620px;">
         <div class="auth-header">
             <h2><i class="bi bi-bag-check"></i> Satın Al</h2>
             <p>Ödeme bilgilerinizi girerek siparişinizi tamamlayın</p>
         </div>
         <div class="auth-body">
+            <!-- Eser Bilgisi -->
             <div class="panel-card mb-4" style="background:#f8f9fa;">
                 <div class="d-flex gap-3 align-items-center">
-                    <div style="font-size:2.5rem;">🎨</div>
+                    <div style="width:90px;height:90px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" style="width:100%;height:100%;object-fit:cover;" alt="@Model.Title">
+                        }
+                        else
+                        {
+                            <div style="width:100%;height:100%;background:var(--bg-gradient);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎨</div>
+                        }
+                    </div>
                     <div>
-                        <strong>@Model.Title</strong>
-                        <div class="text-muted small">Sanatçı: @(Model.Artist?.Ad) @(Model.Artist?.Soyad)</div>
-                        <div class="text-success fw-bold mt-1" id="fiyatGoster">@Model.Price.ToString("N0") ₺</div>
+                        <strong style="font-size:1.1rem;">@Model.Title</strong>
+                        <div class="text-muted small"><i class="bi bi-palette me-1"></i>Sanatçı: @(Model.Artist?.Ad) @(Model.Artist?.Soyad)</div>
+                        @if (Model.Kategori != null)
+                        {
+                            <span class="badge bg-light text-muted mt-1" style="font-size:.7rem;">@Model.Kategori</span>
+                        }
+                        <div class="text-success fw-bold mt-1" style="font-size:1.3rem;" id="fiyatGoster">@Model.Price.ToString("N0") ₺</div>
                     </div>
                 </div>
             </div>
 
-            <form asp-controller="Siparis" asp-action="Onayla" method="post">
+            <form asp-controller="Siparis" asp-action="Onayla" method="post" id="siparisForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="artworkId" value="@Model.ArtworkID">
 
+                <!-- Ödeme Yöntemi -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Ödeme Yöntemi</label>
-                    <select name="odemeYontemi" class="form-select">
-                        <option value="KrediKarti">💳 Kredi/Banka Kartı</option>
-                        <option value="HavaleEFT">🏦 Havale / EFT</option>
-                        <option value="KapidaOdeme">📦 Kapıda Ödeme</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Teslimat Adresi</label>
-                    <textarea name="adres" class="form-control" rows="2" placeholder="Adresinizi girin..."></textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">İndirim Kuponu (Opsiyonel)</label>
-                    <div class="input-group">
-                        <input type="text" name="kuponKodu" class="form-control" placeholder="YAZ2026">
-                        <span class="input-group-text">
-                            @if (ViewBag.Kampanyalar != null)
-                            {
-                                var kamp = ViewBag.Kampanyalar as List<art_galeri.Models.Kampanya>;
-                                if (kamp != null && kamp.Any())
-                                { <small class="text-success">@kamp.First().KuponKodu (%@kamp.First().IndirimOrani)</small> }
-                            }
-                        </span>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="odemeYontemi" value="KrediKarti" id="odKart" checked>
+                            <label class="btn btn-outline-secondary w-100 py-3" for="odKart">
+                                <div style="font-size:1.5rem;">💳</div>
+                                <div class="small">Kredi Kartı</div>
+                            </label>
+                        </div>
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="odemeYontemi" value="HavaleEFT" id="odHavale">
+                            <label class="btn btn-outline-secondary w-100 py-3" for="odHavale">
+                                <div style="font-size:1.5rem;">🏦</div>
+                                <div class="small">Havale/EFT</div>
+                            </label>
+                        </div>
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="odemeYontemi" value="KapidaOdeme" id="odKapida">
+                            <label class="btn btn-outline-secondary w-100 py-3" for="odKapida">
+                                <div style="font-size:1.5rem;">📦</div>
+                                <div class="small">Kapıda Ödeme</div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary-custom w-100 btn-lg"><i class="bi bi-shield-check me-1"></i>Siparişi Onayla</button>
-                <a href="/Artwork/Detay/@Model.ArtworkID" class="btn btn-outline-secondary w-100 mt-2">Geri Dön</a>
+                <!-- Kart Bilgileri (KrediKarti seçildiğinde görünür) -->
+                <div id="kartBilgileri">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Kart Üzerindeki İsim</label>
+                        <input type="text" class="form-control" placeholder="Ad Soyad" id="kartIsim">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Kart Numarası</label>
+                        <input type="text" class="form-control" placeholder="•••• •••• •••• ••••" maxlength="19" id="kartNo">
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Son Kullanma</label>
+                            <input type="text" class="form-control" placeholder="AA/YY" maxlength="5" id="kartSKT">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">CVV</label>
+                            <input type="password" class="form-control" placeholder="•••" maxlength="3" id="kartCVV">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teslimat Adresi -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Teslimat Adresi</label>
+                    <textarea name="adres" class="form-control" rows="2" placeholder="Tam adresinizi girin..." required></textarea>
+                </div>
+
+                <!-- İndirim Kuponu -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">İndirim Kuponu (Opsiyonel)</label>
+                    <div class="input-group">
+                        <input type="text" name="kuponKodu" class="form-control" placeholder="Kupon kodunuzu girin..." id="kuponInput">
+                        <button type="button" class="btn btn-outline-secondary" id="kuponKontrol">
+                            <i class="bi bi-check2"></i> Uygula
+                        </button>
+                    </div>
+                    @if (ViewBag.Kampanyalar != null)
+                    {
+                        var kamp = ViewBag.Kampanyalar as List<art_galeri.Models.Kampanya>;
+                        if (kamp != null && kamp.Any())
+                        {
+                            <small class="text-success d-block mt-1">
+                                <i class="bi bi-tag-fill"></i> Aktif kupon: <strong>@kamp.First().KuponKodu</strong> (%@kamp.First().IndirimOrani indirim)
+                            </small>
+                        }
+                    }
+                </div>
+
+                <!-- Sipariş Özeti -->
+                <div class="panel-card mb-3" style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Eser Fiyatı</span>
+                        <span>@Model.Price.ToString("N0") ₺</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 text-muted">
+                        <span>Kargo</span>
+                        <span class="text-success">Ücretsiz</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="font-size:1.1rem;">Toplam</strong>
+                        <strong class="text-success" style="font-size:1.3rem;" id="toplamFiyat">@Model.Price.ToString("N0") ₺</strong>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary-custom w-100 btn-lg">
+                    <i class="bi bi-shield-check me-1"></i>Siparişi Onayla
+                </button>
+                <a href="/Artwork/Detay/@Model.ArtworkID" class="btn btn-outline-secondary w-100 mt-2">
+                    <i class="bi bi-arrow-left me-1"></i>Geri Dön
+                </a>
             </form>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-fill-check text-success me-1"></i>
+                    Güvenli ödeme altyapısı ile korunmaktasınız
+                </small>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+// Ödeme yöntemi değişimi
+document.querySelectorAll('input[name="odemeYontemi"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('kartBilgileri').style.display = this.value === 'KrediKarti' ? 'block' : 'none';
+    });
+});
+
+// Kart numarası formatla
+document.getElementById('kartNo')?.addEventListener('input', function(e) {
+    let val = this.value.replace(/\D/g, '').substring(0, 16);
+    this.value = val.replace(/(.{4})/g, '$1 ').trim();
+});
+
+// SKT formatla
+document.getElementById('kartSKT')?.addEventListener('input', function(e) {
+    let val = this.value.replace(/\D/g, '').substring(0, 4);
+    if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
+    this.value = val;
+});
+</script>
+}
