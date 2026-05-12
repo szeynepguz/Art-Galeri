@@ -49,6 +49,7 @@
                     "Tamamlandi" => "#10b981",
                     "Kargolandi" => "#3b82f6",
                     "Onaylandi" => "#f59e0b",
+                    "OdemeBekleniyor" => "#f97316",
                     "Iptal" => "#ef4444",
                     _ => "#6b7280"
                 };
@@ -56,8 +57,17 @@
                     "Tamamlandi" => "bi-check-circle-fill",
                     "Kargolandi" => "bi-truck",
                     "Onaylandi" => "bi-clock-fill",
+                    "OdemeBekleniyor" => "bi-hourglass-split",
                     "Iptal" => "bi-x-circle-fill",
                     _ => "bi-hourglass"
+                };
+                var durumText = durum switch {
+                    "OdemeBekleniyor" => "Ödeme Bekleniyor",
+                    "Tamamlandi" => "Tamamlandı",
+                    "Kargolandi" => "Kargoda",
+                    "Onaylandi" => "Onaylandı",
+                    "Iptal" => "İptal",
+                    _ => durum
                 };
                 <div class="col-lg-6">
                     <div class="panel-card" style="border-left:4px solid @durumRenk;">
@@ -76,7 +86,7 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <h6 class="fw-bold mb-0">@s.Artwork?.Title</h6>
                                     <span class="badge-status @durum.ToLower()">
-                                        <i class="bi @durumIcon me-1"></i>@durum
+                                        <i class="bi @durumIcon me-1"></i>@durumText
                                     </span>
                                 </div>
                                 <small class="text-muted">
@@ -95,16 +105,21 @@
                         <hr class="my-2">
                         <div class="d-flex justify-content-between align-items-center small text-muted">
                             <span><i class="bi bi-clock"></i> @s.SiparisTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
-                            @if (!string.IsNullOrEmpty(s.Adres))
-                            {
-                                <span><i class="bi bi-geo-alt"></i> @s.Adres</span>
-                            }
-                            @if (s.Artwork != null)
-                            {
-                                <a href="/Artwork/Detay/@s.Artwork.ArtworkID" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-eye me-1"></i>Eseri Gör
+                            <div class="d-flex gap-2">
+                                @if (!string.IsNullOrEmpty(s.Adres))
+                                {
+                                    <span><i class="bi bi-geo-alt"></i> @s.Adres</span>
+                                }
+                                <a href="/Siparis/Detay/@s.SiparisID" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-info-circle me-1"></i>Durumu Kontrol Et
                                 </a>
-                            }
+                                @if (s.Artwork != null)
+                                {
+                                    <a href="/Artwork/Detay/@s.Artwork.ArtworkID" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye me-1"></i>Eseri Gör
+                                    </a>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -73,29 +73,35 @@
         @if (Context.Session.GetInt32("UserID") != null)
         {
             <div class="mb-4">
-                <form id="commentForm">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="etkinlikId" value="@Model.EtkinlikID">
-                    <div class="mb-2">
-                        <label class="form-label fw-semibold">Puanınız</label>
-                        <select name="puan" class="form-select" style="width:180px;">
-                            <option value="5">⭐⭐⭐⭐⭐ Mükemmel</option>
-                            <option value="4">⭐⭐⭐⭐ Çok İyi</option>
-                            <option value="3">⭐⭐⭐ İyi</option>
-                            <option value="2">⭐⭐ Orta</option>
-                            <option value="1">⭐ Kötü</option>
-                        </select>
-                    </div>
-                    <textarea name="icerik" class="form-control mb-2" rows="3" placeholder="Etkinlik değerlendirmenizi yazın..." required></textarea>
-                    @if (ViewBag.RezerveEttiMi == true)
-                    {
+                @if (ViewBag.RezerveEttiMi == true)
+                {
+                    <form id="commentForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="etkinlikId" value="@Model.EtkinlikID">
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Puanınız</label>
+                            <select name="puan" class="form-select" style="width:180px;">
+                                <option value="5">⭐⭐⭐⭐⭐ Mükemmel</option>
+                                <option value="4">⭐⭐⭐⭐ Çok İyi</option>
+                                <option value="3">⭐⭐⭐ İyi</option>
+                                <option value="2">⭐⭐ Orta</option>
+                                <option value="1">⭐ Kötü</option>
+                            </select>
+                        </div>
+                        <textarea name="icerik" class="form-control mb-2" rows="3" placeholder="Etkinlik değerlendirmenizi yazın..." required></textarea>
                         <button type="button" onclick="submitComment()" class="btn btn-accent">Değerlendir</button>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info py-2 small mb-0"><i class="bi bi-info-circle"></i> Sadece etkinliğe katılanlar değerlendirme yapabilir.</div>
-                    }
-                </form>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-secondary d-flex align-items-center mb-0 p-3" style="border-left: 4px solid var(--accent-color);">
+                        <i class="bi bi-lock-fill fs-4 text-muted me-3"></i>
+                        <div>
+                            <strong>Değerlendirme Kapalı</strong><br>
+                            <span class="small text-muted">Güvenilirlik ve doğrulama gereği, etkinlik yorumu yapabilmek için öncelikle ilgili etkinliğe katılmış olmanız gerekmektedir.</span>
+                        </div>
+                    </div>
+                }
             </div>
         }
         else

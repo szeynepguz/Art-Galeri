@@ -60,6 +60,11 @@ namespace art_galeri.Controllers
                 TempData["ErrorMessage"] = "Rezervasyon yapmak için giriş yapmanız gerekiyor.";
                 return RedirectToAction("Login", "Users");
             }
+            if (HttpContext.Session.GetString("UserRole") != "Musteri")
+            {
+                TempData["ErrorMessage"] = "Sadece Müşteri hesabı olanlar etkinliklere rezervasyon yapabilir.";
+                return RedirectToAction("Index");
+            }
 
             var etkinlik = await _context.Etkinlikler.FindAsync(id);
             if (etkinlik == null || !etkinlik.Aktif) return NotFound();
@@ -80,6 +85,12 @@ namespace art_galeri.Controllers
         {
             var userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null) return RedirectToAction("Login", "Users");
+
+            if (HttpContext.Session.GetString("UserRole") != "Musteri")
+            {
+                TempData["ErrorMessage"] = "Sadece Müşteri hesabı olanlar etkinliklere rezervasyon yapabilir.";
+                return RedirectToAction("Index");
+            }
 
             var etkinlik = await _context.Etkinlikler.FindAsync(model.EtkinlikID);
             if (etkinlik == null) return NotFound();
@@ -127,7 +138,28 @@ namespace art_galeri.Controllers
             if (string.IsNullOrEmpty(ids)) return View(new List<Etkinlik>());
             var idList = ids.Split(',').Select(int.Parse).ToList();
             var etkinlikler = await _context.Etkinlikler.Include(e => e.Egitmen).Where(e => idList.Contains(e.EtkinlikID)).ToListAsync();
+
+            // Kayıtlı karşılaştırma varsa göster
+            var kayitli = HttpContext.Session.GetString("KayitliEtkinlikKarsilastirma");
+            if (!string.IsNullOrEmpty(kayitli))
+                ViewBag.KayitliKarsilastirma = kayitli;
+
             return View(etkinlikler);
+        }
+
+        // POST: /Etkinlik/KarsilastirmaKaydet — Karşılaştırma sonuçlarını kaydetme
+        [HttpPost]
+        public IActionResult KarsilastirmaKaydet(string ids, string baslik)
+        {
+            if (HttpContext.Session.GetInt32("UserID") == null)
+                return Json(new { success = false, message = "Giriş yapmanız gerekiyor." });
+
+            var kayit = $"{baslik}|{ids}|{DateTime.UtcNow:dd.MM.yyyy HH:mm}";
+            var mevcut = HttpContext.Session.GetString("KayitliEtkinlikKarsilastirma") ?? "";
+            var yeniListe = string.IsNullOrEmpty(mevcut) ? kayit : mevcut + ";;;" + kayit;
+            HttpContext.Session.SetString("KayitliEtkinlikKarsilastirma", yeniListe);
+
+            return Json(new { success = true, message = "Karşılaştırma kaydedildi!" });
         }
 
         // --- EĞİTMEN İŞLEMLERİ ---
@@ -194,7 +226,7 @@ namespace art_galeri.Controllers
 
             etkinlik.Ad = model.Ad;
             etkinlik.Aciklama = model.Aciklama;
-            etkinlik.Tarih = model.Tarih;
+            etkinlik.Tarih = model.Tarih.ToUniversalTime();
             etkinlik.Saat = model.Saat;
             etkinlik.Konum = model.Konum;
             etkinlik.Ucret = model.Ucret;

@@ -64,10 +64,7 @@
                 var emoji = artEmojis[artIdx % artEmojis.Length];
                 artIdx++;
                 <div class="col-xl-3 col-lg-4 col-md-6">
-                    <div class="artwork-card position-relative">
-                        <div class="form-check position-absolute top-0 start-0 m-2 z-3 bg-white rounded p-1 shadow-sm">
-                            <input class="form-check-input compare-check" type="checkbox" value="@item.ArtworkID" id="chk-@item.ArtworkID" onchange="updateCompare()">
-                        </div>
+                    <div class="artwork-card h-100 d-flex flex-column">
                         <div class="card-img-wrapper">
                             @if (!string.IsNullOrEmpty(item.ImageUrl))
                             {
@@ -104,6 +101,12 @@
                             <div class="d-flex justify-content-between align-items-center mt-2">
                                 <span class="fw-bold text-success">@item.Price.ToString("N0") ₺</span>
                                 <a href="/Artwork/Detay/@item.ArtworkID" class="btn btn-sm btn-outline-dark">İncele</a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light border-top p-2 text-center" style="margin-top:auto;">
+                            <div class="form-check form-switch d-inline-block mb-0">
+                                <input class="form-check-input compare-check border-secondary" type="checkbox" role="switch" value="@item.ArtworkID" id="chk-@item.ArtworkID" onchange="updateCompare()" style="cursor:pointer; transform: scale(1.2); margin-top:0.25rem;">
+                                <label class="form-check-label fw-bold text-dark ms-1" for="chk-@item.ArtworkID" style="cursor:pointer; font-size:0.9rem;"><i class="bi bi-plus-circle"></i> Karşılaştırmaya Ekle</label>
                             </div>
                         </div>
                     </div>

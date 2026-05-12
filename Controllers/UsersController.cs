@@ -122,6 +122,14 @@ namespace art_galeri.Controllers
             if (!IsLoggedIn() || HttpContext.Session.GetString("UserRole") != "Egitmen") return RedirectToAction("Login");
             var userId = HttpContext.Session.GetInt32("UserID") ?? 0;
             var etkinlikler = await _context.Etkinlikler.Where(e => e.EgitmenID == userId).ToListAsync();
+            
+            ViewBag.EtkinlikYorumlari = await _context.Yorumlar
+                .Include(y => y.User)
+                .Include(y => y.Etkinlik)
+                .Where(y => y.Etkinlik != null && y.Etkinlik.EgitmenID == userId)
+                .OrderByDescending(y => y.OlusturulmaTarihi)
+                .ToListAsync();
+
             ViewBag.UserName = $"{HttpContext.Session.GetString("UserAd")} {HttpContext.Session.GetString("UserSoyad")}";
             ViewBag.ToplamEtkinlik = etkinlikler.Count;
             ViewBag.ToplamRezervasyonlar = etkinlikler.Sum(e => e.RezervasyonSayisi);
@@ -135,6 +143,14 @@ namespace art_galeri.Controllers
             if (!IsLoggedIn() || HttpContext.Session.GetString("UserRole") != "Sanatci") return RedirectToAction("Login");
             var userId = HttpContext.Session.GetInt32("UserID") ?? 0;
             var artworks = await _context.Artworks.Where(a => a.ArtistID == userId).ToListAsync();
+
+            ViewBag.EserYorumlari = await _context.Yorumlar
+                .Include(y => y.User)
+                .Include(y => y.Artwork)
+                .Where(y => y.Artwork != null && y.Artwork.ArtistID == userId)
+                .OrderByDescending(y => y.OlusturulmaTarihi)
+                .ToListAsync();
+
             ViewBag.UserName = $"{HttpContext.Session.GetString("UserAd")} {HttpContext.Session.GetString("UserSoyad")}";
             ViewBag.ToplamEser = artworks.Count;
             ViewBag.ToplamGoruntulenme = artworks.Sum(a => a.GoruntulenmeSayisi);

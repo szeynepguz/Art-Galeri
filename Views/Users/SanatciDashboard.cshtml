@@ -44,4 +44,72 @@
             <div class="empty-state"><div class="empty-icon">🎨</div><h4>Henüz eser yüklemediniz</h4><a href="/Artwork/Yukle" class="btn btn-primary-custom mt-2">İlk Eserini Yükle</a></div>
         }
     </div>
+
+    <!-- Eser Yorumları Yönetimi -->
+    <div class="panel-card mt-4">
+        <div class="panel-title"><i class="bi bi-chat-right-text"></i> Eser Yorumları</div>
+        @if (ViewBag.EserYorumlari != null)
+        {
+            var yorumlar = ViewBag.EserYorumlari as List<art_galeri.Models.Yorum>;
+            if (yorumlar != null && yorumlar.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Eser</th>
+                                <th>Puan</th>
+                                <th>Yorum</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                                <th>Yanıtla</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var y in yorumlar)
+                            {
+                                <tr>
+                                    <td><strong>@y.User?.Ad @y.User?.Soyad</strong><br><small class="text-muted">@y.User?.Email</small></td>
+                                    <td>@y.Artwork?.Title</td>
+                                    <td><span class="stars">@for (int i = 1; i <= 5; i++) { @(i <= y.Puan ? "⭐" : "☆") }</span></td>
+                                    <td><p class="mb-1 small">@y.Icerik</p></td>
+                                    <td>@y.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(y.YoneticiYaniti))
+                                        {
+                                            <span class="badge bg-success">Yanıtlandı</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">Bekliyor</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-gold" type="button" data-bs-toggle="collapse" data-bs-target="#reply-art-@y.YorumID">
+                                            Yanıtla
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="collapse" id="reply-art-@y.YorumID">
+                                    <td colspan="7" class="bg-light p-3">
+                                        <form asp-controller="Yorum" asp-action="YoneticiYanit" method="post" class="d-flex gap-2">
+                                            <input type="hidden" name="yorumId" value="@y.YorumID" />
+                                            <input type="hidden" name="donusUrl" value="/Users/SanatciDashboard" />
+                                            <input type="text" name="yanit" class="form-control form-control-sm" placeholder="Yanıtlınızı buraya yazın..." value="@y.YoneticiYaniti" required />
+                                            <button type="submit" class="btn btn-sm btn-gold">Gönder</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted text-center py-3">Henüz eserlerinize yapılmış bir yorum bulunmuyor.</p>
+            }
+        }
+    </div>
 </div>

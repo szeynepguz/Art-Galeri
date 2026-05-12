@@ -74,16 +74,7 @@
                 <a href="/Users/Register" class="auth-link ms-1">Hemen Kayit Olun</a>
             </div>
 
-            <div class="quick-login-panel mt-3 p-3 bg-light rounded text-center">
-                <h6 class="text-muted mb-2">Test İcin Hizli Giris</h6>
-                <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="fillLogin('admin@art.com', '123')">Yonetici</button>
-                    <button type="button" class="btn btn-sm btn-outline-info" onclick="fillLogin('sanatci@art.com', '123')">Sanatci</button>
-                    <button type="button" class="btn btn-sm btn-outline-success" onclick="fillLogin('egitmen@art.com', '123')">Egitmen</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning" onclick="fillLogin('musteri1@art.com', '123')">Musteri 1</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning" onclick="fillLogin('musteri2@art.com', '123')">Musteri 2</button>
-                </div>
-            </div>
+
 
             <!-- Guvenlk Notu -->
             <div class="mt-4 text-center">
@@ -98,10 +89,6 @@
 
 @section Scripts {
     <script>
-        function fillLogin(email, pwd) {
-            document.getElementById('inputEmail').value = email;
-            document.getElementById('inputSifre').value = pwd;
-        }
 
         document.addEventListener('DOMContentLoaded', function () {
             // Form submit loading

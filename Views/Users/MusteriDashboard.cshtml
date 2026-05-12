@@ -9,6 +9,16 @@
             <a href="/Artwork" class="btn btn-gold"><i class="bi bi-images me-1"></i>Eserleri Gör</a>
             <a href="/Etkinlik" class="btn btn-outline-gold"><i class="bi bi-calendar-event me-1"></i>Etkinlikler</a>
             <a href="/Favori" class="btn btn-outline-gold"><i class="bi bi-heart me-1"></i>Favorilerim</a>
+            
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-arrow-left-right me-1"></i>Kayıtlı Karşılaştırmalarım
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/Artwork/Karsilastir?ids="><i class="bi bi-palette me-2"></i>Eser Karşılaştırmaları</a></li>
+                    <li><a class="dropdown-item" href="/Etkinlik/Karsilastir?ids="><i class="bi bi-calendar-event me-2"></i>Etkinlik Karşılaştırmaları</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -26,8 +36,11 @@
     }
 
     <!-- Öne çıkan eserler -->
-    <div class="section-header">
-        <h4 class="section-title">🎨 Öne Çıkan Eserler</h4>
+    <div class="section-header d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-3">
+            <h4 class="section-title mb-0">🎨 Öne Çıkan Eserler</h4>
+            <button id="btnCompareArtwork" class="btn btn-sm btn-gold d-none" onclick="goCompareArtwork()"><i class="bi bi-arrow-left-right"></i> Karşılaştır (<span id="compareArtworkCount">0</span>)</button>
+        </div>
         <a href="/Artwork" class="btn btn-sm btn-outline-secondary">Tümünü Gör</a>
     </div>
     @if (Model != null && Model.Any())
@@ -36,7 +49,7 @@
             @foreach (var item in Model.Take(8))
             {
                 <div class="col-xl-3 col-lg-4 col-md-6">
-                    <div class="artwork-card">
+                    <div class="artwork-card h-100 d-flex flex-column">
                         <div class="card-img-wrapper">
                             @if (!string.IsNullOrEmpty(item.ImageUrl))
                             { <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title"> }
@@ -57,6 +70,12 @@
                                 <a href="/Artwork/Detay/@item.ArtworkID" class="btn btn-sm btn-outline-dark">İncele</a>
                             </div>
                         </div>
+                        <div class="card-footer bg-light border-top p-2 text-center" style="margin-top:auto;">
+                            <div class="form-check form-switch d-inline-block mb-0">
+                                <input class="form-check-input compare-artwork-check border-secondary" type="checkbox" role="switch" value="@item.ArtworkID" id="chk-art-@item.ArtworkID" onchange="updateCompareArtwork()" style="cursor:pointer; transform: scale(1.2); margin-top:0.25rem;">
+                                <label class="form-check-label fw-bold text-dark ms-1" for="chk-art-@item.ArtworkID" style="cursor:pointer; font-size:0.9rem;"><i class="bi bi-plus-circle"></i> Karşılaştırmaya Ekle</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
@@ -69,15 +88,18 @@
         var etkinlikler = ViewBag.Etkinlikler as List<art_galeri.Models.Etkinlik>;
         if (etkinlikler != null && etkinlikler.Any())
         {
-            <div class="section-header mt-4">
-                <h4 class="section-title">📅 Yaklaşan Etkinlikler</h4>
+            <div class="section-header mt-4 d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <h4 class="section-title mb-0">📅 Yaklaşan Etkinlikler</h4>
+                    <button id="btnCompareEvent" class="btn btn-sm btn-gold d-none" onclick="goCompareEvent()"><i class="bi bi-arrow-left-right"></i> Karşılaştır (<span id="compareEventCount">0</span>)</button>
+                </div>
                 <a href="/Etkinlik" class="btn btn-sm btn-outline-secondary">Tümünü Gör</a>
             </div>
             <div class="row g-3">
                 @foreach (var e in etkinlikler)
                 {
                     <div class="col-lg-3 col-md-6">
-                        <div class="event-card">
+                        <div class="event-card h-100 d-flex flex-column">
                             <div class="p-3">
                                 <h6 class="fw-bold">@e.Ad</h6>
                                 <div class="small text-muted mb-2">
@@ -89,6 +111,12 @@
                                     <a href="/Etkinlik/Detay/@e.EtkinlikID" class="btn btn-sm btn-accent">Rezerve Et</a>
                                 </div>
                             </div>
+                            <div class="card-footer bg-light border-top p-2 text-center" style="margin-top:auto;">
+                                <div class="form-check form-switch d-inline-block mb-0">
+                                    <input class="form-check-input compare-event-check border-secondary" type="checkbox" role="switch" value="@e.EtkinlikID" id="chk-evt-@e.EtkinlikID" onchange="updateCompareEvent()" style="cursor:pointer; transform: scale(1.2); margin-top:0.25rem;">
+                                    <label class="form-check-label fw-bold text-dark ms-1" for="chk-evt-@e.EtkinlikID" style="cursor:pointer; font-size:0.9rem;"><i class="bi bi-plus-circle"></i> Karşılaştırmaya Ekle</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
@@ -96,3 +124,45 @@
         }
     }
 </div>
+
+@section Scripts {
+<script>
+function updateCompareArtwork() {
+    const checked = document.querySelectorAll('.compare-artwork-check:checked');
+    const btn = document.getElementById('btnCompareArtwork');
+    const count = document.getElementById('compareArtworkCount');
+    
+    if (checked.length > 0) {
+        btn.classList.remove('d-none');
+        count.textContent = checked.length;
+    } else {
+        btn.classList.add('d-none');
+    }
+}
+
+function goCompareArtwork() {
+    const checked = document.querySelectorAll('.compare-artwork-check:checked');
+    const ids = Array.from(checked).map(c => c.value).join(',');
+    window.location.href = '/Artwork/Karsilastir?ids=' + ids;
+}
+
+function updateCompareEvent() {
+    const checked = document.querySelectorAll('.compare-event-check:checked');
+    const btn = document.getElementById('btnCompareEvent');
+    const count = document.getElementById('compareEventCount');
+    
+    if (checked.length > 0) {
+        btn.classList.remove('d-none');
+        count.textContent = checked.length;
+    } else {
+        btn.classList.add('d-none');
+    }
+}
+
+function goCompareEvent() {
+    const checked = document.querySelectorAll('.compare-event-check:checked');
+    const ids = Array.from(checked).map(c => c.value).join(',');
+    window.location.href = '/Etkinlik/Karsilastir?ids=' + ids;
+}
+</script>
+}

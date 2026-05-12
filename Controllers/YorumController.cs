@@ -21,6 +21,15 @@ namespace art_galeri.Controllers
             if (string.IsNullOrWhiteSpace(icerik))
                 return Json(new { success = false, message = "Yorum içeriği boş olamaz." });
 
+            // Doğrulama ve Güvenilirlik: Etkinlik yorumu yapabilmek için kullanıcının ilgili etkinliğe katılmış olması
+            if (etkinlikId.HasValue)
+            {
+                var katildiMi = await _context.Rezervasyonlar
+                    .AnyAsync(r => r.UserID == userId && r.EtkinlikID == etkinlikId && r.Durum != "Iptal");
+                if (!katildiMi)
+                    return Json(new { success = false, message = "Sadece etkinliğe katılan kullanıcılar değerlendirme yapabilir." });
+            }
+
             var yorum = new Yorum
             {
                 UserID = userId.Value,
@@ -70,12 +79,13 @@ namespace art_galeri.Controllers
             return Json(new { success = true, count = yorum.FaydaliBulma });
         }
 
+        // AJAX tabanlı yanıtla (Artwork/Etkinlik detay sayfalarından)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Yanitla(int yorumId, string yanit)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
-            if (userRole != "Yonetici" && userRole != "Egitmen")
+            if (userRole != "Yonetici" && userRole != "Egitmen" && userRole != "Sanatci")
                 return Json(new { success = false, message = "Yetkiniz yok." });
 
             var yorum = await _context.Yorumlar.FindAsync(yorumId);
@@ -86,6 +96,56 @@ namespace art_galeri.Controllers
 
             await _context.SaveChangesAsync();
             return Json(new { success = true });
+        }
+
+        // Form tabanlı yönetici yanıtı (YoneticiDashboard'dan)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> YoneticiYanit(int yorumId, string yanit, string? donusUrl)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Yonetici" && userRole != "Egitmen")
+            {
+                TempData["ErrorMessage"] = "Bu işlem için yetkiniz yok.";
+                return Redirect(donusUrl ?? "/Users/YoneticiDashboard");
+            }
+
+            var yorum = await _context.Yorumlar.FindAsync(yorumId);
+            if (yorum == null)
+            {
+                TempData["ErrorMessage"] = "Yorum bulunamadı.";
+                return Redirect(donusUrl ?? "/Users/YoneticiDashboard");
+            }
+
+            yorum.YoneticiYaniti = yanit;
+            yorum.YanitTarihi = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Yanıt başarıyla eklendi.";
+            return Redirect(donusUrl ?? "/Users/YoneticiDashboard");
+        }
+
+        // Yorum silme (Yönetici yetkisi)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Sil(int id, string? donusUrl)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Yonetici")
+            {
+                TempData["ErrorMessage"] = "Bu işlem için yetkiniz yok.";
+                return Redirect(donusUrl ?? "/Users/YoneticiDashboard");
+            }
+
+            var yorum = await _context.Yorumlar.FindAsync(id);
+            if (yorum != null)
+            {
+                _context.Yorumlar.Remove(yorum);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Yorum başarıyla silindi.";
+            }
+
+            return Redirect(donusUrl ?? "/Users/YoneticiDashboard");
         }
     }
 }

@@ -1,0 +1,174 @@
+@model art_galeri.Models.Siparis
+@{ViewData["Title"] = "Sipariş Detayı #" + Model.SiparisID;}
+
+@{
+    var durum = Model.Durum ?? "Beklemede";
+    var durumRenk = durum switch {
+        "Tamamlandi" => "#10b981",
+        "Kargolandi" => "#3b82f6",
+        "Onaylandi" => "#f59e0b",
+        "OdemeBekleniyor" => "#f97316",
+        "Iptal" => "#ef4444",
+        _ => "#6b7280"
+    };
+    var durumIcon = durum switch {
+        "Tamamlandi" => "bi-check-circle-fill",
+        "Kargolandi" => "bi-truck",
+        "Onaylandi" => "bi-clock-fill",
+        "OdemeBekleniyor" => "bi-hourglass-split",
+        "Iptal" => "bi-x-circle-fill",
+        _ => "bi-hourglass"
+    };
+    var durumAciklama = durum switch {
+        "Tamamlandi" => "Siparişiniz başarıyla tamamlanmıştır.",
+        "Kargolandi" => "Siparişiniz kargoya verilmiştir. Teslimat bekleniyor.",
+        "Onaylandi" => "Siparişiniz onaylandı ve hazırlanıyor.",
+        "OdemeBekleniyor" => "Havale/EFT ödemesi bekleniyor. Ödeme sonrası siparişiniz onaylanacak.",
+        "Iptal" => "Bu sipariş iptal edilmiştir.",
+        _ => "Siparişiniz değerlendiriliyor."
+    };
+    var odemeYontemiStr = Model.OdemeYontemi switch {
+        "KrediKarti" => "💳 Kredi Kartı",
+        "HavaleEFT" => "🏦 Havale/EFT",
+        "KapidaOdeme" => "📦 Kapıda Ödeme",
+        _ => Model.OdemeYontemi
+    };
+    
+    // Sipariş adımları
+    var adimlar = new[] { "Sipariş Alındı", "Ödeme Onayı", "Hazırlanıyor", "Kargoda", "Teslim Edildi" };
+    var aktifAdim = durum switch {
+        "Beklemede" => 0,
+        "OdemeBekleniyor" => 0,
+        "Onaylandi" => 2,
+        "Kargolandi" => 3,
+        "Tamamlandi" => 4,
+        _ => 0
+    };
+}
+
+<div class="dashboard-container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Users/Siparislerim">Siparişlerim</a></li>
+            <li class="breadcrumb-item active">Sipariş #@Model.SiparisID</li>
+        </ol>
+    </nav>
+
+    <!-- Sipariş Durumu Takip Çubuğu -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-truck text-accent"></i> Sipariş Durumu</div>
+        
+        <div class="d-flex justify-content-between align-items-center position-relative mt-4 mb-4" style="padding: 0 40px;">
+            <!-- İlerleme çizgisi -->
+            <div style="position:absolute;top:18px;left:60px;right:60px;height:3px;background:#e5e7eb;z-index:0;">
+                <div style="height:100%;background:@durumRenk;width:@(aktifAdim * 25)%;transition:width .5s;"></div>
+            </div>
+            
+            @for (int i = 0; i < adimlar.Length; i++)
+            {
+                var tamamlandi = i <= aktifAdim;
+                <div class="text-center position-relative" style="z-index:1;">
+                    <div style="width:36px;height:36px;border-radius:50%;background:@(tamamlandi ? durumRenk : "#e5e7eb");color:@(tamamlandi ? "white" : "#9ca3af");display:flex;align-items:center;justify-content:center;font-weight:bold;margin:0 auto;font-size:.8rem;transition:all .3s;">
+                        @if (tamamlandi) { <i class="bi bi-check"></i> } else { @(i + 1) }
+                    </div>
+                    <div class="small mt-1 @(tamamlandi ? "fw-bold" : "text-muted")" style="font-size:.72rem;white-space:nowrap;">@adimlar[i]</div>
+                </div>
+            }
+        </div>
+
+        <div class="alert-custom @(durum == "Iptal" ? "alert-danger" : durum == "Tamamlandi" ? "alert-success" : "alert-info")">
+            <i class="bi @durumIcon me-1"></i> @durumAciklama
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Eser Bilgileri -->
+        <div class="col-lg-7">
+            <div class="panel-card h-100">
+                <div class="panel-title"><i class="bi bi-image text-accent"></i> Eser Bilgileri</div>
+                <div class="d-flex gap-3 align-items-start">
+                    <div style="width:120px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+                        @if (!string.IsNullOrEmpty(Model.Artwork?.ImageUrl))
+                        {
+                            <img src="@Model.Artwork.ImageUrl" style="width:100%;height:100%;object-fit:cover;" alt="@Model.Artwork?.Title">
+                        }
+                        else
+                        {
+                            <div style="width:100%;height:100%;background:var(--bg-gradient);display:flex;align-items:center;justify-content:center;font-size:3rem;">🎨</div>
+                        }
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-1">@Model.Artwork?.Title</h4>
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-palette me-1"></i>Sanatçı: @(Model.Artwork?.Artist?.Ad) @(Model.Artwork?.Artist?.Soyad)
+                        </p>
+                        @if (Model.Artwork?.Kategori != null)
+                        {
+                            <span class="badge bg-light text-muted">@Model.Artwork.Kategori</span>
+                        }
+                        <div class="mt-2">
+                            <a href="/Artwork/Detay/@Model.ArtworkID" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye me-1"></i>Eseri Görüntüle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sipariş Bilgileri -->
+        <div class="col-lg-5">
+            <div class="panel-card h-100">
+                <div class="panel-title"><i class="bi bi-receipt text-accent"></i> Sipariş Bilgileri</div>
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Sipariş No</td>
+                        <td class="fw-bold text-end">#@Model.SiparisID</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Sipariş Tarihi</td>
+                        <td class="text-end">@Model.SiparisTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Ödeme Yöntemi</td>
+                        <td class="text-end">@odemeYontemiStr</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Durum</td>
+                        <td class="text-end">
+                            <span class="badge-status @durum.ToLower()">
+                                <i class="bi @durumIcon me-1"></i>@durum
+                            </span>
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(Model.Adres))
+                    {
+                        <tr>
+                            <td class="text-muted">Teslimat Adresi</td>
+                            <td class="text-end">@Model.Adres</td>
+                        </tr>
+                    }
+                    @if (Model.Kampanya != null)
+                    {
+                        <tr>
+                            <td class="text-muted">Kampanya</td>
+                            <td class="text-end">
+                                <span class="badge bg-danger">@Model.Kampanya.Ad (%@Model.Kampanya.IndirimOrani)</span>
+                            </td>
+                        </tr>
+                    }
+                    <tr class="border-top">
+                        <td class="fw-bold" style="font-size:1.1rem;">Toplam Tutar</td>
+                        <td class="fw-bold text-success text-end" style="font-size:1.3rem;">@Model.Tutar.ToString("N0") ₺</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/Users/Siparislerim" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Siparişlerime Dön
+        </a>
+    </div>
+</div>

@@ -163,8 +163,9 @@
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <span class="stars">@string.Concat(Enumerable.Repeat("⭐", y.Puan))</span>
-                            <form action="/Yorum/Sil/@y.YorumID" method="post" style="display:inline;">
+                            <form action="/Yorum/Sil/@y.YorumID" method="post" style="display:inline;" onsubmit="return confirm('Bu yorumu silmek istediğinizden emin misiniz?')">
                                 @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@y.YorumID">
                                 <input type="hidden" name="donusUrl" value="/Users/YoneticiDashboard">
                                 <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                             </form>
@@ -221,7 +222,7 @@
         @if (ViewBag.Kampanyalar != null)
         {
             var kampanyalar = ViewBag.Kampanyalar as List<art_galeri.Models.Kampanya>;
-            <div class="row g-3">
+            <div class="row g-3 mb-3">
                 @foreach (var k in kampanyalar ?? new List<art_galeri.Models.Kampanya>())
                 {
                     <div class="col-md-4">
@@ -231,12 +232,57 @@
                                 @if (k.Aktif) { <span class="badge bg-success">Aktif</span> } else { <span class="badge bg-secondary">Pasif</span> }
                             </div>
                             <div class="mt-2"><code>@k.KuponKodu</code> — %@k.IndirimOrani indirim</div>
-                            <small class="text-muted">@k.BaslangicTarihi.ToString("dd.MM") — @k.BitisTarihi.ToString("dd.MM.yyyy")</small>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <small class="text-muted">@k.BaslangicTarihi.ToString("dd.MM") — @k.BitisTarihi.ToString("dd.MM.yyyy")</small>
+                                @if (k.HedefRol != null) { <span class="badge bg-info" style="font-size:.6rem;">@k.HedefRol.RolAdi özel</span> }
+                            </div>
                         </div>
                     </div>
                 }
             </div>
         }
+
+        <!-- Yeni Kampanya Oluşturma Formu -->
+        <div class="border-top pt-3">
+            <h6 class="fw-bold mb-3"><i class="bi bi-plus-circle text-success me-1"></i> Yeni Kampanya Oluştur</h6>
+            <form action="/Kampanya/Olustur" method="post">
+                @Html.AntiForgeryToken()
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <input type="text" name="ad" class="form-control form-control-sm" placeholder="Kampanya Adı" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="aciklama" class="form-control form-control-sm" placeholder="Açıklama">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="indirimOrani" class="form-control form-control-sm" placeholder="İndirim %" min="1" max="100" step="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="kuponKodu" class="form-control form-control-sm" placeholder="Kupon Kodu" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-0">Başlangıç</label>
+                        <input type="date" name="baslangicTarihi" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-0">Bitiş</label>
+                        <input type="date" name="bitisTarihi" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-0">Hedef Rol (Opsiyonel)</label>
+                        <select name="hedefRolId" class="form-select form-select-sm">
+                            <option value="">Herkese Açık</option>
+                            <option value="1">Müşteri</option>
+                            <option value="3">Eğitmen</option>
+                            <option value="4">Sanatçı</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-sm btn-gold w-100"><i class="bi bi-plus-circle me-1"></i>Oluştur</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Kullanıcı Listesi -->
