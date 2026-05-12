@@ -1,0 +1,102 @@
+@model art_galeri.Models.Etkinlik
+@{ViewData["Title"] = "Etkinliği Düzenle";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome mb-4">
+        <h2><i class="bi bi-pencil-square"></i> Etkinliği Düzenle</h2>
+        <p>Etkinlik bilgilerini güncelleyin veya durumu değiştirin.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="panel-card p-4">
+                <form asp-action="Duzenle" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="EtkinlikID" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Ad" class="form-label fw-bold">Etkinlik Adı</label>
+                            <input asp-for="Ad" class="form-control form-control-lg">
+                            <span asp-validation-for="Ad" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Kategori" class="form-label fw-bold">Kategori</label>
+                            <select asp-for="Kategori" class="form-select">
+                                <option value="Atölye">Atölye</option>
+                                <option value="Sergi">Sergi</option>
+                                <option value="Seminer">Seminer</option>
+                                <option value="Söyleşi">Söyleşi</option>
+                                <option value="Konser">Konser</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Konum" class="form-label fw-bold">Konum</label>
+                            <input asp-for="Konum" class="form-control">
+                            <span asp-validation-for="Konum" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Tarih" class="form-label fw-bold">Tarih</label>
+                            <input asp-for="Tarih" type="date" class="form-control" value="@Model.Tarih.ToString("yyyy-MM-dd")">
+                            <span asp-validation-for="Tarih" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Saat" class="form-label fw-bold">Saat</label>
+                            <input asp-for="Saat" type="time" class="form-control">
+                            <span asp-validation-for="Saat" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Ucret" class="form-label fw-bold">Ücret (₺)</label>
+                            <div class="input-group">
+                                <input asp-for="Ucret" class="form-control">
+                                <span class="input-group-text">₺</span>
+                            </div>
+                            <span asp-validation-for="Ucret" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Kapasite" class="form-label fw-bold">Kontenjan (Kişi)</label>
+                            <input asp-for="Kapasite" type="number" class="form-control" min="1">
+                            <span asp-validation-for="Kapasite" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Kapak Görselini Değiştir</label>
+                            <input type="file" name="imageFile" class="form-control">
+                            @if (!string.IsNullOrEmpty(Model.GorselUrl))
+                            {
+                                <div class="mt-2 text-muted small">Mevcut görsel: @Model.GorselUrl</div>
+                            }
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" asp-for="Aktif">
+                                <label class="form-check-label fw-bold" asp-for="Aktif">Etkinlik Aktif / Yayında</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Aciklama" class="form-label fw-bold">Açıklama</label>
+                            <textarea asp-for="Aciklama" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Aciklama" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-12 d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-gold px-5">
+                                <i class="bi bi-save"></i> Değişiklikleri Kaydet
+                            </button>
+                            <a asp-controller="Users" asp-action="EgitmenDashboard" class="btn btn-outline-secondary px-4">İptal</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

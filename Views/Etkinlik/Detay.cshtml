@@ -58,49 +58,140 @@
 
     <!-- Yorumlar -->
     <div class="panel-card mt-4">
-        <div class="panel-title"><i class="bi bi-chat-dots text-accent"></i> Değerlendirmeler</div>
-        @if (ViewBag.RezerveEttiMi == true)
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="panel-title mb-0"><i class="bi bi-chat-dots text-accent"></i> Değerlendirmeler (@(Model.Yorumlar?.Count() ?? 0))</div>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="small text-muted">Sırala:</span>
+                <select class="form-select form-select-sm" id="sortComments" style="width:140px;">
+                    <option value="yeni">En Yeni</option>
+                    <option value="puan">En Yüksek Puan</option>
+                    <option value="faydali">En Faydalı</option>
+                </select>
+            </div>
+        </div>
+
+        @if (Context.Session.GetInt32("UserID") != null)
         {
-            <form asp-controller="Yorum" asp-action="EkleEtkinlik" method="post" class="mb-4">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="etkinlikId" value="@Model.EtkinlikID">
-                <div class="mb-2">
-                    <select name="puan" class="form-select" style="width:180px;">
-                        <option value="5">⭐⭐⭐⭐⭐ Mükemmel</option>
-                        <option value="4">⭐⭐⭐⭐ Çok İyi</option>
-                        <option value="3">⭐⭐⭐ İyi</option>
-                        <option value="2">⭐⭐ Orta</option>
-                        <option value="1">⭐ Kötü</option>
-                    </select>
-                </div>
-                <textarea name="icerik" class="form-control mb-2" rows="3" placeholder="Etkinlik değerlendirmenizi yazın..." required></textarea>
-                <button type="submit" class="btn btn-accent">Değerlendir</button>
-            </form>
-        }
-        else if (Context.Session.GetInt32("UserID") == null)
-        {
-            <div class="alert-custom alert-warning mb-3"><i class="bi bi-info-circle"></i> <a href="/Users/Login" class="auth-link">Giriş yapın</a> ve değerlendirin.</div>
+            <div class="mb-4">
+                <form id="commentForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="etkinlikId" value="@Model.EtkinlikID">
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Puanınız</label>
+                        <select name="puan" class="form-select" style="width:180px;">
+                            <option value="5">⭐⭐⭐⭐⭐ Mükemmel</option>
+                            <option value="4">⭐⭐⭐⭐ Çok İyi</option>
+                            <option value="3">⭐⭐⭐ İyi</option>
+                            <option value="2">⭐⭐ Orta</option>
+                            <option value="1">⭐ Kötü</option>
+                        </select>
+                    </div>
+                    <textarea name="icerik" class="form-control mb-2" rows="3" placeholder="Etkinlik değerlendirmenizi yazın..." required></textarea>
+                    @if (ViewBag.RezerveEttiMi == true)
+                    {
+                        <button type="button" onclick="submitComment()" class="btn btn-accent">Değerlendir</button>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info py-2 small mb-0"><i class="bi bi-info-circle"></i> Sadece etkinliğe katılanlar değerlendirme yapabilir.</div>
+                    }
+                </form>
+            </div>
         }
         else
         {
-            <div class="alert-custom alert-info mb-3"><i class="bi bi-info-circle"></i> Yalnızca katılımcılar değerlendirme yapabilir.</div>
+            <div class="alert-custom alert-warning mb-3"><i class="bi bi-info-circle"></i> <a href="/Users/Login" class="auth-link">Giriş yapın</a> ve değerlendirin.</div>
         }
-        @if (Model.Yorumlar != null && Model.Yorumlar.Any())
-        {
-            @foreach (var y in Model.Yorumlar.Where(y => y.Onaylandi).OrderByDescending(y => y.OlusturulmaTarihi))
+
+        <div id="commentsList">
+            @if (Model.Yorumlar != null && Model.Yorumlar.Any())
             {
-                <div class="yorum-card dogrulanmis">
-                    <div class="d-flex justify-content-between">
-                        <strong>@y.User?.Ad @y.User?.Soyad <span class="badge bg-success ms-1" style="font-size:.62rem;">✓ Katılımcı</span></strong>
-                        <span class="stars">@string.Concat(Enumerable.Repeat("⭐", y.Puan))</span>
+                foreach (var y in Model.Yorumlar.Where(y => y.Onaylandi).OrderByDescending(y => y.OlusturulmaTarihi))
+                {
+                    <div class="yorum-card @(y.Dogrulanmis ? "dogrulanmis" : "")" data-puan="@y.Puan" data-faydali="@y.FaydaliBulma" data-tarih="@y.OlusturulmaTarihi.Ticks">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>@y.User?.Ad @y.User?.Soyad</strong>
+                                @if (y.Dogrulanmis) { <span class="badge bg-success ms-1" style="font-size:.65rem;">✓ Katılımcı</span> }
+                            </div>
+                            <span class="stars">@for(int i=1;i<=5;i++){@(i<=y.Puan?"⭐":"☆")}</span>
+                        </div>
+                        <p class="mb-1 mt-1">@y.Icerik</p>
+                        <div class="yorum-meta">
+                            @y.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy") · 
+                            <button class="btn btn-sm btn-link p-0 text-muted" onclick="faydali(@y.YorumID, this)">👍 <span class="count">@y.FaydaliBulma</span> Faydalı</button>
+                        </div>
+                        @if (!string.IsNullOrEmpty(y.YoneticiYaniti))
+                        {
+                            <div class="yorum-yanit"><strong>🏛️ Eğitmen Yanıtı:</strong> @y.YoneticiYaniti</div>
+                        }
+                        else if (Context.Session.GetString("UserRole") == "Yonetici" || (Context.Session.GetString("UserRole") == "Egitmen" && Context.Session.GetInt32("UserID") == Model.EgitmenID))
+                        {
+                            <button class="btn btn-sm btn-link p-0 mt-1 text-accent" onclick="showResponseForm(@y.YorumID)">Yanıtla</button>
+                            <div id="respForm-@y.YorumID" class="mt-2 d-none">
+                                <textarea class="form-control form-control-sm mb-1" id="respText-@y.YorumID"></textarea>
+                                <button class="btn btn-xs btn-accent" onclick="submitResponse(@y.YorumID)">Gönder</button>
+                            </div>
+                        }
                     </div>
-                    <p class="mb-1 mt-1">@y.Icerik</p>
-                    <div class="yorum-meta">@y.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy")</div>
-                    @if (!string.IsNullOrEmpty(y.YoneticiYaniti))
-                    { <div class="yorum-yanit"><strong>🏛️ Yanıt:</strong> @y.YoneticiYaniti</div> }
-                </div>
+                }
             }
-        }
-        else { <div class="empty-state py-3"><div class="empty-icon">💬</div><p>Henüz değerlendirme yok.</p></div> }
+            else
+            {
+                <div class="empty-state py-3"><div class="empty-icon">💬</div><p>Henüz değerlendirme yok.</p></div>
+            }
+        </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+function submitComment() {
+    const form = document.getElementById('commentForm');
+    const formData = new FormData(form);
+    fetch('/Yorum/Ekle', { method: 'POST', body: new URLSearchParams(formData) })
+        .then(r => r.json()).then(d => {
+            if(d.success) { alert(d.message); location.reload(); }
+            else alert(d.message);
+        });
+}
+
+function faydali(id, btn) {
+    fetch('/Yorum/Faydali/' + id, { method: 'POST' })
+        .then(r => r.json()).then(d => {
+            if(d.success) { btn.querySelector('.count').textContent = d.count; btn.disabled = true; }
+        });
+}
+
+function showResponseForm(id) {
+    document.getElementById('respForm-' + id).classList.toggle('d-none');
+}
+
+function submitResponse(id) {
+    const text = document.getElementById('respText-' + id).value;
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+    fetch('/Yorum/Yanitla', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `yorumId=${id}&yanit=${encodeURIComponent(text)}&__RequestVerificationToken=${token}`
+    }).then(r => r.json()).then(d => {
+        if(d.success) location.reload();
+        else alert(d.message);
+    });
+}
+
+document.getElementById('sortComments')?.addEventListener('change', function() {
+    const val = this.value;
+    const list = document.getElementById('commentsList');
+    const cards = Array.from(list.querySelectorAll('.yorum-card'));
+    
+    cards.sort((a, b) => {
+        if (val === 'puan') return b.dataset.puan - a.dataset.puan;
+        if (val === 'faydali') return b.dataset.faydali - a.dataset.faydali;
+        return b.dataset.tarih - a.dataset.tarih;
+    });
+    
+    cards.forEach(c => list.appendChild(c));
+});
+</script>
+}

@@ -129,5 +129,108 @@ namespace art_galeri.Controllers
             var etkinlikler = await _context.Etkinlikler.Include(e => e.Egitmen).Where(e => idList.Contains(e.EtkinlikID)).ToListAsync();
             return View(etkinlikler);
         }
+
+        // --- EĞİTMEN İŞLEMLERİ ---
+
+        // GET: /Etkinlik/Olustur
+        public IActionResult Olustur()
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Egitmen")
+                return RedirectToAction("Login", "Users");
+            return View(new Etkinlik { Tarih = DateTime.Today.AddDays(7) });
+        }
+
+        // POST: /Etkinlik/Olustur
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Olustur(Etkinlik model, IFormFile? imageFile)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null || HttpContext.Session.GetString("UserRole") != "Egitmen")
+                return RedirectToAction("Login", "Users");
+
+            model.EgitmenID = userId.Value;
+            model.OlusturulmaTarihi = DateTime.UtcNow;
+
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var ext = Path.GetExtension(imageFile.FileName);
+                var fileName = Guid.NewGuid() + ext;
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+                using var fs = new FileStream(path, FileMode.Create);
+                await imageFile.CopyToAsync(fs);
+                model.GorselUrl = "/uploads/" + fileName;
+            }
+
+            ModelState.Remove("Egitmen");
+            ModelState.Remove("Rezervasyonlar");
+            ModelState.Remove("Yorumlar");
+
+            if (!ModelState.IsValid) return View(model);
+
+            _context.Etkinlikler.Add(model);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Etkinlik başarıyla oluşturuldu!";
+            return RedirectToAction("EgitmenDashboard", "Users");
+        }
+
+        // GET: /Etkinlik/Duzenle/5
+        public async Task<IActionResult> Duzenle(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var etkinlik = await _context.Etkinlikler.FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
+            if (etkinlik == null) return NotFound();
+            return View(etkinlik);
+        }
+
+        // POST: /Etkinlik/Duzenle/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Duzenle(int id, Etkinlik model, IFormFile? imageFile)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var etkinlik = await _context.Etkinlikler.FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
+            if (etkinlik == null) return NotFound();
+
+            etkinlik.Ad = model.Ad;
+            etkinlik.Aciklama = model.Aciklama;
+            etkinlik.Tarih = model.Tarih;
+            etkinlik.Saat = model.Saat;
+            etkinlik.Konum = model.Konum;
+            etkinlik.Ucret = model.Ucret;
+            etkinlik.Kapasite = model.Kapasite;
+            etkinlik.Kategori = model.Kategori;
+            etkinlik.Aktif = model.Aktif;
+
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var ext = Path.GetExtension(imageFile.FileName);
+                var fileName = Guid.NewGuid() + ext;
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+                using var fs = new FileStream(path, FileMode.Create);
+                await imageFile.CopyToAsync(fs);
+                etkinlik.GorselUrl = "/uploads/" + fileName;
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Etkinlik güncellendi!";
+            return RedirectToAction("EgitmenDashboard", "Users");
+        }
+
+        // POST: /Etkinlik/Sil/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Sil(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var etkinlik = await _context.Etkinlikler.FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
+            if (etkinlik != null)
+            {
+                _context.Etkinlikler.Remove(etkinlik);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Etkinlik silindi.";
+            }
+            return RedirectToAction("EgitmenDashboard", "Users");
+        }
     }
 }

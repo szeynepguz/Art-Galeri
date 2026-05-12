@@ -174,35 +174,56 @@ namespace art_galeri.Controllers
             var userId = HttpContext.Session.GetInt32("UserID") ?? 0;
             var rez = await _context.Rezervasyonlar.Include(r => r.Etkinlik).FirstOrDefaultAsync(r => r.RezervasyonID == id && r.UserID == userId);
             if (rez == null || rez.Durum == "Iptal") return NotFound();
+
+            // Aynı kategorideki veya aynı isimdeki diğer aktif etkinlikleri bul (tarih değişimi için)
+            ViewBag.DigerTarihler = await _context.Etkinlikler
+                .Where(e => e.Ad == rez.Etkinlik!.Ad && e.EtkinlikID != rez.EtkinlikID && e.Aktif && e.Tarih >= DateTime.UtcNow)
+                .ToListAsync();
+
             return View(rez);
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> RezervasyonGuncelle(int id, int katilimciSayisi, string? notlar)
+        public async Task<IActionResult> RezervasyonGuncelle(int id, int katilimciSayisi, int? yeniEtkinlikId, string? notlar)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null) return RedirectToAction("Login");
             var rez = await _context.Rezervasyonlar.Include(r => r.Etkinlik).FirstOrDefaultAsync(r => r.RezervasyonID == id && r.UserID == userId);
             if (rez == null || rez.Durum == "Iptal") return NotFound();
 
-            var etkinlik = rez.Etkinlik;
-            if (etkinlik == null) return NotFound();
+            var eskiEtkinlik = rez.Etkinlik;
+            var hedefEtkinlik = eskiEtkinlik;
 
-            // Eski katılımcı sayısını çıkar, yeni ekle
-            var fark = katilimciSayisi - rez.KatilimciSayisi;
-            if (fark > 0 && etkinlik.KalanKapasite < fark)
+            if (yeniEtkinlikId.HasValue && yeniEtkinlikId != rez.EtkinlikID)
             {
-                TempData["ErrorMessage"] = "Yeterli kapasite yok. Mevcut boş yer: " + etkinlik.KalanKapasite;
+                hedefEtkinlik = await _context.Etkinlikler.FindAsync(yeniEtkinlikId.Value);
+                if (hedefEtkinlik == null || !hedefEtkinlik.Aktif) return NotFound();
+            }
+
+            if (hedefEtkinlik == null) return NotFound();
+
+            // Kontenjan kontrolü
+            int gerekenYer = (hedefEtkinlik.EtkinlikID == rez.EtkinlikID) 
+                ? (katilimciSayisi - rez.KatilimciSayisi) 
+                : katilimciSayisi;
+
+            if (hedefEtkinlik.KalanKapasite < gerekenYer)
+            {
+                TempData["ErrorMessage"] = "Hedef etkinlikte yeterli kontenjan yok.";
                 return RedirectToAction("RezervasyonGuncelle", new { id });
             }
 
-            etkinlik.RezervasyonSayisi += fark;
+            // Eski etkinlikten düş, yeniye ekle
+            if (eskiEtkinlik != null) eskiEtkinlik.RezervasyonSayisi -= rez.KatilimciSayisi;
+            hedefEtkinlik.RezervasyonSayisi += katilimciSayisi;
+
+            rez.EtkinlikID = hedefEtkinlik.EtkinlikID;
             rez.KatilimciSayisi = katilimciSayisi;
-            rez.ToplamTutar = etkinlik.Ucret * katilimciSayisi;
+            rez.ToplamTutar = hedefEtkinlik.Ucret * katilimciSayisi;
             if (notlar != null) rez.Notlar = notlar;
 
             await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Rezervasyon güncellendi!";
+            TempData["SuccessMessage"] = "Rezervasyon başarıyla güncellendi!";
             return RedirectToAction("Rezervasyonlarim");
         }
 

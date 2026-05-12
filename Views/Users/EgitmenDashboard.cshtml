@@ -2,9 +2,12 @@
 @{ViewData["Title"] = "Eğitmen Paneli";}
 
 <div class="dashboard-container">
-    <div class="dashboard-welcome">
-        <h2><i class="bi bi-mortarboard"></i> Eğitmen Paneli</h2>
-        <p>Hoş geldiniz @ViewBag.UserName! Etkinliklerinizin özeti aşağıda.</p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="dashboard-welcome">
+            <h2><i class="bi bi-mortarboard"></i> Eğitmen Paneli</h2>
+            <p>Hoş geldiniz @ViewBag.UserName! Etkinliklerinizin özeti aşağıda.</p>
+        </div>
+        <a asp-controller="Etkinlik" asp-action="Olustur" class="btn btn-accent px-4 py-2 shadow-sm"><i class="bi bi-plus-circle"></i> Yeni Etkinlik</a>
     </div>
 
     <div class="row g-3 mb-4">
@@ -25,13 +28,16 @@
         {
             <div class="table-responsive">
                 <table class="table table-custom">
-                    <thead><tr><th>Etkinlik</th><th>Tarih</th><th>Doluluk</th><th>Ort. Puan</th><th>Ücret</th></tr></thead>
+                    <thead><tr><th>Etkinlik</th><th>Tarih</th><th>Doluluk</th><th>Ort. Puan</th><th>Ücret</th><th class="text-end">İşlemler</th></tr></thead>
                     <tbody>
                         @foreach (var e in Model)
                         {
                             var d = (int)e.DolulukOrani;
                             <tr>
-                                <td><strong>@e.Ad</strong></td>
+                                <td>
+                                    <strong>@e.Ad</strong>
+                                    @if(!e.Aktif){ <span class="badge bg-secondary ms-2">Pasif</span> }
+                                </td>
                                 <td>@e.Tarih.ToString("dd.MM.yyyy")</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -41,6 +47,14 @@
                                 </td>
                                 <td><span class="stars">@for(int i=1;i<=5;i++){@(i<=Math.Round(e.OrtalamaPuan)?"⭐":"☆")}</span> @e.OrtalamaPuan.ToString("F1")</td>
                                 <td class="fw-bold text-success">@e.Ucret.ToString("N0") ₺</td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a asp-controller="Etkinlik" asp-action="Duzenle" asp-route-id="@e.EtkinlikID" class="btn btn-sm btn-outline-gold" title="Düzenle"><i class="bi bi-pencil"></i></a>
+                                        <form asp-controller="Etkinlik" asp-action="Sil" asp-route-id="@e.EtkinlikID" method="post" style="display:inline;" onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger ms-1" title="Sil"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -49,7 +63,12 @@
         }
         else
         {
-            <div class="empty-state"><div class="empty-icon">📅</div><h4>Henüz etkinliğiniz yok</h4></div>
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h4>Henüz etkinliğiniz yok</h4>
+                <p>Hemen ilk etkinliğinizi oluşturun!</p>
+                <a asp-controller="Etkinlik" asp-action="Olustur" class="btn btn-accent mt-2">Etkinlik Oluştur</a>
+            </div>
         }
     </div>
 </div>

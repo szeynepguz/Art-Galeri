@@ -44,11 +44,27 @@
                 <input type="hidden" name="id" value="@Model.RezervasyonID">
 
                 <div class="mb-3">
+                    <label class="form-label fw-semibold">Etkinlik Tarihi Değiştir</label>
+                    <select name="yeniEtkinlikId" class="form-select" id="etkinlikSelect">
+                        <option value="@Model.EtkinlikID" data-ucret="@Model.Etkinlik?.Ucret" selected>
+                            @Model.Etkinlik?.Tarih.ToString("dd.MM.yyyy") (Mevcut)
+                        </option>
+                        @foreach (var e in ViewBag.DigerTarihler as List<art_galeri.Models.Etkinlik> ?? new List<art_galeri.Models.Etkinlik>())
+                        {
+                            <option value="@e.EtkinlikID" data-ucret="@e.Ucret">
+                                @e.Tarih.ToString("dd.MM.yyyy") - @e.Ucret.ToString("N0") ₺
+                            </option>
+                        }
+                    </select>
+                    @if(!(ViewBag.DigerTarihler as List<art_galeri.Models.Etkinlik> ?? new List<art_galeri.Models.Etkinlik>()).Any()){
+                        <small class="text-muted">Bu etkinlik için başka tarih bulunmuyor.</small>
+                    }
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label fw-semibold">Yeni Katılımcı Sayısı</label>
                     <input type="number" name="katilimciSayisi" class="form-control" min="1" 
-                           max="@(Model.KatilimciSayisi + (Model.Etkinlik?.KalanKapasite ?? 0))" 
                            value="@Model.KatilimciSayisi" id="kisiSayisi">
-                    <small class="text-muted">Mevcut boş yer: @Model.Etkinlik?.KalanKapasite kişi</small>
                 </div>
 
                 <div class="mb-3">
@@ -81,10 +97,14 @@
 
 @section Scripts {
 <script>
-const ucretPerKisi = @(Model.Etkinlik?.Ucret ?? 0);
-document.getElementById('kisiSayisi').addEventListener('input', function() {
-    const toplam = this.value * ucretPerKisi;
+function hesapla() {
+    const select = document.getElementById('etkinlikSelect');
+    const ucret = parseFloat(select.options[select.selectedIndex].dataset.ucret);
+    const kisi = parseInt(document.getElementById('kisiSayisi').value);
+    const toplam = ucret * kisi;
     document.getElementById('yeniToplam').textContent = toplam.toLocaleString('tr-TR') + ' ₺';
-});
+}
+document.getElementById('kisiSayisi').addEventListener('input', hesapla);
+document.getElementById('etkinlikSelect').addEventListener('change', hesapla);
 </script>
 }

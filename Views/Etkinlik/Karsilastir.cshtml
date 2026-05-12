@@ -1,0 +1,132 @@
+@model IEnumerable<art_galeri.Models.Etkinlik>
+@{ViewData["Title"] = "Etkinlik Karşılaştırma";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome mb-4">
+        <h2><i class="bi bi-arrow-left-right"></i> Etkinlik Karşılaştırma</h2>
+        <p>Seçtiğiniz etkinlikleri ve atölyeleri yan yana inceleyin.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="panel-card overflow-auto">
+            <table class="table table-bordered table-custom text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width: 200px;">Özellik</th>
+                        @foreach (var item in Model)
+                        {
+                            <th style="min-width: 250px;">
+                                <div class="d-flex flex-column align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.GorselUrl))
+                                    {
+                                        <img src="@item.GorselUrl" style="width: 150px; height: 100px; object-fit: cover;" class="rounded shadow-sm mb-2">
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 150px; height: 100px; background: #f8f9fa;" class="rounded shadow-sm mb-2 d-flex align-items-center justify-content-center">
+                                            <span style="font-size: 2rem;">🎭</span>
+                                        </div>
+                                    }
+                                    <h6 class="mb-0">@item.Ad</h6>
+                                    <a href="/Etkinlik/Detay/@item.EtkinlikID" class="btn btn-sm btn-link text-gold">Detaylı İncele</a>
+                                </div>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">Tarih</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>@item.Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Saat</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>@item.Saat.ToString(@"hh\:mm")</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Konum</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>@item.Konum</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Eğitmen</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>@item.Egitmen?.Ad @item.Egitmen?.Soyad</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Kategori</td>
+                        @foreach (var item in Model)
+                        {
+                            <td><span class="badge bg-light text-dark">@item.Kategori</span></td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Ücret</td>
+                        @foreach (var item in Model)
+                        {
+                            <td class="fw-bold text-success" style="font-size: 1.1rem;">@item.Ucret.ToString("N0") ₺</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Kapasite / Doluluk</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>
+                                <div>@item.RezervasyonSayisi / @item.Kapasite</div>
+                                <div class="progress-bar-custom mx-auto" style="width:100px;">
+                                    <div class="progress-fill @(item.DolulukOrani >= 90 ? "dolu" : "")" style="width:@((int)item.DolulukOrani)%"></div>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Değerlendirme</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>
+                                <span class="stars">@for(int i=1;i<=5;i++){@(i<=Math.Round(item.OrtalamaPuan)?"⭐":"☆")}</span>
+                                <div class="small text-muted">(@item.OrtalamaPuan.ToString("F1"))</div>
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td></td>
+                        @foreach (var item in Model)
+                        {
+                            <td>
+                                @if (item.KalanKapasite > 0)
+                                {
+                                    <a href="/Etkinlik/Rezervasyon?id=@item.EtkinlikID" class="btn btn-accent w-100"><i class="bi bi-calendar-check"></i> Rezerve Et</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger w-100 disabled">Dolu</button>
+                                }
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🤷</div>
+            <h4>Karşılaştırılacak etkinlik bulunamadı</h4>
+            <p>Lütfen etkinlikler listesinden en az iki etkinlik seçin.</p>
+            <a href="/Etkinlik" class="btn btn-gold mt-3">Etkinliklere Dön</a>
+        </div>
+    }
+</div>

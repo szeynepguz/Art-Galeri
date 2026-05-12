@@ -42,7 +42,7 @@
         <div class="section-header">
             <h4 class="section-title">@Model.Count() Eser Bulundu</h4>
             <div class="d-flex gap-2">
-                <a href="/Artwork/Karsilastir" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left-right"></i> Karşılaştır</a>
+                <button id="btnCompare" class="btn btn-sm btn-gold d-none" onclick="goCompare()"><i class="bi bi-arrow-left-right"></i> Karşılaştır (<span id="compareCount">0</span>)</button>
             </div>
         </div>
         <div class="row g-4">
@@ -64,7 +64,10 @@
                 var emoji = artEmojis[artIdx % artEmojis.Length];
                 artIdx++;
                 <div class="col-xl-3 col-lg-4 col-md-6">
-                    <div class="artwork-card">
+                    <div class="artwork-card position-relative">
+                        <div class="form-check position-absolute top-0 start-0 m-2 z-3 bg-white rounded p-1 shadow-sm">
+                            <input class="form-check-input compare-check" type="checkbox" value="@item.ArtworkID" id="chk-@item.ArtworkID" onchange="updateCompare()">
+                        </div>
                         <div class="card-img-wrapper">
                             @if (!string.IsNullOrEmpty(item.ImageUrl))
                             {
@@ -120,6 +123,25 @@
 
 @section Scripts {
 <script>
+function updateCompare() {
+    const checked = document.querySelectorAll('.compare-check:checked');
+    const btn = document.getElementById('btnCompare');
+    const count = document.getElementById('compareCount');
+    
+    if (checked.length > 0) {
+        btn.classList.remove('d-none');
+        count.textContent = checked.length;
+    } else {
+        btn.classList.add('d-none');
+    }
+}
+
+function goCompare() {
+    const checked = document.querySelectorAll('.compare-check:checked');
+    const ids = Array.from(checked).map(c => c.value).join(',');
+    window.location.href = '/Artwork/Karsilastir?ids=' + ids;
+}
+
 document.querySelectorAll('.btn-favori').forEach(btn => {
     btn.addEventListener('click', function() {
         const id = this.dataset.id;

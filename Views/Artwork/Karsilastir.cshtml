@@ -1,0 +1,110 @@
+@model IEnumerable<art_galeri.Models.Artwork>
+@{ViewData["Title"] = "Eser Karşılaştırma";}
+
+<div class="dashboard-container">
+    <div class="dashboard-welcome mb-4">
+        <h2><i class="bi bi-arrow-left-right"></i> Eser Karşılaştırma</h2>
+        <p>Seçtiğiniz eserleri yan yana inceleyin.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="panel-card overflow-auto">
+            <table class="table table-bordered table-custom text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width: 200px;">Özellik</th>
+                        @foreach (var item in Model)
+                        {
+                            <th style="min-width: 250px;">
+                                <div class="d-flex flex-column align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" style="width: 150px; height: 150px; object-fit: cover;" class="rounded shadow-sm mb-2">
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 150px; height: 150px; background: #f8f9fa;" class="rounded shadow-sm mb-2 d-flex align-items-center justify-content-center">
+                                            <span style="font-size: 3rem;">🎨</span>
+                                        </div>
+                                    }
+                                    <h6 class="mb-0">@item.Title</h6>
+                                    <a href="/Artwork/Detay/@item.ArtworkID" class="btn btn-sm btn-link text-gold">Detaylı İncele</a>
+                                </div>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">Sanatçı</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>@item.Artist?.Ad @item.Artist?.Soyad</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Kategori</td>
+                        @foreach (var item in Model)
+                        {
+                            <td><span class="badge bg-light text-dark">@item.Kategori</span></td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Fiyat</td>
+                        @foreach (var item in Model)
+                        {
+                            <td class="fw-bold text-success" style="font-size: 1.1rem;">@item.Price.ToString("N0") ₺</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Görüntülenme</td>
+                        @foreach (var item in Model)
+                        {
+                            <td><i class="bi bi-eye"></i> @item.GoruntulenmeSayisi</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Beğeni</td>
+                        @foreach (var item in Model)
+                        {
+                            <td><i class="bi bi-heart"></i> @item.BegeniSayisi</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Yorum Sayısı</td>
+                        @foreach (var item in Model)
+                        {
+                            <td><i class="bi bi-chat"></i> @item.YorumSayisi</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Yükleme Tarihi</td>
+                        @foreach (var item in Model)
+                        {
+                            <td>@item.UploadDate.ToString("dd.MM.yyyy")</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td></td>
+                        @foreach (var item in Model)
+                        {
+                            <td>
+                                <a href="/Siparis/Satin?artworkId=@item.ArtworkID" class="btn btn-accent w-100"><i class="bi bi-cart"></i> Satın Al</a>
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🤷</div>
+            <h4>Karşılaştırılacak eser bulunamadı</h4>
+            <p>Lütfen eserler listesinden en az iki eser seçin.</p>
+            <a href="/Artwork" class="btn btn-gold mt-3">Eserlere Dön</a>
+        </div>
+    }
+</div>
