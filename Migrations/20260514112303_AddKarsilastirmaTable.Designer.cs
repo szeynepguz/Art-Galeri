@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using art_galeri.Data;
@@ -11,9 +12,11 @@ using art_galeri.Data;
 namespace art_galeri.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514112303_AddKarsilastirmaTable")]
+    partial class AddKarsilastirmaTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,17 +311,12 @@ namespace art_galeri.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("IDler")
+                    b.Property<string>("EtkinlikIDler")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("KayitTarihi")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Tip")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("UserID")
                         .HasColumnType("integer");

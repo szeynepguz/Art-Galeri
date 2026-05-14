@@ -135,35 +135,46 @@ namespace art_galeri.Controllers
         }
 
         // GET: /Artwork/Karsilastir?ids=1,2,3
-        public async Task<IActionResult> Karsilastir(string ids)
+        public async Task<IActionResult> Karsilastir(string? ids)
         {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId != null)
+            {
+                var kayitli = await _context.Karsilastirmalar
+                    .Where(k => k.UserID == userId && k.Tip == "Artwork")
+                    .OrderByDescending(k => k.KayitTarihi)
+                    .ToListAsync();
+                ViewBag.KayitliKarsilastirmalar = kayitli;
+            }
+
             if (string.IsNullOrEmpty(ids)) return View(new List<Artwork>());
             var idList = ids.Split(',').Select(int.Parse).ToList();
             var eserler = await _context.Artworks.Include(a => a.Artist).Where(a => idList.Contains(a.ArtworkID)).ToListAsync();
-
-            // Kayıtlı karşılaştırma varsa göster
-            var kayitli = HttpContext.Session.GetString("KayitliEserKarsilastirma");
-            if (!string.IsNullOrEmpty(kayitli))
-                ViewBag.KayitliKarsilastirma = kayitli;
 
             return View(eserler);
         }
 
         // POST: /Artwork/KarsilastirmaKaydet — Karşılaştırma sonuçlarını kaydetme
         [HttpPost]
-        public IActionResult KarsilastirmaKaydet(string ids, string baslik)
+        public async Task<IActionResult> KarsilastirmaKaydet(string ids, string baslik)
         {
-            if (HttpContext.Session.GetInt32("UserID") == null)
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
                 return Json(new { success = false, message = "Giriş yapmanız gerekiyor." });
 
-            var kayit = $"{baslik}|{ids}|{DateTime.UtcNow:dd.MM.yyyy HH:mm}";
-            
-            // Session'a kaydet (birden fazla kayıt virgülle ayrılır)
-            var mevcut = HttpContext.Session.GetString("KayitliEserKarsilastirma") ?? "";
-            var yeniListe = string.IsNullOrEmpty(mevcut) ? kayit : mevcut + ";;;" + kayit;
-            HttpContext.Session.SetString("KayitliEserKarsilastirma", yeniListe);
+            var yeniKayit = new Karsilastirma
+            {
+                UserID = userId.Value,
+                Tip = "Artwork",
+                Baslik = baslik,
+                IDler = ids,
+                KayitTarihi = DateTime.UtcNow
+            };
 
-            return Json(new { success = true, message = "Karşılaştırma kaydedildi!" });
+            _context.Karsilastirmalar.Add(yeniKayit);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Eser karşılaştırması kalıcı olarak kaydedildi!" });
         }
 
         // GET: /Artwork/KayitliKarsilastirmalar — Kayıtlı karşılaştırmaları listele

@@ -133,33 +133,48 @@ namespace art_galeri.Controllers
         }
 
         // GET: /Etkinlik/Karsilastir?ids=1,2
-        public async Task<IActionResult> Karsilastir(string ids)
+        public async Task<IActionResult> Karsilastir(string? ids)
         {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId != null)
+            {
+                // Veritabanından kayıtlı karşılaştırmaları getir
+                var kayitli = await _context.Karsilastirmalar
+                    .Where(k => k.UserID == userId && k.Tip == "Etkinlik")
+                    .OrderByDescending(k => k.KayitTarihi)
+                    .ToListAsync();
+                ViewBag.KayitliKarsilastirmalar = kayitli;
+            }
+
             if (string.IsNullOrEmpty(ids)) return View(new List<Etkinlik>());
+
             var idList = ids.Split(',').Select(int.Parse).ToList();
             var etkinlikler = await _context.Etkinlikler.Include(e => e.Egitmen).Where(e => idList.Contains(e.EtkinlikID)).ToListAsync();
-
-            // Kayıtlı karşılaştırma varsa göster
-            var kayitli = HttpContext.Session.GetString("KayitliEtkinlikKarsilastirma");
-            if (!string.IsNullOrEmpty(kayitli))
-                ViewBag.KayitliKarsilastirma = kayitli;
 
             return View(etkinlikler);
         }
 
         // POST: /Etkinlik/KarsilastirmaKaydet — Karşılaştırma sonuçlarını kaydetme
         [HttpPost]
-        public IActionResult KarsilastirmaKaydet(string ids, string baslik)
+        public async Task<IActionResult> KarsilastirmaKaydet(string ids, string baslik)
         {
-            if (HttpContext.Session.GetInt32("UserID") == null)
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
                 return Json(new { success = false, message = "Giriş yapmanız gerekiyor." });
 
-            var kayit = $"{baslik}|{ids}|{DateTime.UtcNow:dd.MM.yyyy HH:mm}";
-            var mevcut = HttpContext.Session.GetString("KayitliEtkinlikKarsilastirma") ?? "";
-            var yeniListe = string.IsNullOrEmpty(mevcut) ? kayit : mevcut + ";;;" + kayit;
-            HttpContext.Session.SetString("KayitliEtkinlikKarsilastirma", yeniListe);
+            var yeniKayit = new Karsilastirma
+            {
+                UserID = userId.Value,
+                Tip = "Etkinlik",
+                Baslik = baslik,
+                IDler = ids,
+                KayitTarihi = DateTime.UtcNow
+            };
 
-            return Json(new { success = true, message = "Karşılaştırma kaydedildi!" });
+            _context.Karsilastirmalar.Add(yeniKayit);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Karşılaştırma kalıcı olarak kaydedildi!" });
         }
 
         // --- EĞİTMEN İŞLEMLERİ ---
@@ -183,6 +198,7 @@ namespace art_galeri.Controllers
 
             model.EgitmenID = userId.Value;
             model.OlusturulmaTarihi = DateTime.UtcNow;
+            model.Tarih = model.Tarih.ToUniversalTime();
 
             if (imageFile != null && imageFile.Length > 0)
             {

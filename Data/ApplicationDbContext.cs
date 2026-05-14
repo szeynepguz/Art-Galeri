@@ -20,6 +20,7 @@ namespace art_galeri.Data
         public DbSet<Siparis> Siparisler { get; set; }
         public DbSet<Kampanya> Kampanyalar { get; set; }
         public DbSet<DestekTalebi> DestekTalepleri { get; set; }
+        public DbSet<Karsilastirma> Karsilastirmalar { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
