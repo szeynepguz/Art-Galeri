@@ -9,10 +9,10 @@
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-3"><div class="stat-card gold"><div class="stat-icon">🎨</div><div class="stat-number">@ViewBag.ToplamEser</div><div class="stat-label">Toplam Eser</div></div></div>
-        <div class="col-md-3"><div class="stat-card info"><div class="stat-icon">👁️</div><div class="stat-number">@ViewBag.ToplamGoruntulenme</div><div class="stat-label">Görüntülenme</div></div></div>
-        <div class="col-md-3"><div class="stat-card accent"><div class="stat-icon">❤️</div><div class="stat-number">@ViewBag.ToplamBegeni</div><div class="stat-label">Beğeni</div></div></div>
-        <div class="col-md-3"><div class="stat-card success"><div class="stat-icon">💬</div><div class="stat-number">@ViewBag.ToplamYorum</div><div class="stat-label">Yorum</div></div></div>
+        <div class="col-md-3"><div class="stat-card gold"><div class="stat-icon"><i class="bi bi-palette-fill"></i></div><div class="stat-number">@ViewBag.ToplamEser</div><div class="stat-label">Toplam Eser</div></div></div>
+        <div class="col-md-3"><div class="stat-card info"><div class="stat-icon"><i class="bi bi-eye-fill"></i></div><div class="stat-number">@ViewBag.ToplamGoruntulenme</div><div class="stat-label">Görüntülenme</div></div></div>
+        <div class="col-md-3"><div class="stat-card accent"><div class="stat-icon"><i class="bi bi-heart-fill"></i></div><div class="stat-number">@ViewBag.ToplamBegeni</div><div class="stat-label">Beğeni</div></div></div>
+        <div class="col-md-3"><div class="stat-card success"><div class="stat-icon"><i class="bi bi-chat-fill"></i></div><div class="stat-number">@ViewBag.ToplamYorum</div><div class="stat-label">Yorum</div></div></div>
     </div>
 
     <div class="panel-card">
@@ -41,7 +41,7 @@
         }
         else
         {
-            <div class="empty-state"><div class="empty-icon">🎨</div><h4>Henüz eser yüklemediniz</h4><a href="/Artwork/Yukle" class="btn btn-primary-custom mt-2">İlk Eserini Yükle</a></div>
+            <div class="empty-state"><div class="empty-icon"><i class="bi bi-palette"></i></div><h4>Henüz eser yüklemediniz</h4><a href="/Artwork/Yukle" class="btn btn-primary-custom mt-2">İlk Eserini Yükle</a></div>
         }
     </div>
 

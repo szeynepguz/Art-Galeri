@@ -110,8 +110,8 @@
                 <div class="mb-4">
                     <label class="form-label fw-bold">İndirim Kuponu (Opsiyonel)</label>
                     <div class="input-group">
-                        <input type="text" name="kuponKodu" class="form-control" placeholder="Kupon kodunuz">
-                        <button class="btn btn-outline-secondary" type="button">Uygula</button>
+                        <input type="text" name="kuponKodu" class="form-control" placeholder="Kupon kodunuz" id="kuponInput">
+                        <button class="btn btn-outline-secondary" type="button" id="kuponUygula">Uygula</button>
                     </div>
                 </div>
 
@@ -142,8 +142,42 @@
 @section Scripts {
 <script>
 const ucret = parseFloat('@(etkinlik?.Ucret.ToString(System.Globalization.CultureInfo.InvariantCulture))');
-document.getElementById('kisi').addEventListener('input', function() {
-    document.getElementById('toplam').textContent = (this.value * ucret).toLocaleString('tr-TR') + ' ₺';
+let appliedDiscount = 0;
+
+function updateTotal() {
+    const kisi = parseInt(document.getElementById('kisi').value) || 1;
+    let baseTutar = kisi * ucret;
+    
+    if (appliedDiscount > 0) {
+        baseTutar = baseTutar * (1 - appliedDiscount / 100);
+    }
+    
+    document.getElementById('toplam').textContent = Math.round(baseTutar).toLocaleString('tr-TR') + ' ₺';
+}
+
+document.getElementById('kisi').addEventListener('input', updateTotal);
+
+// Kupon Uygulama
+document.getElementById('kuponUygula')?.addEventListener('click', async function() {
+    const code = document.getElementById('kuponInput').value;
+    if(!code) return;
+    
+    try {
+        const response = await fetch(`/Kampanya/GetCouponInfo?code=${encodeURIComponent(code)}`);
+        const data = await response.json();
+        
+        if(data.valid) {
+            appliedDiscount = data.discount;
+            alert(`Tebrikler! '${data.name}' uygulandı. %${data.discount} indirim kazandınız.`);
+            updateTotal();
+        } else {
+            alert(data.message || "Geçersiz kupon kodu.");
+            appliedDiscount = 0;
+            updateTotal();
+        }
+    } catch(e) {
+        console.error("Kupon kontrol hatası:", e);
+    }
 });
 
 const reqInputs = document.querySelectorAll('.card-req');

@@ -134,18 +134,11 @@
                         <span>Kargo</span>
                         <span class="text-success">Ücretsiz</span>
                     </div>
-                    @if (Model.Price >= 5000)
-                    {
-                        <div class="d-flex justify-content-between align-items-center mb-2 text-success fw-bold">
-                            <span><i class="bi bi-star-fill text-warning"></i> Büyük Alışveriş Fırsatı</span>
-                            <span>-1.000 ₺</span>
-                        </div>
-                    }
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
                         <strong style="font-size:1.1rem;">Toplam Ödenecek</strong>
                         <strong class="text-success" style="font-size:1.3rem;" id="toplamFiyat">
-                            @((Model.Price >= 5000 ? Model.Price - 1000 : Model.Price).ToString("N0")) ₺
+                            @Model.Price.ToString("N0") ₺
                         </strong>
                     </div>
                 </div>
@@ -197,5 +190,41 @@ document.getElementById('kartSKT')?.addEventListener('input', function(e) {
     if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
     this.value = val;
 });
+// Kupon Kontrol
+let appliedDiscount = 0;
+document.getElementById('kuponKontrol')?.addEventListener('click', async function() {
+    const code = document.getElementById('kuponInput').value;
+    if(!code) return;
+    
+    try {
+        const response = await fetch(`/Kampanya/GetCouponInfo?code=${encodeURIComponent(code)}`);
+        const data = await response.json();
+        
+        if(data.valid) {
+            appliedDiscount = data.discount;
+            alert(`Tebrikler! '${data.name}' uygulandı. %${data.discount} indirim kazandınız.`);
+            updateTotal();
+        } else {
+            alert(data.message || "Geçersiz kupon kodu.");
+            appliedDiscount = 0;
+            updateTotal();
+        }
+    } catch(e) {
+        console.error("Kupon kontrol hatası:", e);
+    }
+});
+
+function updateTotal() {
+    const basePrice = parseFloat('@Model.Price');
+    let currentTutar = basePrice;
+    
+    // Kupon İndirimi
+    if (appliedDiscount > 0) {
+        currentTutar = currentTutar * (1 - appliedDiscount / 100);
+    }
+    
+    if (currentTutar < 0) currentTutar = 0;
+    document.getElementById('toplamFiyat').textContent = Math.round(currentTutar).toLocaleString('tr-TR') + ' ₺';
+}
 </script>
 }

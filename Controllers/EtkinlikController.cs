@@ -109,8 +109,9 @@ namespace art_galeri.Controllers
             // Kupon kodu uygula
             if (!string.IsNullOrEmpty(kuponKodu))
             {
+                var normalizedKupon = kuponKodu.Trim().ToUpper();
                 var kampanya = await _context.Kampanyalar
-                    .FirstOrDefaultAsync(k => k.KuponKodu == kuponKodu && k.Aktif && k.BaslangicTarihi <= DateTime.UtcNow && k.BitisTarihi >= DateTime.UtcNow);
+                    .FirstOrDefaultAsync(k => k.KuponKodu.ToUpper() == normalizedKupon && k.Aktif && k.BaslangicTarihi.Date <= DateTime.UtcNow.Date && k.BitisTarihi.Date >= DateTime.UtcNow.Date);
                 if (kampanya != null)
                 {
                     tutar = tutar * (1 - kampanya.IndirimOrani / 100);

@@ -10,44 +10,44 @@
     <div class="row g-3 mb-4">
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card accent">
-                <div class="stat-icon">👥</div>
+                <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
                 <div class="stat-number">@ViewBag.ToplamKullanici</div>
                 <div class="stat-label">Kullanıcı</div>
             </div>
         </div>
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card gold">
-                <div class="stat-icon">🎨</div>
+                <div class="stat-icon"><i class="bi bi-palette-fill"></i></div>
                 <div class="stat-number">@ViewBag.ToplamEser</div>
                 <div class="stat-label">Eser</div>
             </div>
         </div>
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card success">
-                <div class="stat-icon">📅</div>
+                <div class="stat-icon"><i class="bi bi-calendar-check-fill"></i></div>
                 <div class="stat-number">@ViewBag.ToplamRezervasyonlar</div>
                 <div class="stat-label">Rezervasyon</div>
             </div>
         </div>
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card info">
-                <div class="stat-icon">💰</div>
+                <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
                 <div class="stat-number" style="font-size:1.3rem;">@((ViewBag.ToplamGelir as decimal? ?? 0).ToString("N0"))₺</div>
                 <div class="stat-label">Toplam Gelir</div>
             </div>
         </div>
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card purple">
-                <div class="stat-icon">🖌️</div>
+                <div class="stat-icon"><i class="bi bi-brush-fill"></i></div>
                 <div class="stat-number">@ViewBag.ToplamSanatci</div>
                 <div class="stat-label">Sanatçı</div>
             </div>
         </div>
         <div class="col-xl-2 col-lg-4 col-md-4 col-6">
             <div class="stat-card teal">
-                <div class="stat-icon">📚</div>
-                <div class="stat-number">@ViewBag.AcikDestekler</div>
-                <div class="stat-label">Açık Destek</div>
+                <div class="stat-icon"><i class="bi bi-tag-fill"></i></div>
+                <div class="stat-number">@((ViewBag.Kampanyalar as List<art_galeri.Models.Kampanya>)?.Count(k => k.Aktif) ?? 0)</div>
+                <div class="stat-label">Aktif Kampanya</div>
             </div>
         </div>
     </div>
@@ -191,50 +191,7 @@
         }
     </div>
 
-    <!-- Destek Talepleri -->
-    <div class="panel-card mb-4">
-        <div class="panel-title"><i class="bi bi-headset text-warning"></i> Destek Talepleri</div>
-        @if (ViewBag.DestekTalepleri != null)
-        {
-            var talepler = ViewBag.DestekTalepleri as List<art_galeri.Models.DestekTalebi>;
-            <div class="table-responsive">
-                <table class="table table-custom">
-                    <thead><tr><th>Kullanıcı</th><th>Konu</th><th>Durum</th><th>Tarih</th></tr></thead>
-                    <tbody>
-                        @foreach (var t in talepler ?? new List<art_galeri.Models.DestekTalebi>())
-                        {
-                            <tr>
-                                <td>@(t.User?.Ad ?? t.Email)</td>
-                                <td>
-                                    <strong>@t.Konu</strong><br>
-                                    <small class="text-muted">@t.Mesaj</small>
-                                    @if (!string.IsNullOrEmpty(t.YoneticiYaniti))
-                                    {
-                                        <div class="mt-2 p-2 bg-light border rounded">
-                                            <strong><i class="bi bi-reply-fill text-success"></i> Yanıtınız:</strong> @t.YoneticiYaniti
-                                        </div>
-                                    }
-                                    else if (t.Durum == "Acik")
-                                    {
-                                        <form action="/Users/DestekYanitla" method="post" class="mt-2 d-flex gap-2">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="id" value="@t.TalepID">
-                                            <input type="text" name="yanit" class="form-control form-control-sm" placeholder="Yanıtınızı yazın..." required>
-                                            <button type="submit" class="btn btn-sm btn-accent"><i class="bi bi-send"></i> Gönder</button>
-                                        </form>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="badge-status @(t.Durum == "Acik" ? "beklemede" : (t.Durum == "Cevaplandi" ? "onaylandi" : "iptal"))">@t.Durum</span>
-                                </td>
-                                <td>@t.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </div>
+    <!-- Destek Talepleri Kaldırıldı -->
 
     <!-- Bekleyen Siparişler -->
     <div class="panel-card mb-4">
@@ -334,7 +291,9 @@
                             <div class="mt-2"><code>@k.KuponKodu</code> — %@k.IndirimOrani indirim</div>
                             <div class="d-flex justify-content-between align-items-center mt-1">
                                 <small class="text-muted">@k.BaslangicTarihi.ToString("dd.MM") — @k.BitisTarihi.ToString("dd.MM.yyyy")</small>
-                                @if (k.HedefRol != null) { <span class="badge bg-info" style="font-size:.6rem;">@k.HedefRol.RolAdi özel</span> }
+                                @if (k.TargetUser != null) { <span class="badge bg-warning text-dark" style="font-size:.6rem;"><i class="bi bi-person-fill"></i> @k.TargetUser.Ad @k.TargetUser.Soyad</span> }
+                                else if (k.HedefRol != null) { <span class="badge bg-info" style="font-size:.6rem;">@k.HedefRol.RolAdi özel</span> }
+                                else { <span class="badge bg-light text-dark" style="font-size:.6rem;">Genel</span> }
                             </div>
                         </div>
                     </div>
@@ -369,12 +328,21 @@
                         <input type="date" name="bitisTarihi" class="form-control form-control-sm" required>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label small text-muted mb-0">Hedef Rol (Opsiyonel)</label>
+                        <label class="form-label small text-muted mb-0">Hedef Kitle</label>
                         <select name="hedefRolId" class="form-select form-select-sm">
                             <option value="">Herkese Açık</option>
-                            <option value="1">Müşteri</option>
-                            <option value="3">Eğitmen</option>
-                            <option value="4">Sanatçı</option>
+                            <option value="1">Sadece Müşteriler</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-0">Özel Müşteri Seç (Opsiyonel)</label>
+                        <select name="targetUserId" class="form-select form-select-sm">
+                            <option value="">Kişiye Özel Değil</option>
+                            @if(ViewBag.TumMusteriler != null) {
+                                foreach(var u in (List<art_galeri.Models.User>)ViewBag.TumMusteriler) {
+                                    <option value="@u.UserID">@u.Ad @u.Soyad (@u.Email)</option>
+                                }
+                            }
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">

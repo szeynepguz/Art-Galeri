@@ -33,7 +33,7 @@ namespace art_galeri.Controllers
             var userId = HttpContext.Session.GetInt32("UserID");
             var user = await _context.Users.FindAsync(userId);
             var kampanyalar = await _context.Kampanyalar
-                .Where(k => k.Aktif && k.BaslangicTarihi <= DateTime.UtcNow && k.BitisTarihi >= DateTime.UtcNow)
+                .Where(k => k.Aktif && k.BaslangicTarihi.Date <= DateTime.UtcNow.Date && k.BitisTarihi.Date >= DateTime.UtcNow.Date)
                 .Where(k => k.HedefRolID == null || k.HedefRolID == (user != null ? user.RolID : 0))
                 .ToListAsync();
             ViewBag.Kampanyalar = kampanyalar;
@@ -61,23 +61,17 @@ namespace art_galeri.Controllers
             // İndirim kuponu uygulama
             if (!string.IsNullOrEmpty(kuponKodu))
             {
+                var normalizedKupon = kuponKodu.Trim().ToUpper();
                 var user = await _context.Users.FindAsync(userId);
                 var k = await _context.Kampanyalar.FirstOrDefaultAsync(k =>
-                    k.KuponKodu == kuponKodu && k.Aktif &&
-                    k.BaslangicTarihi <= DateTime.UtcNow && k.BitisTarihi >= DateTime.UtcNow &&
+                    k.KuponKodu.ToUpper() == normalizedKupon && k.Aktif &&
+                    k.BaslangicTarihi.Date <= DateTime.UtcNow.Date && k.BitisTarihi.Date >= DateTime.UtcNow.Date &&
                     (k.HedefRolID == null || k.HedefRolID == (user != null ? user.RolID : 0)));
                 if (k != null)
                 {
                     tutar = tutar * (1 - k.IndirimOrani / 100);
                     kampanyaId = k.KampanyaID;
                 }
-            }
-
-            // Büyük Alışveriş Fırsatı: 5000 TL ve üzerine 1000 TL indirim
-            if (artwork.Price >= 5000)
-            {
-                tutar -= 1000;
-                if (tutar < 0) tutar = 0; // Tutar eksiye düşmesin
             }
 
             // Ödeme yöntemine göre durum belirleme

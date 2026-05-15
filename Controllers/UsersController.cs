@@ -112,6 +112,7 @@ namespace art_galeri.Controllers
             ViewBag.SonYorumlar = await _context.Yorumlar.Include(y => y.User).Include(y => y.Artwork).Include(y => y.Etkinlik).OrderByDescending(y => y.OlusturulmaTarihi).Take(10).ToListAsync();
             ViewBag.Kampanyalar = await _context.Kampanyalar.Include(k => k.HedefRol).OrderByDescending(k => k.Aktif).ToListAsync();
             ViewBag.DestekTalepleri = await _context.DestekTalepleri.Include(d => d.User).OrderByDescending(d => d.OlusturulmaTarihi).Take(10).ToListAsync();
+            ViewBag.TumMusteriler = await _context.Users.Where(u => u.RolID == 1).OrderBy(u => u.Ad).ToListAsync();
             ViewBag.TumKullanicilar = await _context.Users.Include(u => u.Rol).OrderByDescending(u => u.CreatedAt).Take(15).ToListAsync();
             
             ViewBag.BekleyenSiparisler = await _context.Siparisler.Include(s => s.Artwork).Include(s => s.User).Where(s => s.Durum == "Beklemede" || s.Durum == "OdemeBekleniyor").ToListAsync();

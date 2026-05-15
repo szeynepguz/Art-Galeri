@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Art Galeri - Sanat eserlerini keşfedin, atölyelere katılın, sanat dünyasıyla buluşun." />
     <title>@ViewData["Title"] - Art Galeri</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap&subset=latin,latin-ext" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            font-feature-settings: "kern", "liga", "clig", "calt";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -64,9 +71,12 @@
                                 </a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Users/Destek"><i class="bi bi-headset"></i> Destek</a>
-                        </li>
+                        @if (Context.Session.GetString("UserRole") != "Yonetici")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Users/Destek"><i class="bi bi-headset"></i> Destek</a>
+                            </li>
+                        }
                     </ul>
                     <div class="navbar-nav ms-auto align-items-center">
                         @if (Context.Session.GetInt32("UserID") != null)

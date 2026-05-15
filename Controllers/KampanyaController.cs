@@ -18,7 +18,7 @@ namespace art_galeri.Controllers
 
             var kampanyalar = await _context.Kampanyalar
                 .Include(k => k.HedefRol)
-                .Where(k => k.Aktif && k.BitisTarihi >= DateTime.UtcNow)
+                .Where(k => k.Aktif && k.BitisTarihi.Date >= DateTime.UtcNow.Date)
                 .ToListAsync();
 
             // Belirli kullanıcılara özel fırsatlar: HedefRolID null = herkese, aksi halde sadece o role
@@ -60,7 +60,8 @@ namespace art_galeri.Controllers
             }
 
             // Kupon kodu benzersiz mi kontrol et
-            if (await _context.Kampanyalar.AnyAsync(k => k.KuponKodu == kuponKodu))
+            var normalizedKupon = kuponKodu.Trim().ToUpper();
+            if (await _context.Kampanyalar.AnyAsync(k => k.KuponKodu.ToUpper() == normalizedKupon))
             {
                 TempData["ErrorMessage"] = "Bu kupon kodu zaten mevcut.";
                 return RedirectToAction("Index", "Users", new { }, "kampanyalar");
@@ -71,9 +72,9 @@ namespace art_galeri.Controllers
                 Ad = ad,
                 Aciklama = aciklama,
                 IndirimOrani = indirimOrani,
-                KuponKodu = kuponKodu,
-                BaslangicTarihi = baslangicTarihi.ToUniversalTime(),
-                BitisTarihi = bitisTarihi.ToUniversalTime(),
+                KuponKodu = normalizedKupon,
+                BaslangicTarihi = baslangicTarihi.Date.ToUniversalTime(),
+                BitisTarihi = bitisTarihi.Date.AddDays(1).AddSeconds(-1).ToUniversalTime(),
                 HedefRolID = hedefRolId,
                 Aktif = true
             };
@@ -82,6 +83,62 @@ namespace art_galeri.Controllers
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Kampanya başarıyla oluşturuldu!";
             return RedirectToAction("YoneticiDashboard", "Users");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCouponInfo(string code)
+        {
+            if (string.IsNullOrEmpty(code)) return Json(new { valid = false, message = "Lütfen kupon kodu girin." });
+
+            var normalizedCode = code.Trim().ToUpper();
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var user = userId.HasValue ? await _context.Users.FindAsync(userId) : null;
+            var isAdmin = HttpContext.Session.GetString("UserRole") == "Yonetici";
+
+            // Kuponu bul (Sadece koda göre)
+            var k = await _context.Kampanyalar.FirstOrDefaultAsync(k => k.KuponKodu.ToUpper() == normalizedCode);
+
+            if (k == null)
+            {
+                return Json(new { valid = false, message = "Böyle bir kupon kodu bulunamadı." });
+            }
+
+            if (!k.Aktif)
+            {
+                return Json(new { valid = false, message = "Bu kupon şu an aktif değil." });
+            }
+
+            var now = DateTime.UtcNow.Date;
+            if (k.BaslangicTarihi.Date > now)
+            {
+                return Json(new { valid = false, message = $"Bu kupon henüz başlamadı. Başlangıç: {k.BaslangicTarihi.ToLocalTime():dd.MM.yyyy}" });
+            }
+
+            if (k.BitisTarihi.Date < now)
+            {
+                return Json(new { valid = false, message = "Bu kuponun süresi dolmuş." });
+            }
+
+            // Rol kontrolü (Yönetici değilse)
+            if (!isAdmin)
+            {
+                if (k.TargetUserID != null)
+                {
+                    if (k.TargetUserID != userId)
+                    {
+                        return Json(new { valid = false, message = "Bu kupon sadece belirlenmiş bir kullanıcıya özeldir." });
+                    }
+                }
+                else if (k.HedefRolID != null)
+                {
+                    var userRolId = user != null ? user.RolID : 0;
+                    if (k.HedefRolID != userRolId)
+                    {
+                        return Json(new { valid = false, message = "Bu kupon sizin hesabınız için geçerli değil." });
+                    }
+                }
+            }
+
+            return Json(new { valid = true, discount = k.IndirimOrani, name = k.Ad });
         }
     }
 }

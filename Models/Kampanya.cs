@@ -30,5 +30,10 @@ namespace art_galeri.Models
         public int? HedefRolID { get; set; }
         [ForeignKey("HedefRolID")]
         public Rol? HedefRol { get; set; }
+
+        // Belirli bir kullanıcıya özel mi?
+        public int? TargetUserID { get; set; }
+        [ForeignKey("TargetUserID")]
+        public User? TargetUser { get; set; }
     }
 }
