@@ -65,26 +65,36 @@
                     </div>
                 </div>
 
-                <!-- Kart Bilgileri (KrediKarti seçildiğinde görünür) -->
                 <div id="kartBilgileri">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Kart Üzerindeki İsim</label>
-                        <input type="text" class="form-control" placeholder="Ad Soyad" id="kartIsim">
+                        <input type="text" class="form-control card-req" placeholder="Ad Soyad" id="kartIsim">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Kart Numarası</label>
-                        <input type="text" class="form-control" placeholder="•••• •••• •••• ••••" maxlength="19" id="kartNo">
+                        <input type="text" class="form-control card-req" placeholder="•••• •••• •••• ••••" maxlength="19" id="kartNo">
                     </div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label fw-semibold">Son Kullanma</label>
-                            <input type="text" class="form-control" placeholder="AA/YY" maxlength="5" id="kartSKT">
+                            <input type="text" class="form-control card-req" placeholder="AA/YY" maxlength="5" id="kartSKT">
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-semibold">CVV</label>
-                            <input type="password" class="form-control" placeholder="•••" maxlength="3" id="kartCVV">
+                            <input type="password" class="form-control card-req" placeholder="•••" maxlength="3" id="kartCVV">
                         </div>
                     </div>
+                </div>
+
+                <!-- Havale/EFT Bilgileri -->
+                <div id="havaleBilgileri" class="mb-3 p-3 bg-light border rounded" style="display:none;">
+                    <h6 class="fw-bold text-primary"><i class="bi bi-bank2"></i> Banka Hesap Bilgilerimiz</h6>
+                    <p class="small mb-1">Lütfen siparişi onayladıktan sonra toplam tutarı aşağıdaki hesaba gönderiniz. Açıklama kısmına "Sipariş: @Model.Title" yazmayı unutmayın.</p>
+                    <ul class="list-unstyled small mb-0 mt-2">
+                        <li><strong>Banka:</strong> Garanti BBVA</li>
+                        <li><strong>Alıcı:</strong> Art Galeri Sanat A.Ş.</li>
+                        <li><strong>IBAN:</strong> TR12 3456 7890 1234 5678 9012 34</li>
+                    </ul>
                 </div>
 
                 <!-- Teslimat Adresi -->
@@ -160,10 +170,18 @@
 
 @section Scripts {
 <script>
+// Başlangıç durumu
+const reqInputs = document.querySelectorAll('.card-req');
+reqInputs.forEach(i => i.required = true);
+
 // Ödeme yöntemi değişimi
 document.querySelectorAll('input[name="odemeYontemi"]').forEach(radio => {
     radio.addEventListener('change', function() {
-        document.getElementById('kartBilgileri').style.display = this.value === 'KrediKarti' ? 'block' : 'none';
+        const isKart = this.value === 'KrediKarti';
+        document.getElementById('kartBilgileri').style.display = isKart ? 'block' : 'none';
+        document.getElementById('havaleBilgileri').style.display = this.value === 'HavaleEFT' ? 'block' : 'none';
+        
+        reqInputs.forEach(i => i.required = isKart);
     });
 });
 

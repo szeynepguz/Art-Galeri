@@ -64,6 +64,9 @@
                             <div class="artwork-stats">
                                 <span><i class="bi bi-heart"></i> @item.BegeniSayisi</span>
                                 <span><i class="bi bi-eye"></i> @item.GoruntulenmeSayisi</span>
+                                <span class="stars ms-auto" title="Ortalama puan">
+                                    @for (int i = 1; i <= 5; i++) { @(i <= Math.Round(item.OrtalamaPuan) ? "⭐" : "☆") }
+                                </span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-2">
                                 <span class="fw-bold text-success">@item.Price.ToString("N0") ₺</span>
@@ -107,7 +110,12 @@
                                     &nbsp;|&nbsp; <i class="bi bi-geo-alt me-1"></i>@e.Konum
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold text-success">@e.Ucret.ToString("N0") ₺</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold text-success">@e.Ucret.ToString("N0") ₺</span>
+                                        <span class="stars">
+                                            @for (int i = 1; i <= 5; i++) { @(i <= Math.Round(e.OrtalamaPuan) ? "⭐" : "☆") }
+                                        </span>
+                                    </div>
                                     <a href="/Etkinlik/Detay/@e.EtkinlikID" class="btn btn-sm btn-accent">Rezerve Et</a>
                                 </div>
                             </div>

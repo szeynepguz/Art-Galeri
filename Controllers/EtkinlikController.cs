@@ -121,7 +121,15 @@ namespace art_galeri.Controllers
             model.UserID = userId.Value;
             model.ToplamTutar = tutar;
             model.RezervasyonTarihi = DateTime.UtcNow;
-            model.Durum = "Onaylandi";
+            
+            // Ödeme yöntemine göre durum belirle
+            model.Durum = model.OdemeYontemi switch
+            {
+                "KrediKarti" => "Tamamlandi",
+                "Havale" => "Odeme Bekleniyor",
+                "Gise" => "Onaylandi", // Yerinde ödeme
+                _ => "Beklemede"
+            };
 
             etkinlik.RezervasyonSayisi += model.KatilimciSayisi;
 

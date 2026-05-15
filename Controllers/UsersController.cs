@@ -113,7 +113,44 @@ namespace art_galeri.Controllers
             ViewBag.Kampanyalar = await _context.Kampanyalar.Include(k => k.HedefRol).OrderByDescending(k => k.Aktif).ToListAsync();
             ViewBag.DestekTalepleri = await _context.DestekTalepleri.Include(d => d.User).OrderByDescending(d => d.OlusturulmaTarihi).Take(10).ToListAsync();
             ViewBag.TumKullanicilar = await _context.Users.Include(u => u.Rol).OrderByDescending(u => u.CreatedAt).Take(15).ToListAsync();
+            
+            ViewBag.BekleyenSiparisler = await _context.Siparisler.Include(s => s.Artwork).Include(s => s.User).Where(s => s.Durum == "Beklemede" || s.Durum == "OdemeBekleniyor").ToListAsync();
+            ViewBag.BekleyenRezervasyonlar = await _context.Rezervasyonlar.Include(r => r.Etkinlik).Include(r => r.User).Where(r => r.Durum == "Beklemede" || r.Durum == "Onay Bekliyor").ToListAsync();
+            
             return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SiparisOnayla(int id)
+        {
+            if (!IsLoggedIn() || HttpContext.Session.GetString("UserRole") != "Yonetici") return RedirectToAction("Login");
+            var siparis = await _context.Siparisler.FindAsync(id);
+            if (siparis != null) { siparis.Durum = "Tamamlandi"; await _context.SaveChangesAsync(); TempData["SuccessMessage"] = "Sipariş onaylandı."; }
+            return RedirectToAction("YoneticiDashboard");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> RezervasyonOnayla(int id)
+        {
+            if (!IsLoggedIn() || HttpContext.Session.GetString("UserRole") != "Yonetici") return RedirectToAction("Login");
+            var rez = await _context.Rezervasyonlar.FindAsync(id);
+            if (rez != null) { rez.Durum = "Onaylandi"; await _context.SaveChangesAsync(); TempData["SuccessMessage"] = "Rezervasyon onaylandı."; }
+            return RedirectToAction("YoneticiDashboard");
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> DestekYanitla(int id, string yanit)
+        {
+            if (!IsLoggedIn() || HttpContext.Session.GetString("UserRole") != "Yonetici") return RedirectToAction("Login");
+            var destek = await _context.DestekTalepleri.FindAsync(id);
+            if (destek != null) { 
+                destek.Durum = "Cevaplandi"; 
+                destek.YoneticiYaniti = yanit;
+                destek.YanitTarihi = DateTime.UtcNow;
+                await _context.SaveChangesAsync(); 
+                TempData["SuccessMessage"] = "Destek talebi yanıtlandı."; 
+            }
+            return RedirectToAction("YoneticiDashboard");
         }
 
         // ---- EĞİTMEN DASHBOARD ----
@@ -293,7 +330,18 @@ namespace art_galeri.Controllers
         }
 
         // ---- DESTEK ----
-        public IActionResult Destek() => View(new DestekTalebi { Email = HttpContext.Session.GetString("UserEmail") ?? "" });
+        public async Task<IActionResult> Destek()
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId != null)
+            {
+                ViewBag.Taleplerim = await _context.DestekTalepleri
+                    .Where(d => d.UserID == userId)
+                    .OrderByDescending(d => d.OlusturulmaTarihi)
+                    .ToListAsync();
+            }
+            return View(new DestekTalebi { Email = HttpContext.Session.GetString("UserEmail") ?? "" });
+        }
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Destek(DestekTalebi model)

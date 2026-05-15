@@ -31,5 +31,8 @@ namespace art_galeri.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal ToplamTutar { get; set; }
+
+        [StringLength(50)]
+        public string OdemeYontemi { get; set; } = "KrediKarti";
     }
 }

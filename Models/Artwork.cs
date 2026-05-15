@@ -33,6 +33,8 @@ namespace art_galeri.Models
         public int BegeniSayisi { get; set; } = 0;
         public int YorumSayisi { get; set; } = 0;
 
+        public double OrtalamaPuan { get; set; } = 0.0;
+
         public bool Aktif { get; set; } = true;
 
         // Navigation

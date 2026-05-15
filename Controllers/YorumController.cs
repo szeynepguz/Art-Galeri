@@ -64,6 +64,19 @@ namespace art_galeri.Controllers
                     etkinlik.OrtalamaPuan = yorumlar.Average();
                 }
             }
+            
+            // Ortalama puanı güncelle (Artwork için)
+            if (artworkId.HasValue)
+            {
+                var artwork = await _context.Artworks.FindAsync(artworkId);
+                if (artwork != null)
+                {
+                    var yorumlar = await _context.Yorumlar.Where(y => y.ArtworkID == artworkId).Select(y => y.Puan).ToListAsync();
+                    yorumlar.Add(puan);
+                    artwork.OrtalamaPuan = yorumlar.Average();
+                    artwork.YorumSayisi = yorumlar.Count;
+                }
+            }
 
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Yorumunuz başarıyla eklendi." });

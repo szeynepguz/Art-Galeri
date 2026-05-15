@@ -205,14 +205,114 @@
                         {
                             <tr>
                                 <td>@(t.User?.Ad ?? t.Email)</td>
-                                <td><strong>@t.Konu</strong><br><small class="text-muted">@t.Mesaj.Substring(0, Math.Min(80, t.Mesaj.Length))...</small></td>
-                                <td><span class="badge-status @t.Durum.ToLower()">@t.Durum</span></td>
+                                <td>
+                                    <strong>@t.Konu</strong><br>
+                                    <small class="text-muted">@t.Mesaj</small>
+                                    @if (!string.IsNullOrEmpty(t.YoneticiYaniti))
+                                    {
+                                        <div class="mt-2 p-2 bg-light border rounded">
+                                            <strong><i class="bi bi-reply-fill text-success"></i> Yanıtınız:</strong> @t.YoneticiYaniti
+                                        </div>
+                                    }
+                                    else if (t.Durum == "Acik")
+                                    {
+                                        <form action="/Users/DestekYanitla" method="post" class="mt-2 d-flex gap-2">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@t.TalepID">
+                                            <input type="text" name="yanit" class="form-control form-control-sm" placeholder="Yanıtınızı yazın..." required>
+                                            <button type="submit" class="btn btn-sm btn-accent"><i class="bi bi-send"></i> Gönder</button>
+                                        </form>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge-status @(t.Durum == "Acik" ? "beklemede" : (t.Durum == "Cevaplandi" ? "onaylandi" : "iptal"))">@t.Durum</span>
+                                </td>
                                 <td>@t.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+        }
+    </div>
+
+    <!-- Bekleyen Siparişler -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-cart-check text-success"></i> Onay Bekleyen Siparişler</div>
+        @if (ViewBag.BekleyenSiparisler != null)
+        {
+            var siparisler = ViewBag.BekleyenSiparisler as List<art_galeri.Models.Siparis>;
+            if (siparisler != null && siparisler.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead><tr><th>Sipariş No</th><th>Kullanıcı</th><th>Eser</th><th>Tutar</th><th>Ödeme</th><th>İşlem</th></tr></thead>
+                        <tbody>
+                            @foreach (var s in siparisler)
+                            {
+                                <tr>
+                                    <td>#@s.SiparisID</td>
+                                    <td>@(s.User?.Ad) @(s.User?.Soyad)</td>
+                                    <td>@(s.Artwork?.Title)</td>
+                                    <td class="fw-bold text-success">@s.Tutar.ToString("N0") ₺</td>
+                                    <td>@s.OdemeYontemi</td>
+                                    <td>
+                                        <form action="/Users/SiparisOnayla" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@s.SiparisID">
+                                            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> Onayla</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">Şu anda onay bekleyen sipariş bulunmuyor.</p>
+            }
+        }
+    </div>
+
+    <!-- Bekleyen Rezervasyonlar -->
+    <div class="panel-card mb-4">
+        <div class="panel-title"><i class="bi bi-calendar-check text-info"></i> Onay Bekleyen Rezervasyonlar</div>
+        @if (ViewBag.BekleyenRezervasyonlar != null)
+        {
+            var rezervasyonlar = ViewBag.BekleyenRezervasyonlar as List<art_galeri.Models.Rezervasyon>;
+            if (rezervasyonlar != null && rezervasyonlar.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead><tr><th>Rez. No</th><th>Kullanıcı</th><th>Etkinlik</th><th>Kişi</th><th>Tutar</th><th>İşlem</th></tr></thead>
+                        <tbody>
+                            @foreach (var r in rezervasyonlar)
+                            {
+                                <tr>
+                                    <td>#@r.RezervasyonID</td>
+                                    <td>@(r.User?.Ad) @(r.User?.Soyad)</td>
+                                    <td>@(r.Etkinlik?.Ad)</td>
+                                    <td>@r.KatilimciSayisi Kişi</td>
+                                    <td class="fw-bold text-success">@r.ToplamTutar.ToString("N0") ₺</td>
+                                    <td>
+                                        <form action="/Users/RezervasyonOnayla" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@r.RezervasyonID">
+                                            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> Onayla</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">Şu anda onay bekleyen rezervasyon bulunmuyor.</p>
+            }
         }
     </div>
 
