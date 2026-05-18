@@ -86,7 +86,15 @@ namespace art_galeri.Controllers
             if (!IsLoggedIn()) return RedirectToAction("Login");
             var artworks = await _context.Artworks.Include(a => a.Artist).Where(a => a.Aktif).OrderByDescending(a => a.BegeniSayisi).Take(8).ToListAsync();
             var etkinlikler = await _context.Etkinlikler.Include(e => e.Egitmen).Where(e => e.Aktif && e.Tarih >= DateTime.UtcNow).OrderBy(e => e.Tarih).Take(4).ToListAsync();
-            var kampanyalar = await _context.Kampanyalar.Where(k => k.Aktif && k.BaslangicTarihi <= DateTime.UtcNow && k.BitisTarihi >= DateTime.UtcNow).ToListAsync();
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var user = userId.HasValue ? await _context.Users.FindAsync(userId) : null;
+            var userRolId = user?.RolID;
+
+            var kampanyalar = await _context.Kampanyalar
+                .Where(k => k.Aktif && k.BaslangicTarihi <= DateTime.UtcNow && k.BitisTarihi >= DateTime.UtcNow)
+                .Where(k => (k.TargetUserID == null || k.TargetUserID == userId) && 
+                            (k.HedefRolID == null || k.HedefRolID == userRolId))
+                .ToListAsync();
             ViewBag.UserName = $"{HttpContext.Session.GetString("UserAd")} {HttpContext.Session.GetString("UserSoyad")}";
             ViewBag.Etkinlikler = etkinlikler;
             ViewBag.Kampanyalar = kampanyalar;

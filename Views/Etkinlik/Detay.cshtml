@@ -123,9 +123,20 @@
                             <span class="stars">@for(int i=1;i<=5;i++){@(i<=y.Puan?"⭐":"☆")}</span>
                         </div>
                         <p class="mb-1 mt-1">@y.Icerik</p>
-                        <div class="yorum-meta">
-                            @y.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy") · 
+                        <div class="yorum-meta d-flex align-items-center gap-2">
+                            <span>@y.OlusturulmaTarihi.ToLocalTime().ToString("dd.MM.yyyy")</span>
+                            <span>·</span>
                             <button class="btn btn-sm btn-link p-0 text-muted" onclick="faydali(@y.YorumID, this)">👍 <span class="count">@y.FaydaliBulma</span> Faydalı</button>
+                            @if (Context.Session.GetString("UserRole") == "Yonetici")
+                            {
+                                <span>·</span>
+                                <form action="/Yorum/Sil" method="post" style="display:inline;" onsubmit="return confirm('Bu yorumu silmek istediğinizden emin misiniz?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@y.YorumID">
+                                    <input type="hidden" name="donusUrl" value="/Etkinlik/Detay/@Model.EtkinlikID">
+                                    <button type="submit" class="btn btn-sm btn-link p-0 text-danger border-0 bg-transparent" style="font-size:0.82rem;"><i class="bi bi-trash"></i> Sil</button>
+                                </form>
+                            }
                         </div>
                         @if (!string.IsNullOrEmpty(y.YoneticiYaniti))
                         {

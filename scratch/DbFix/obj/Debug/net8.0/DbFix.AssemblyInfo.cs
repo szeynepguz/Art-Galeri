@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DbFix")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91ffbb9c47525e362d8833a48e58b30753514bd7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77b2cd37d389ea0a751e33206cc101c66bde2035")]
 [assembly: System.Reflection.AssemblyProductAttribute("DbFix")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DbFix")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

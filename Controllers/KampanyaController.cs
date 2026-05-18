@@ -12,22 +12,23 @@ namespace art_galeri.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userRolId = HttpContext.Session.GetInt32("UserID") != null
-                ? (await _context.Users.FindAsync(HttpContext.Session.GetInt32("UserID")))?.RolID
-                : (int?)null;
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var user = userId.HasValue ? await _context.Users.FindAsync(userId) : null;
+            var userRolId = user?.RolID;
 
             var kampanyalar = await _context.Kampanyalar
                 .Include(k => k.HedefRol)
                 .Where(k => k.Aktif && k.BitisTarihi.Date >= DateTime.UtcNow.Date)
                 .ToListAsync();
 
-            // Belirli kullanıcılara özel fırsatlar: HedefRolID null = herkese, aksi halde sadece o role
+            // Sadece yetkili/belirlenmiş kişiye gösterilecek şekilde filtrele
             var filtrelenmis = kampanyalar
-                .Where(k => k.HedefRolID == null || k.HedefRolID == userRolId)
+                .Where(k => (k.TargetUserID == null || k.TargetUserID == userId) && 
+                            (k.HedefRolID == null || k.HedefRolID == userRolId))
                 .ToList();
 
-            ViewBag.GenelKampanyalar = filtrelenmis.Where(k => k.HedefRolID == null).ToList();
-            ViewBag.OzelKampanyalar = filtrelenmis.Where(k => k.HedefRolID != null).ToList();
+            ViewBag.GenelKampanyalar = filtrelenmis.Where(k => k.HedefRolID == null && k.TargetUserID == null).ToList();
+            ViewBag.OzelKampanyalar = filtrelenmis.Where(k => k.HedefRolID != null || k.TargetUserID != null).ToList();
 
             return View(filtrelenmis);
         }
@@ -50,7 +51,7 @@ namespace art_galeri.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Olustur(string ad, string aciklama, decimal indirimOrani, string kuponKodu,
-            DateTime baslangicTarihi, DateTime bitisTarihi, int? hedefRolId)
+            DateTime baslangicTarihi, DateTime bitisTarihi, int? hedefRolId, int? targetUserId)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
             if (userRole != "Yonetici")
@@ -76,6 +77,7 @@ namespace art_galeri.Controllers
                 BaslangicTarihi = baslangicTarihi.Date.ToUniversalTime(),
                 BitisTarihi = bitisTarihi.Date.AddDays(1).AddSeconds(-1).ToUniversalTime(),
                 HedefRolID = hedefRolId,
+                TargetUserID = targetUserId,
                 Aktif = true
             };
 

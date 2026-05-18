@@ -65,7 +65,7 @@ namespace art_galeri.Controllers
             if (userId.HasValue)
             {
                 ViewBag.FavoriMi = await _context.Favoriler.AnyAsync(f => f.UserID == userId && f.ArtworkID == id);
-                ViewBag.SatinAlindiMi = await _context.Siparisler.AnyAsync(s => s.UserID == userId && s.ArtworkID == id && s.Durum == "Tamamlandi");
+                ViewBag.SatinAlindiMi = await _context.Siparisler.AnyAsync(s => s.UserID == userId && s.ArtworkID == id && (s.Durum == "Tamamlandi" || s.Durum == "Onaylandi"));
             }
 
             ViewBag.BenzerEserler = await _context.Artworks

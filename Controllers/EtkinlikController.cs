@@ -110,8 +110,12 @@ namespace art_galeri.Controllers
             if (!string.IsNullOrEmpty(kuponKodu))
             {
                 var normalizedKupon = kuponKodu.Trim().ToUpper();
+                var user = await _context.Users.FindAsync(userId);
                 var kampanya = await _context.Kampanyalar
-                    .FirstOrDefaultAsync(k => k.KuponKodu.ToUpper() == normalizedKupon && k.Aktif && k.BaslangicTarihi.Date <= DateTime.UtcNow.Date && k.BitisTarihi.Date >= DateTime.UtcNow.Date);
+                    .FirstOrDefaultAsync(k => k.KuponKodu.ToUpper() == normalizedKupon && k.Aktif && 
+                                              k.BaslangicTarihi.Date <= DateTime.UtcNow.Date && k.BitisTarihi.Date >= DateTime.UtcNow.Date &&
+                                              (k.TargetUserID == null || k.TargetUserID == userId) &&
+                                              (k.HedefRolID == null || k.HedefRolID == (user != null ? user.RolID : 0)));
                 if (kampanya != null)
                 {
                     tutar = tutar * (1 - kampanya.IndirimOrani / 100);

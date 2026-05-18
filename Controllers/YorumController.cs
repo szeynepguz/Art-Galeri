@@ -21,6 +21,15 @@ namespace art_galeri.Controllers
             if (string.IsNullOrWhiteSpace(icerik))
                 return Json(new { success = false, message = "Yorum içeriği boş olamaz." });
 
+            // Doğrulama ve Güvenilirlik: Eser yorumu yapabilmek için kullanıcının ilgili eseri satın almış olması gerekir
+            if (artworkId.HasValue)
+            {
+                var satinAlindiMi = await _context.Siparisler
+                    .AnyAsync(s => s.UserID == userId && s.ArtworkID == artworkId && (s.Durum == "Tamamlandi" || s.Durum == "Onaylandi"));
+                if (!satinAlindiMi)
+                    return Json(new { success = false, message = "Sadece bu eseri satın alan kullanıcılar değerlendirme yapabilir." });
+            }
+
             // Doğrulama ve Güvenilirlik: Etkinlik yorumu yapabilmek için kullanıcının ilgili etkinliğe katılmış olması
             if (etkinlikId.HasValue)
             {
@@ -44,7 +53,7 @@ namespace art_galeri.Controllers
             // Doğrulama Kontrolü (Satın almış mı veya rezerve etmiş mi?)
             if (artworkId.HasValue)
             {
-                yorum.Dogrulanmis = await _context.Siparisler.AnyAsync(s => s.UserID == userId && s.ArtworkID == artworkId && s.Durum == "Tamamlandi");
+                yorum.Dogrulanmis = await _context.Siparisler.AnyAsync(s => s.UserID == userId && s.ArtworkID == artworkId && (s.Durum == "Tamamlandi" || s.Durum == "Onaylandi"));
             }
             else if (etkinlikId.HasValue)
             {
