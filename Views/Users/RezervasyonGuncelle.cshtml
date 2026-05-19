@@ -1,5 +1,6 @@
 @model art_galeri.Models.Rezervasyon
 @{ViewData["Title"] = "Rezervasyon Güncelle";}
+@{var digerTarihler = ViewBag.DigerTarihler as List<art_galeri.Models.EtkinlikTarih> ?? new List<art_galeri.Models.EtkinlikTarih>();}
 
 <div class="auth-container">
     <div class="auth-card" style="max-width:600px;">
@@ -12,8 +13,16 @@
             <div class="panel-card mb-3" style="background:#f0fdf4;">
                 <div class="row text-center">
                     <div class="col-4">
-                        <div class="small text-muted">Etkinlik Tarihi</div>
-                        <strong>@Model.Etkinlik?.Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                        <div class="small text-muted">Mevcut Tarih</div>
+                        @if (Model.EtkinlikTarih != null)
+                        {
+                            <strong>@Model.EtkinlikTarih.Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                            <div class="small text-muted">@Model.EtkinlikTarih.Saat.ToString(@"hh\:mm")</div>
+                        }
+                        else
+                        {
+                            <strong>@Model.Etkinlik?.Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                        }
                     </div>
                     <div class="col-4">
                         <div class="small text-muted">Ücret/Kişi</div>
@@ -43,21 +52,56 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.RezervasyonID">
 
+                <!-- Tarih Değiştirme -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Etkinlik Tarihi Değiştir</label>
-                    <select name="yeniEtkinlikId" class="form-select" id="etkinlikSelect">
-                        <option value="@Model.EtkinlikID" data-ucret="@Model.Etkinlik?.Ucret" selected>
-                            @Model.Etkinlik?.Tarih.ToString("dd.MM.yyyy") (Mevcut)
-                        </option>
-                        @foreach (var e in ViewBag.DigerTarihler as List<art_galeri.Models.Etkinlik> ?? new List<art_galeri.Models.Etkinlik>())
-                        {
-                            <option value="@e.EtkinlikID" data-ucret="@e.Ucret">
-                                @e.Tarih.ToString("dd.MM.yyyy") - @e.Ucret.ToString("N0") ₺
-                            </option>
-                        }
-                    </select>
-                    @if(!(ViewBag.DigerTarihler as List<art_galeri.Models.Etkinlik> ?? new List<art_galeri.Models.Etkinlik>()).Any()){
-                        <small class="text-muted">Bu etkinlik için başka tarih bulunmuyor.</small>
+                    <label class="form-label fw-semibold"><i class="bi bi-calendar-range me-1"></i>Etkinlik Tarihini Değiştir</label>
+                    @if (digerTarihler.Any())
+                    {
+                        <div class="row g-2">
+                            @if (Model.EtkinlikTarihID != null)
+                            {
+                                <div class="col-12">
+                                    <input type="radio" class="btn-check" name="yeniTarihId" value="@Model.EtkinlikTarihID" id="tarih-mevcut" checked>
+                                    <label class="btn btn-outline-success w-100 text-start p-3 d-flex justify-content-between align-items-center" for="tarih-mevcut" style="border-width: 1.5px;" data-ucret="@Model.Etkinlik?.Ucret">
+                                        <div>
+                                            <i class="bi bi-calendar-check me-2"></i>
+                                            <strong>@Model.EtkinlikTarih?.Tarih.ToString("dd MMMM yyyy, dddd", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                                            <span class="badge bg-success ms-2" style="font-size:.65rem;">Mevcut</span>
+                                        </div>
+                                        <small class="text-muted">@Model.EtkinlikTarih?.Saat.ToString(@"hh\:mm")</small>
+                                    </label>
+                                </div>
+                            }
+                            @foreach (var t in digerTarihler)
+                            {
+                                var tDoluluk = (int)t.DolulukOrani;
+                                <div class="col-12">
+                                    <input type="radio" class="btn-check" name="yeniTarihId" value="@t.EtkinlikTarihID" id="tarih-@t.EtkinlikTarihID" 
+                                           @(Model.EtkinlikTarihID == null && digerTarihler.IndexOf(t) == 0 ? "checked" : "")>
+                                    <label class="btn btn-outline-secondary w-100 text-start p-3 d-flex justify-content-between align-items-center" for="tarih-@t.EtkinlikTarihID" style="border-width: 1.5px;" data-ucret="@Model.Etkinlik?.Ucret">
+                                        <div>
+                                            <i class="bi bi-calendar-event me-2 text-primary"></i>
+                                            <strong>@t.Tarih.ToString("dd MMMM yyyy, dddd", new System.Globalization.CultureInfo("tr-TR"))</strong>
+                                            <span class="text-muted ms-2"><i class="bi bi-clock me-1"></i>@t.Saat.ToString(@"hh\:mm")</span>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="small @(tDoluluk >= 80 ? "text-danger" : "text-success")">
+                                                @t.KalanKapasite kişilik yer
+                                            </div>
+                                            <div class="progress-bar-custom" style="width:80px;height:4px;">
+                                                <div class="progress-fill @(tDoluluk>=90?"dolu":"")" style="width:@tDoluluk%"></div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert-custom alert-info">
+                            <i class="bi bi-info-circle me-1"></i> Bu etkinlik için başka müsait tarih bulunmuyor.
+                        </div>
                     }
                 </div>
 
@@ -95,16 +139,27 @@
     </div>
 </div>
 
+<style>
+.btn-check:checked + .btn-outline-secondary { background-color: #6c757d !important; color: white !important; border-color: #6c757d !important; }
+.btn-check:checked + .btn-outline-secondary i { color: white !important; }
+.btn-check:checked + .btn-outline-secondary .text-primary { color: white !important; }
+.btn-check:checked + .btn-outline-secondary .text-muted { color: rgba(255,255,255,.8) !important; }
+.btn-check:checked + .btn-outline-secondary .text-success { color: #a7f3d0 !important; }
+.btn-check:checked + .btn-outline-secondary .text-danger { color: #fca5a5 !important; }
+.btn-check:checked + .btn-outline-success { background-color: #10b981 !important; color: white !important; border-color: #10b981 !important; }
+.btn-check:checked + .btn-outline-success .text-muted { color: rgba(255,255,255,.8) !important; }
+</style>
+
 @section Scripts {
 <script>
+const ucret = parseFloat('@(Model.Etkinlik?.Ucret.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "0")');
+
 function hesapla() {
-    const select = document.getElementById('etkinlikSelect');
-    const ucret = parseFloat(select.options[select.selectedIndex].dataset.ucret);
-    const kisi = parseInt(document.getElementById('kisiSayisi').value);
+    const kisi = parseInt(document.getElementById('kisiSayisi').value) || 1;
     const toplam = ucret * kisi;
     document.getElementById('yeniToplam').textContent = toplam.toLocaleString('tr-TR') + ' ₺';
 }
+
 document.getElementById('kisiSayisi').addEventListener('input', hesapla);
-document.getElementById('etkinlikSelect').addEventListener('change', hesapla);
 </script>
 }

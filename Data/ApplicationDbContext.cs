@@ -21,6 +21,7 @@ namespace art_galeri.Data
         public DbSet<Kampanya> Kampanyalar { get; set; }
         public DbSet<DestekTalebi> DestekTalepleri { get; set; }
         public DbSet<Karsilastirma> Karsilastirmalar { get; set; }
+        public DbSet<EtkinlikTarih> EtkinlikTarihler { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -144,6 +145,20 @@ namespace art_galeri.Data
                 .HasOne(e => e.Egitmen)
                 .WithMany()
                 .HasForeignKey(e => e.EgitmenID)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // EtkinlikTarih -> Etkinlik
+            modelBuilder.Entity<EtkinlikTarih>()
+                .HasOne(et => et.Etkinlik)
+                .WithMany(e => e.Tarihler)
+                .HasForeignKey(et => et.EtkinlikID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Rezervasyon -> EtkinlikTarih (nullable)
+            modelBuilder.Entity<Rezervasyon>()
+                .HasOne(r => r.EtkinlikTarih)
+                .WithMany()
+                .HasForeignKey(r => r.EtkinlikTarihID)
                 .OnDelete(DeleteBehavior.SetNull);
 
             // Kampanya -> HedefRol (nullable)

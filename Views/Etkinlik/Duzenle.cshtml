@@ -12,6 +12,7 @@
             <div class="panel-card p-4">
                 <form asp-action="Duzenle" method="post" enctype="multipart/form-data">
                     <input type="hidden" asp-for="EtkinlikID" />
+                    <input type="hidden" name="tarihlerJson" id="tarihlerJson">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     
                     <div class="row g-3">
@@ -40,7 +41,7 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label asp-for="Tarih" class="form-label fw-bold">Tarih</label>
+                            <label asp-for="Tarih" class="form-label fw-bold">Ana Tarih</label>
                             <input asp-for="Tarih" type="date" class="form-control" value="@Model.Tarih.ToString("yyyy-MM-dd")">
                             <span asp-validation-for="Tarih" class="text-danger"></span>
                         </div>
@@ -61,7 +62,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Kapasite" class="form-label fw-bold">Kontenjan (Kişi)</label>
+                            <label asp-for="Kapasite" class="form-label fw-bold">Varsayılan Kontenjan (Kişi)</label>
                             <input asp-for="Kapasite" type="number" class="form-control" min="1">
                             <span asp-validation-for="Kapasite" class="text-danger"></span>
                         </div>
@@ -88,8 +89,28 @@
                             <span asp-validation-for="Aciklama" class="text-danger"></span>
                         </div>
 
+                        <!-- Çoklu Tarih Yönetimi -->
+                        <div class="col-md-12 mb-3">
+                            <div class="panel-card" style="background: #f0f7ff; border: 2px dashed #3b82f6;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-0"><i class="bi bi-calendar-range text-primary"></i> Etkinlik Tarihleri</h5>
+                                        <small class="text-muted">Etkinliğin birden fazla tarihte yapılmasını yönetin.</small>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="tarihEkle()">
+                                        <i class="bi bi-plus-lg"></i> Tarih Ekle
+                                    </button>
+                                </div>
+                                <div id="tarihListesi"></div>
+                                <div id="tarihBos" class="text-center text-muted py-3">
+                                    <i class="bi bi-calendar-plus" style="font-size:2rem;"></i>
+                                    <p class="mb-0 mt-1">Henüz ek tarih eklenmedi.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-12 d-flex gap-2 mt-4">
-                            <button type="submit" class="btn btn-gold px-5">
+                            <button type="submit" class="btn btn-gold px-5" onclick="formGonder()">
                                 <i class="bi bi-save"></i> Değişiklikleri Kaydet
                             </button>
                             <a asp-controller="Users" asp-action="EgitmenDashboard" class="btn btn-outline-secondary px-4">İptal</a>
@@ -100,3 +121,94 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+let tarihler = [];
+let tarihSayac = 1000;
+
+// Mevcut tarihleri yükle
+@if (Model.Tarihler != null && Model.Tarihler.Any())
+{
+    foreach (var t in Model.Tarihler)
+    {
+        <text>
+        tarihler.push({
+            id: @t.EtkinlikTarihID,
+            tempId: ++tarihSayac,
+            tarih: '@t.Tarih.ToString("yyyy-MM-dd")',
+            saat: '@t.Saat.ToString(@"hh\:mm")',
+            kapasite: @t.Kapasite,
+            rezervasyonSayisi: @t.RezervasyonSayisi
+        });
+        </text>
+    }
+}
+
+renderTarihler();
+
+function tarihEkle() {
+    tarihSayac++;
+    const varsayilanKapasite = parseInt(document.querySelector('[name="Kapasite"]').value) || 20;
+    const varsayilanSaat = document.querySelector('[name="Saat"]').value || '10:00';
+    
+    tarihler.push({ id: 0, tempId: tarihSayac, tarih: '', saat: varsayilanSaat, kapasite: varsayilanKapasite, rezervasyonSayisi: 0 });
+    renderTarihler();
+}
+
+function tarihSil(tempId) {
+    const t = tarihler.find(x => x.tempId === tempId);
+    if (t && t.rezervasyonSayisi > 0) {
+        alert('Bu tarihte aktif rezervasyon bulunduğu için silinemez.');
+        return;
+    }
+    tarihler = tarihler.filter(x => x.tempId !== tempId);
+    renderTarihler();
+}
+
+function renderTarihler() {
+    const container = document.getElementById('tarihListesi');
+    const bos = document.getElementById('tarihBos');
+    
+    if (tarihler.length === 0) {
+        container.innerHTML = '';
+        bos.style.display = 'block';
+        return;
+    }
+    
+    bos.style.display = 'none';
+    container.innerHTML = tarihler.map((t, i) => `
+        <div class="d-flex gap-2 align-items-end mb-2 p-2 bg-white rounded-3 shadow-sm">
+            <div class="flex-grow-1">
+                <label class="form-label small mb-1 fw-semibold">${i + 1}. Tarih ${t.id > 0 ? '<span class="badge bg-info text-white" style="font-size:.65rem;">Mevcut</span>' : '<span class="badge bg-success text-white" style="font-size:.65rem;">Yeni</span>'}</label>
+                <input type="date" class="form-control form-control-sm" value="${t.tarih}" 
+                       onchange="tarihler.find(x=>x.tempId==${t.tempId}).tarih=this.value" required>
+            </div>
+            <div style="width:120px;">
+                <label class="form-label small mb-1 fw-semibold">Saat</label>
+                <input type="time" class="form-control form-control-sm" value="${t.saat}" 
+                       onchange="tarihler.find(x=>x.tempId==${t.tempId}).saat=this.value">
+            </div>
+            <div style="width:100px;">
+                <label class="form-label small mb-1 fw-semibold">Kontenjan</label>
+                <input type="number" class="form-control form-control-sm" value="${t.kapasite}" min="1"
+                       onchange="tarihler.find(x=>x.tempId==${t.tempId}).kapasite=parseInt(this.value)">
+            </div>
+            <div style="width:60px;text-align:center;">
+                ${t.rezervasyonSayisi > 0 ? `<small class="text-danger d-block" style="font-size:.7rem;">${t.rezervasyonSayisi} rez.</small>` : ''}
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="tarihSil(${t.tempId})" title="Kaldır" ${t.rezervasyonSayisi > 0 ? 'disabled' : ''}>
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function formGonder() {
+    const jsonData = tarihler
+        .filter(t => t.tarih)
+        .map(t => ({ Id: t.id, Tarih: t.tarih, Saat: t.saat, Kapasite: t.kapasite }));
+    document.getElementById('tarihlerJson').value = JSON.stringify(jsonData);
+}
+</script>
+}

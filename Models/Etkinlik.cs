@@ -48,6 +48,7 @@ namespace art_galeri.Models
         // Navigation
         public ICollection<Rezervasyon>? Rezervasyonlar { get; set; }
         public ICollection<Yorum>? Yorumlar { get; set; }
+        public ICollection<EtkinlikTarih>? Tarihler { get; set; }
 
         [NotMapped]
         public double DolulukOrani => Kapasite > 0 ? (double)RezervasyonSayisi / Kapasite * 100 : 0;

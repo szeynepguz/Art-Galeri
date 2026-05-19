@@ -48,7 +48,15 @@
                             <h6 class="fw-bold mb-1">@e.Ad</h6>
                             <p class="text-muted small mb-2">@e.Aciklama</p>
                             <div class="d-flex flex-column gap-1 mb-3 small text-muted">
-                                <span><i class="bi bi-calendar3 me-1"></i>@e.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
+                                @if (e.Tarihler != null && e.Tarihler.Any())
+                                {
+                                    <span><i class="bi bi-calendar-range me-1"></i>@e.Tarihler.Count tarih mevcut</span>
+                                    <span><i class="bi bi-calendar3 me-1"></i>@e.Tarihler.OrderBy(t => t.Tarih).First().Tarih.ToString("dd MMM", new System.Globalization.CultureInfo("tr-TR")) — @e.Tarihler.OrderBy(t => t.Tarih).Last().Tarih.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
+                                }
+                                else
+                                {
+                                    <span><i class="bi bi-calendar3 me-1"></i>@e.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))</span>
+                                }
                                 <span><i class="bi bi-geo-alt me-1"></i>@e.Konum</span>
                                 <span><i class="bi bi-person me-1"></i>@(e.Egitmen?.Ad) @(e.Egitmen?.Soyad)</span>
                             </div>

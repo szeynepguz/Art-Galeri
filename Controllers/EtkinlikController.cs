@@ -19,6 +19,7 @@ namespace art_galeri.Controllers
         {
             var query = _context.Etkinlikler
                 .Include(e => e.Egitmen)
+                .Include(e => e.Tarihler)
                 .Where(e => e.Aktif);
 
             if (!string.IsNullOrEmpty(kategori))
@@ -37,6 +38,7 @@ namespace art_galeri.Controllers
         {
             var etkinlik = await _context.Etkinlikler
                 .Include(e => e.Egitmen)
+                .Include(e => e.Tarihler)
                 .Include(e => e.Yorumlar!).ThenInclude(y => y.User)
                 .FirstOrDefaultAsync(e => e.EtkinlikID == id);
 
@@ -66,22 +68,34 @@ namespace art_galeri.Controllers
                 return RedirectToAction("Index");
             }
 
-            var etkinlik = await _context.Etkinlikler.FindAsync(id);
+            var etkinlik = await _context.Etkinlikler
+                .Include(e => e.Tarihler)
+                .Include(e => e.Egitmen)
+                .FirstOrDefaultAsync(e => e.EtkinlikID == id);
             if (etkinlik == null || !etkinlik.Aktif) return NotFound();
-            if (etkinlik.KalanKapasite <= 0)
+
+            // Müsait tarihleri filtrele (gelecek tarihli ve kapasitesi dolu olmayan)
+            var musaitTarihler = etkinlik.Tarihler?
+                .Where(t => t.Aktif && t.Tarih >= DateTime.UtcNow.Date && t.KalanKapasite > 0)
+                .OrderBy(t => t.Tarih)
+                .ToList() ?? new List<EtkinlikTarih>();
+
+            // Eski tekli tarih sistemiyle uyumluluk: Eğer hiç tarih eklenmemişse, ana tarihi kontrol et
+            if (!musaitTarihler.Any() && etkinlik.KalanKapasite <= 0 && (etkinlik.Tarihler == null || !etkinlik.Tarihler.Any()))
             {
                 TempData["ErrorMessage"] = "Bu etkinlik için kapasite dolmuştur.";
                 return RedirectToAction("Detay", new { id });
             }
 
             ViewBag.Etkinlik = etkinlik;
+            ViewBag.MusaitTarihler = musaitTarihler;
             return View(new Rezervasyon { EtkinlikID = id });
         }
 
         // POST: /Etkinlik/Rezervasyon
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Rezervasyon(Rezervasyon model, string? kuponKodu)
+        public async Task<IActionResult> Rezervasyon(Rezervasyon model, string? kuponKodu, int? secilenTarihId)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null) return RedirectToAction("Login", "Users");
@@ -92,7 +106,9 @@ namespace art_galeri.Controllers
                 return RedirectToAction("Index");
             }
 
-            var etkinlik = await _context.Etkinlikler.FindAsync(model.EtkinlikID);
+            var etkinlik = await _context.Etkinlikler
+                .Include(e => e.Tarihler)
+                .FirstOrDefaultAsync(e => e.EtkinlikID == model.EtkinlikID);
             if (etkinlik == null) return NotFound();
 
             // Tekrar rezervasyon kontrolü
@@ -102,6 +118,18 @@ namespace art_galeri.Controllers
             {
                 TempData["ErrorMessage"] = "Bu etkinlik için zaten bir rezervasyonunuz var.";
                 return RedirectToAction("Detay", new { id = model.EtkinlikID });
+            }
+
+            // Seçilen tarihi bul
+            EtkinlikTarih? secilenTarih = null;
+            if (secilenTarihId.HasValue)
+            {
+                secilenTarih = etkinlik.Tarihler?.FirstOrDefault(t => t.EtkinlikTarihID == secilenTarihId.Value);
+                if (secilenTarih == null || !secilenTarih.Aktif || secilenTarih.KalanKapasite < model.KatilimciSayisi)
+                {
+                    TempData["ErrorMessage"] = "Seçilen tarih için yeterli kontenjan yok.";
+                    return RedirectToAction("Rezervasyon", new { id = model.EtkinlikID });
+                }
             }
 
             var tutar = etkinlik.Ucret * model.KatilimciSayisi;
@@ -127,6 +155,16 @@ namespace art_galeri.Controllers
             model.ToplamTutar = tutar;
             model.RezervasyonTarihi = DateTime.UtcNow;
             
+            // Seçilen tarihi kaydet
+            if (secilenTarih != null)
+            {
+                model.EtkinlikTarihID = secilenTarih.EtkinlikTarihID;
+                secilenTarih.RezervasyonSayisi += model.KatilimciSayisi;
+            }
+
+            // Ana etkinlik rezervasyon sayısını da güncelle
+            etkinlik.RezervasyonSayisi += model.KatilimciSayisi;
+            
             // Ödeme yöntemine göre durum belirle
             model.Durum = model.OdemeYontemi switch
             {
@@ -135,8 +173,6 @@ namespace art_galeri.Controllers
                 "Gise" => "Onaylandi", // Yerinde ödeme
                 _ => "Beklemede"
             };
-
-            etkinlik.RezervasyonSayisi += model.KatilimciSayisi;
 
             _context.Rezervasyonlar.Add(model);
             await _context.SaveChangesAsync();
@@ -162,7 +198,7 @@ namespace art_galeri.Controllers
             if (string.IsNullOrEmpty(ids)) return View(new List<Etkinlik>());
 
             var idList = ids.Split(',').Select(int.Parse).ToList();
-            var etkinlikler = await _context.Etkinlikler.Include(e => e.Egitmen).Where(e => idList.Contains(e.EtkinlikID)).ToListAsync();
+            var etkinlikler = await _context.Etkinlikler.Include(e => e.Egitmen).Include(e => e.Tarihler).Where(e => idList.Contains(e.EtkinlikID)).ToListAsync();
 
             return View(etkinlikler);
         }
@@ -203,7 +239,7 @@ namespace art_galeri.Controllers
         // POST: /Etkinlik/Olustur
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Olustur(Etkinlik model, IFormFile? imageFile)
+        public async Task<IActionResult> Olustur(Etkinlik model, IFormFile? imageFile, string? tarihlerJson)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null || HttpContext.Session.GetString("UserRole") != "Egitmen")
@@ -226,11 +262,40 @@ namespace art_galeri.Controllers
             ModelState.Remove("Egitmen");
             ModelState.Remove("Rezervasyonlar");
             ModelState.Remove("Yorumlar");
+            ModelState.Remove("Tarihler");
+            ModelState.Remove("tarihlerJson");
 
             if (!ModelState.IsValid) return View(model);
 
             _context.Etkinlikler.Add(model);
             await _context.SaveChangesAsync();
+
+            // Çoklu tarihleri ekle
+            if (!string.IsNullOrEmpty(tarihlerJson))
+            {
+                try
+                {
+                    var tarihListesi = System.Text.Json.JsonSerializer.Deserialize<List<TarihGiris>>(tarihlerJson);
+                    if (tarihListesi != null)
+                    {
+                        foreach (var t in tarihListesi)
+                        {
+                            var etkinlikTarih = new EtkinlikTarih
+                            {
+                                EtkinlikID = model.EtkinlikID,
+                                Tarih = DateTime.Parse(t.Tarih).ToUniversalTime(),
+                                Saat = TimeSpan.TryParse(t.Saat, out var saat) ? saat : model.Saat,
+                                Kapasite = t.Kapasite > 0 ? t.Kapasite : model.Kapasite,
+                                Aktif = true
+                            };
+                            _context.EtkinlikTarihler.Add(etkinlikTarih);
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                catch { /* JSON parse hatası olursa sessizce devam et */ }
+            }
+
             TempData["SuccessMessage"] = "Etkinlik başarıyla oluşturuldu!";
             return RedirectToAction("EgitmenDashboard", "Users");
         }
@@ -239,7 +304,9 @@ namespace art_galeri.Controllers
         public async Task<IActionResult> Duzenle(int id)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
-            var etkinlik = await _context.Etkinlikler.FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
+            var etkinlik = await _context.Etkinlikler
+                .Include(e => e.Tarihler)
+                .FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
             if (etkinlik == null) return NotFound();
             return View(etkinlik);
         }
@@ -247,10 +314,12 @@ namespace art_galeri.Controllers
         // POST: /Etkinlik/Duzenle/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Duzenle(int id, Etkinlik model, IFormFile? imageFile)
+        public async Task<IActionResult> Duzenle(int id, Etkinlik model, IFormFile? imageFile, string? tarihlerJson)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
-            var etkinlik = await _context.Etkinlikler.FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
+            var etkinlik = await _context.Etkinlikler
+                .Include(e => e.Tarihler)
+                .FirstOrDefaultAsync(e => e.EtkinlikID == id && e.EgitmenID == userId);
             if (etkinlik == null) return NotFound();
 
             etkinlik.Ad = model.Ad;
@@ -273,6 +342,58 @@ namespace art_galeri.Controllers
                 etkinlik.GorselUrl = "/uploads/" + fileName;
             }
 
+            // Çoklu tarihleri güncelle
+            if (!string.IsNullOrEmpty(tarihlerJson))
+            {
+                try
+                {
+                    var tarihListesi = System.Text.Json.JsonSerializer.Deserialize<List<TarihGiris>>(tarihlerJson);
+                    if (tarihListesi != null)
+                    {
+                        // Gelen ID'leri al
+                        var gelenIdler = tarihListesi.Where(t => t.Id > 0).Select(t => t.Id).ToList();
+
+                        // Artık listede olmayan mevcut tarihleri sil (sadece rezervasyonu olmayanlar)
+                        var silinecekler = etkinlik.Tarihler?
+                            .Where(t => !gelenIdler.Contains(t.EtkinlikTarihID) && t.RezervasyonSayisi == 0)
+                            .ToList();
+                        if (silinecekler != null)
+                        {
+                            _context.EtkinlikTarihler.RemoveRange(silinecekler);
+                        }
+
+                        foreach (var t in tarihListesi)
+                        {
+                            if (t.Id > 0)
+                            {
+                                // Mevcut tarihi güncelle
+                                var mevcutTarih = etkinlik.Tarihler?.FirstOrDefault(et => et.EtkinlikTarihID == t.Id);
+                                if (mevcutTarih != null)
+                                {
+                                    mevcutTarih.Tarih = DateTime.Parse(t.Tarih).ToUniversalTime();
+                                    mevcutTarih.Saat = TimeSpan.TryParse(t.Saat, out var saat) ? saat : etkinlik.Saat;
+                                    mevcutTarih.Kapasite = t.Kapasite > 0 ? t.Kapasite : etkinlik.Kapasite;
+                                }
+                            }
+                            else
+                            {
+                                // Yeni tarih ekle
+                                var yeniTarih = new EtkinlikTarih
+                                {
+                                    EtkinlikID = etkinlik.EtkinlikID,
+                                    Tarih = DateTime.Parse(t.Tarih).ToUniversalTime(),
+                                    Saat = TimeSpan.TryParse(t.Saat, out var saat) ? saat : etkinlik.Saat,
+                                    Kapasite = t.Kapasite > 0 ? t.Kapasite : etkinlik.Kapasite,
+                                    Aktif = true
+                                };
+                                _context.EtkinlikTarihler.Add(yeniTarih);
+                            }
+                        }
+                    }
+                }
+                catch { /* JSON parse hatası olursa sessizce devam et */ }
+            }
+
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Etkinlik güncellendi!";
             return RedirectToAction("EgitmenDashboard", "Users");
@@ -293,5 +414,14 @@ namespace art_galeri.Controllers
             }
             return RedirectToAction("EgitmenDashboard", "Users");
         }
+    }
+
+    // JSON deserialization için helper sınıf
+    public class TarihGiris
+    {
+        public int Id { get; set; }
+        public string Tarih { get; set; } = "";
+        public string Saat { get; set; } = "";
+        public int Kapasite { get; set; }
     }
 }

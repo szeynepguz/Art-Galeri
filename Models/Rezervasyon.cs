@@ -18,6 +18,11 @@ namespace art_galeri.Models
         [ForeignKey("EtkinlikID")]
         public Etkinlik? Etkinlik { get; set; }
 
+        // Seçilen tarih
+        public int? EtkinlikTarihID { get; set; }
+        [ForeignKey("EtkinlikTarihID")]
+        public EtkinlikTarih? EtkinlikTarih { get; set; }
+
         public int KatilimciSayisi { get; set; } = 1;
 
         public DateTime RezervasyonTarihi { get; set; } = DateTime.UtcNow;
